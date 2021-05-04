@@ -78,7 +78,7 @@
         
         <outline type="rss" title="information aesthetics" text="information aesthetics" xmlUrl="http://infosthetics.com/atom.xml"/>
         
-        <outline type="rss" title="James Long" text="James Long" xmlUrl="http://feeds.feedburner.com/jlongster"/>
+        <!-- <outline type="rss" title="James Long" text="James Long" xmlUrl="http://feeds.feedburner.com/jlongster"/> -->
         
         <outline type="rss" title="James Long" text="James Long" xmlUrl="https://jlongster.com/atom.xml"/>
         
@@ -174,7 +174,7 @@
         
         <outline type="rss" title="storytelling with data" text="storytelling with data" xmlUrl="http://www.storytellingwithdata.com/blog?format=RSS"/>
         
-        <outline type="rss" title="Subaltern Games" text="Subaltern Games" xmlUrl="http://subalterngames.wordpress.com/feed/"/>
+        <!-- <outline type="rss" title="Subaltern Games" text="Subaltern Games" xmlUrl="http://subalterngames.wordpress.com/feed/"/> -->
         
         <outline type="rss" title="Ta-Nehisi Coates :: The Atlantic" text="Ta-Nehisi Coates :: The Atlantic" xmlUrl="http://feeds.feedburner.com/Ta-nehisiCoates"/>
         
@@ -214,7 +214,7 @@
         
         <outline type="rss" title="Whimsley" text="Whimsley" xmlUrl="http://tomslee.net/feed"/>
         
-        <outline type="rss" title="Whimsley" text="Whimsley" xmlUrl="http://whimsley.typepad.com/whimsley/atom.xml"/>
+        <!-- <outline type="rss" title="Whimsley" text="Whimsley" xmlUrl="http://whimsley.typepad.com/whimsley/atom.xml"/> -->
         
         <outline type="rss" title="Worthwhile Canadian Initiative" text="Worthwhile Canadian Initiative" xmlUrl="http://worthwhile.typepad.com/worthwhile_canadian_initi/atom.xml"/>
         
@@ -256,7 +256,7 @@
         
         
         
-            <outline type="rss" title="FlowingData" text="FlowingData" xmlUrl="http://feed.flowingdata.com/flowingdata"/>
+            <!-- <outline type="rss" title="FlowingData" text="FlowingData" xmlUrl="http://feed.flowingdata.com/flowingdata"/> -->
         
         
         
@@ -367,7 +367,7 @@
         
         
         
-            <outline type="rss" title="Felix Salmon" text="Felix Salmon" xmlUrl="http://blogs.reuters.com/felix-salmon/feed/"/>
+            <!-- <outline type="rss" title="Felix Salmon" text="Felix Salmon" xmlUrl="http://blogs.reuters.com/felix-salmon/feed/"/> -->
         
         
         
