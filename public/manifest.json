@@ -1,0 +1,9 @@
+{
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "name": "rss",
+  "short_name": "rss",
+  "display": "minimal-ui",
+  "start_url": "/",
+  "icons": []
+}

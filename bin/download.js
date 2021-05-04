@@ -11,7 +11,6 @@ var feeds = xml2json.toJson(str, {object: true}).opml.body.outline
   .map(d => d.outline || d)
 feeds = _.flatten(feeds)
 
-
 // Check for duplicate titles
 jp.nestBy(feeds, d => d.title).forEach(d => {
   if (d.length > 1) console.log(d)
@@ -19,7 +18,6 @@ jp.nestBy(feeds, d => d.title).forEach(d => {
 
 // Delete old downloads 
 execSync('rm cache/*.xml')
-
 
 feeds.forEach(feed => {
   request({url: feed.xmlUrl}, (err, res, body) => {
