@@ -3,3 +3,4 @@ node_modules
 yarn-error.log
 bin/cache
 bin/items.json
+public/items.json

@@ -22,6 +22,6 @@ async function main(){
     }
   }
 
-  io.writeDataSync(__dirname + '/items.json', items)
+  io.writeDataSync(__dirname + '/../public/items.json', items)
 }
 main()

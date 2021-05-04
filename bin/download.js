@@ -1,6 +1,8 @@
 var {fs, d3, jp, _, request} = require('scrape-stl')
 var xml2json = require('xml2json')
 var sanitize = require('sanitize-filename')
+var {execSync} = require('child_process')
+
 
 var feeds = []
 
@@ -14,6 +16,10 @@ feeds = _.flatten(feeds)
 jp.nestBy(feeds, d => d.title).forEach(d => {
   if (d.length > 1) console.log(d)
 })
+
+// Delete old downloads 
+execSync('rm cache/*.xml')
+
 
 feeds.forEach(feed => {
   request({url: feed.xmlUrl}, (err, res, body) => {
