@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "scrape-stl": "^1.0.3",
+    "xml2json": "^0.12.0"
+  }
+}
