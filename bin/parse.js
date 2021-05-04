@@ -14,7 +14,7 @@ async function main(){
       console.log(feed.items.length, feedName)
       feed.items.forEach(d => {
         d.feedName = feedName
-        if ('' + d.isoData > '2021') items.push(d)
+        if (d.isoDate > '2021') items.push(d)
       })
     } catch (e){
       e = ('' + e).split('\n')[0]
