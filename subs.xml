@@ -229,9 +229,15 @@
         
             <outline type="rss" title="A Softer World" text="A Softer World" xmlUrl="http://www.rsspect.com/rss/asw.xml"/>
         
+        
+        
             <outline type="rss" title="Better Book Titles" text="Better Book Titles" xmlUrl="http://betterbooktitles.com/rss"/>
         
+        
+        
             <outline type="rss" title="pictures for sad children" text="pictures for sad children" xmlUrl="http://www.rsspect.com/rss/pfsc.xml"/>
+        
+        
         
             <outline type="rss" title="QC RSS" text="QC RSS" xmlUrl="http://www.questionablecontent.net/QCRSS.xml"/>
         

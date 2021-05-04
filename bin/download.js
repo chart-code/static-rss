@@ -1,8 +1,22 @@
-var {fs, cheerio, d3} = require('scrape-stl')
+var {fs, d3, _, request} = require('scrape-stl')
 var xml2json = require('xml2json')
 
+var feeds = []
 
-var subsStr = fs.readFileSync(__dirname + '/../subs.xml', 'utf8')
-var subs = JSON.parse(xml2json.toJson(subsStr))
+var str = fs.readFileSync(__dirname + '/../subs.xml', 'utf8')
+var feeds = xml2json.toJson(str, {object: true}).opml.body.outline
+  .map(d => d.outline || d)
 
-console.log(subs.opml.body)
+feeds = _.flatten(feeds)
+
+
+feeds.forEach(feed => {
+  console.log(feed)
+  request({url: feed.xmlUrl}, (err, res, body) => {
+    var dateStr = (new Date()).toISOString()
+    console.log('new download', dateStr)
+    fs.writeFileSync(`${rawdir}/${dateStr}.json`, body)
+
+    merge()
+  })
+})
