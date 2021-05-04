@@ -6,6 +6,6 @@
     "xml2json": "^0.12.0"
   },
   "scripts": {
-    "pub": "cd .. && rsync -a --omit-dir-times --no-perms --exclude node_modules --exclude .git --exclude bin/cache/*.xml static-rss/ demo@roadtolarissa.com:static-rss/"
+    "pub": "cd .. && rsync -a --omit-dir-times --no-perms --exclude node_modules --exclude .git --exclude public/items.json --exclude bin/cache/*.xml static-rss/ demo@roadtolarissa.com:static-rss/"
   }
 }
