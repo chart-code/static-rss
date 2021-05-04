@@ -1,6 +1,6 @@
 console.clear()
 
-d3.loadData('items.json', (err, res) => {
+d3.loadData(window.datapath + 'items.json', (err, res) => {
   window.items = _.sortBy(res[0], d => d.isoDate).reverse()
 
   var byDate = d3.nestBy(items, d => d.isoDate.split('T')[0])
@@ -34,7 +34,11 @@ d3.loadData('items.json', (err, res) => {
         .append('p').st({marginTop: 0})
         .append('a').text(hrefPP).at({href}).st({opacity: .4})
 
-      sel.append('div.raw-html').html(d['content:encoded'] || d.content)
+
+      var contentStr = (d['content:encoded'] || d.content)
+        .replaceAll('width: ', 'x-width: ')
+        .replaceAll('height: ', 'x-height: ')
+      sel.append('div.raw-html').html(contentStr)
     })
 
   postSel.append('div.content')
