@@ -3,6 +3,13 @@
     <body>
         
         <outline type="rss" title="xkcd" text="xkcd" xmlUrl="https://xkcd.com/atom.xml"/>
+        <outline type="rss" title="rachelbythebay" text="rachelbythebay" xmlUrl="https://rachelbythebay.com/w/atom.xml"/>
+        <outline type="rss" title="Julia Evens" text="Julia Evens" xmlUrl="https://jvns.ca/atom.xml"/>
+
+        
+        <outline type="rss" title="smbc" text="smbc" xmlUrl="https://www.smbc-comics.com/comic/rss"/>
+        <outline type="rss" title="AI Explorables" text="AI Explorables" xmlUrl="https://pair.withgoogle.com/explorables/rss.xml"/>
+
         <outline type="rss" title="pbfcomics" text="pbfcomics" xmlUrl="https://pbfcomics.com/feed/"/>
         <outline type="rss" title="Dinosaur Comics" text="Dinosaur Comics" xmlUrl="https://qwantz.com/rssfeed.php"/>
         
@@ -260,7 +267,7 @@
         
         
         
-            <outline type="rss" title="QC RSS" text="QC RSS" xmlUrl="http://www.questionablecontent.net/QCRSS.xml"/>
+            <!-- <outline type="rss" title="QC RSS" text="QC RSS" xmlUrl="http://www.questionablecontent.net/QCRSS.xml"/> -->
         
         
         

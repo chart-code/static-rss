@@ -23,6 +23,20 @@ async function main(){
     }
   }
 
+  items = items
+    .filter(d => {
+      if (!d['content:encoded']) return true
+
+      var paywallStr = 'Read more\n                            </a>'
+      var isPaywall = d['content:encoded'].includes(paywallStr)
+      if (isPaywall) console.log(d.href)
+      return !isPaywall
+    })
+
+    
+
+                    
+
   io.writeDataSync(__dirname + '/../public/generated/items-all.json', items)
   io.writeDataSync(__dirname + '/../public/generated/items.json', items
     .filter(d => d.isoDate > '2021'))

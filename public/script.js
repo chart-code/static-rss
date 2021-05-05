@@ -12,7 +12,10 @@ d3.loadData(
     if (!d.favicon.icons) return d.img = {}
 
     d.img = _.sortBy(d.favicon.icons, d => {
-      if (d.src.includes('apple')) return 100000
+      if (d.src.includes('svg')) return 10000
+      if (d.src.includes('apple')) return 1000
+      if (d.sizes) return +d.sizes.split('x')[0]
+
     }).reverse()[0] || {}
 
     // d.img = d.favicon.icons.filter(d => d.src.includes('png')).slice(-1)[0] || d.favicon.icons[0] || {}
@@ -27,12 +30,14 @@ d3.loadData(
     .appendMany('div.date', d3.nestBy(items, d => d.isoDate.split('T')[0]))
   dateSel.append('h3').text(d => d.key)
 
-  var postSel = dateSel.appendMany('div.item', d => d)//.call(d3.attachTooltip)
+  var postSel = dateSel.appendMany('div.item', d => d)
+    .call(d3.attachTooltip)
     .classed('read', d => d.read)
 
   var titleSel = postSel.append('div.post-title')
     .on('click', function(d){
       d.active = !d.active
+      // window.str = d['content:encoded'].slice(-100)
 
       var sel = d3.select(this.parentNode)
         .classed('read', 1)
@@ -58,11 +63,15 @@ d3.loadData(
         .replaceAll('height: ', 'x-height: ')
       sel.append('div.raw-html').html(contentStr)
 
+      var paywallStr = "Read more\n                            </a>\n                        </p>\n"
+      paywallStr = 'Read more'
+      console.log(!contentStr.includes(paywallStr))
+
       window.localStorage.setItem(d.href, new Date().toISOString())
     })
 
   titleSel.append('img.icon')
-    .at({src: d => name2icons[d.feedName].src, width: 16})
+    .at({src: d => name2icons[d.feedName]?.src, width: 20})
 
   titleSel.append('span').text(d => d.title)
 
