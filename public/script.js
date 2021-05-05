@@ -73,7 +73,7 @@ d3.loadData(
   titleSel.append('img.icon')
     .at({src: d => name2icons[d.feedName]?.src, width: 20})
 
-  titleSel.append('span').text(d => d.title)
+  titleSel.append('span').html(d => d.title)
 
 
   postSel.append('div.content')
