@@ -31,11 +31,7 @@ async function main(){
       var isPaywall = d['content:encoded'].includes(paywallStr)
       if (isPaywall) console.log(d.href)
       return !isPaywall
-    })
-
-    
-
-                    
+    })     
 
   io.writeDataSync(__dirname + '/../public/generated/items-all.json', items)
   io.writeDataSync(__dirname + '/../public/generated/items.json', items

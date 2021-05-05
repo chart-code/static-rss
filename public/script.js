@@ -46,7 +46,7 @@ d3.loadData(
 
       if (!d.active){
         var node = this.parentNode
-        if (node.parentNode.getBoundingClientRect().top < 0) node.scrollIntoView(true)
+        if (node.getBoundingClientRect().top < 0) node.scrollIntoView(true)
         return sel.html('')
       }
 
