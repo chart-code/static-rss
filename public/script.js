@@ -1,10 +1,25 @@
 console.clear()
 
-d3.loadData(window.datapath + 'items.json', (err, res) => {
+d3.loadData(
+  window.datapath + 'generated/items.json', 
+  window.datapath + 'generated/favicons.json', 
+  (err, res) => {
+
   window.items = _.sortBy(res[0], d => d.isoDate).reverse()
 
+  window.favicons = res[1]
+  favicons.forEach(d => {
+    if (!d.favicon.icons) return d.img = {}
+
+    d.img = _.sortBy(d.favicon.icons, d => {
+      if (d.src.includes('apple')) return 100000
+    }).reverse()[0] || {}
+
+    // d.img = d.favicon.icons.filter(d => d.src.includes('png')).slice(-1)[0] || d.favicon.icons[0] || {}
+  })
+  var name2icons = Object.fromEntries(favicons.map(d => [d.feedName, d.img]))
+
   items.forEach(d => {
-    d.href = d.guid && d.guid.includes && d.guid.includes('//') ? d.guid : d.link
     d.read = window.localStorage.getItem(d.href)
   })
 
@@ -15,7 +30,7 @@ d3.loadData(window.datapath + 'items.json', (err, res) => {
   var postSel = dateSel.appendMany('div.item', d => d)//.call(d3.attachTooltip)
     .classed('read', d => d.read)
 
-  postSel.append('div.post-title').text(d => d.title)
+  var titleSel = postSel.append('div.post-title')
     .on('click', function(d){
       d.active = !d.active
 
@@ -45,6 +60,12 @@ d3.loadData(window.datapath + 'items.json', (err, res) => {
 
       window.localStorage.setItem(d.href, new Date().toISOString())
     })
+
+  titleSel.append('img.icon')
+    .at({src: d => name2icons[d.feedName].src, width: 16})
+
+  titleSel.append('span').text(d => d.title)
+
 
   postSel.append('div.content')
 })

@@ -48,6 +48,22 @@ h3{
   /*outline: 1px solid #ccc;*/
 }
 
+.post-title .icon{
+  position: absolute;
+  left: 10px;
+  top: 15px;
+}
+
+.post-title .icon{
+  /*background: #fff;*/
+}
+
+.post-title span{
+  padding-left: 30px;
+  display: block;
+}
+
+
 .active .post-title, .read .post-title{
   background: #333;
 }
@@ -60,5 +76,10 @@ h3{
   max-width: 100% !important;
   height: auto !important;
 }
+
+
+
+
+
 
 

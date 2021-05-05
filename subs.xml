@@ -2,6 +2,27 @@
 <opml version="1.0">
     <body>
         
+        <outline type="rss" title="xkcd" text="xkcd" xmlUrl="https://xkcd.com/atom.xml"/>
+        <outline type="rss" title="pbfcomics" text="pbfcomics" xmlUrl="https://pbfcomics.com/feed/"/>
+        <outline type="rss" title="Dinosaur Comics" text="Dinosaur Comics" xmlUrl="https://qwantz.com/rssfeed.php"/>
+        
+        <outline type="rss" title="Google AI" text="Google AI" xmlUrl="https://www.blogger.com/feeds/8474926331452026626/posts/default"/>
+
+        <outline type="rss" title="warzel" text="warzel" xmlUrl="https://warzel.substack.com/feed"/>
+        <outline type="rss" title="jenniferdaniel" text="jenniferdaniel" xmlUrl="https://jenniferdaniel.substack.com/feed"/>
+        <outline type="rss" title="astralcodexten" text="astralcodexten" xmlUrl="https://astralcodexten.substack.com/feed"/>
+        <outline type="rss" title="janellecshane" text="janellecshane" xmlUrl="https://janellecshane.substack.com/feed"/>
+        <outline type="rss" title="emilyoster" text="emilyoster" xmlUrl="https://emilyoster.substack.com/feed"/>
+
+        <outline type="rss" title="theinsight" text="theinsight" xmlUrl="http://www.theinsight.org/feed/"/>
+        <outline type="rss" title="todayintabs" text="todayintabs" xmlUrl="http://www.todayintabs.com/feed/"/>
+        <outline type="rss" title="slowboring" text="slowboring" xmlUrl="http://www.slowboring.com/feed/"/>
+        <outline type="rss" title="deeplearningweekly" text="deeplearningweekly" xmlUrl="http://www.deeplearningweekly.com/feed/"/>
+        <outline type="rss" title="trashberg" text="trashberg" xmlUrl="http://www.trashberg.com/feed/"/>
+
+        <outline type="rss" title="verysmallarray" text="verysmallarray" xmlUrl="http://www.verysmallarray.com/feed/"/>
+        <outline type="rss" title="Cat and Girl" text="Cat and Girl" xmlUrl="https://catandgirl.com/feed/"/>
+
         <outline type="rss" title="137" text="137" xmlUrl="http://mathani.tumblr.com/rss"/>
         
         <outline type="rss" title="1ucasvb&#39;s lab" text="1ucasvb&#39;s lab" xmlUrl="http://1ucasvb.tumblr.com/rss"/>

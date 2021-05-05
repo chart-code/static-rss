@@ -14,7 +14,8 @@ async function main(){
       console.log(feed.items.length, feedName)
       feed.items.forEach(d => {
         d.feedName = feedName
-        if (d.isoDate > '2021') items.push(d)
+        d.href = d.guid && d.guid.includes && d.guid.includes('//') ? d.guid : d.link
+        items.push(d)
       })
     } catch (e){
       e = ('' + e).split('\n')[0]
@@ -22,6 +23,8 @@ async function main(){
     }
   }
 
-  io.writeDataSync(__dirname + '/../public/items.json', items)
+  io.writeDataSync(__dirname + '/../public/generated/items-all.json', items)
+  io.writeDataSync(__dirname + '/../public/generated/items.json', items
+    .filter(d => d.isoDate > '2021'))
 }
 main()

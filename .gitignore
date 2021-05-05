@@ -4,3 +4,5 @@ yarn-error.log
 bin/cache
 bin/items.json
 public/items.json
+public/generated/items.json
+public/generated/items-all.json
