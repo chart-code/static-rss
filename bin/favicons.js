@@ -1,7 +1,6 @@
 var {io, jp} = require('scrape-stl')
 var fetch = require('node-fetch')
 
-
 async function main(){
   // favicon api frequently errors; only look up new domains
   var outpath = __dirname + '/../public/generated/favicons.json'
@@ -21,11 +20,8 @@ async function main(){
       d.favicon = m
     } else {
       try {
-        console.log(d.feedName)
         d.favicon = await (await fetch('http://favicongrabber.com/api/grab/' + d.domain)).json()
-      } catch (e){
-        console.log(e)
-      }
+      } catch (e){ console.log(e) }
       await sleep(3000)
     }
   }
@@ -34,7 +30,6 @@ async function main(){
 
 }
 main()
-
 
 function getHostnameFromRegex(url){
   var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i)

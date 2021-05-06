@@ -47,6 +47,9 @@ h3{
   border: 1px solid #555;
   border-bottom: 0px;
   position: relative;
+  border-left: 0px solid #000 !important;
+  border-right: 0px solid #000 !important;
+
 }
 .item:last-child{
   border-bottom: 1px solid #555;

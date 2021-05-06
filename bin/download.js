@@ -3,9 +3,6 @@ var xml2json = require('xml2json')
 var sanitize = require('sanitize-filename')
 var {execSync} = require('child_process')
 
-
-var feeds = []
-
 var str = fs.readFileSync(__dirname + '/../subs.xml', 'utf8')
 var feeds = xml2json.toJson(str, {object: true}).opml.body.outline
   .map(d => d.outline || d)
