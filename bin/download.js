@@ -18,6 +18,7 @@ jp.nestBy(feeds, d => d.title)
 feeds.forEach(feed => {
   request({url: feed.xmlUrl}, (err, res, body) => {
     if (!body) return
+    console.log(feed.title)
     fs.writeFileSync(`${__dirname}/cache/${sanitize(feed.title)}.xml`, body)
   })
 })
