@@ -95,7 +95,7 @@
         
         <outline type="rss" title="blog maverick" text="blog maverick" xmlUrl="http://blogmaverick.com/feed/"/>
         
-        <outline type="rss" title="Blog — vis4.net" text="Blog — vis4.net" xmlUrl="http://vis4.net/feed/"/>
+        <outline type="rss" title="Blog — vis4.net" text="Blog — vis4.net" xmlUrl="http://vis4.net/blog/atom.xml"/>
         
         <outline type="rss" title="Cap&#39;n Transit Rides Again" text="Cap&#39;n Transit Rides Again" xmlUrl="https://capntransit.blogspot.com/feeds/posts/default?alt=rss"/>
         

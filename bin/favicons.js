@@ -3,6 +3,7 @@ var fetch = require('node-fetch')
 
 
 async function main(){
+  // favicon api frequently errors; only look up new domains
   var outpath = __dirname + '/../public/generated/favicons.json'
   var favicons  = io.readDataSync(outpath)
   var name2favicon = Object.fromEntries(favicons.map(d => [d.feedName, d.favicon]))
