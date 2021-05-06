@@ -1,7 +1,12 @@
 var {io, jp} = require('scrape-stl')
 var fetch = require('node-fetch')
 
+
 async function main(){
+  var outpath = __dirname + '/../public/generated/favicons.json'
+  var favicons  = io.readDataSync(outpath)
+  var name2favicon = Object.fromEntries(favicons.map(d => [d.feedName, d.favicon]))
+
   var items = io.readDataSync(__dirname + '/../public/generated/items.json')
 
   var domains = jp.nestBy(items, d => d.feedName)
@@ -9,12 +14,22 @@ async function main(){
 
   for (d of domains){
     d.domain = getHostnameFromRegex(d.href)
-    d.favicon = await (await fetch('http://favicongrabber.com/api/grab/' + d.domain)).json()
-    console.log(d.feedName)
-    await sleep(1000)
+
+    var m = name2favicon[d.feedName]
+    if (m && m.icons){
+      d.favicon = m
+    } else {
+      try {
+        console.log(d.feedName)
+        d.favicon = await (await fetch('http://favicongrabber.com/api/grab/' + d.domain)).json()
+      } catch (e){
+        console.log(e)
+      }
+      await sleep(3000)
+    }
   }
 
-  io.writeDataSync(__dirname + '/../public/generated/favicons.json', domains)
+  io.writeDataSync(outpath, domains)
 
 }
 main()

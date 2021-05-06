@@ -223,7 +223,7 @@
         
         <outline type="rss" title="Science Fiction Interfaces" text="Science Fiction Interfaces" xmlUrl="http://sciencefictioninterfaces.tumblr.com/rss"/>
         
-        <outline type="rss" title="Sebastian Ruder" text="Sebastian Ruder" xmlUrl="http://ruder.io/rss/index.rss"/>
+        <!-- <outline type="rss" title="Sebastian Ruder" text="Sebastian Ruder" xmlUrl="http://ruder.io/rss/index.rss"/> -->
         
         <outline type="rss" title="Second Ave. Sagas" text="Second Ave. Sagas" xmlUrl="http://secondavenuesagas.com/feed/"/>
         

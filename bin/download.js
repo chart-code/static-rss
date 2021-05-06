@@ -17,7 +17,7 @@ jp.nestBy(feeds, d => d.title).forEach(d => {
 })
 
 // Delete old downloads 
-execSync('rm cache/*.xml')
+execSync(`cd ${__dirname} && rm cache/*.xml`)
 
 feeds.forEach(feed => {
   request({url: feed.xmlUrl}, (err, res, body) => {

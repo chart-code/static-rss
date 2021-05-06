@@ -9,7 +9,7 @@ d3.loadData(
 
   window.favicons = res[1]
   favicons.forEach(d => {
-    if (!d.favicon.icons) return d.img = {}
+    if (!d.favicon || !d.favicon.icons) return d.img = {}
 
     d.img = _.sortBy(d.favicon.icons, d => {
       if (d.src.includes('svg')) return 10000
@@ -18,7 +18,7 @@ d3.loadData(
 
     }).reverse()[0] || {}
 
-    // d.img = d.favicon.icons.filter(d => d.src.includes('png')).slice(-1)[0] || d.favicon.icons[0] || {}
+    d.img = d.favicon.icons.filter(d => d.src.includes('png')).slice(-1)[0] || d.favicon.icons[0] || {}
   })
   var name2icons = Object.fromEntries(favicons.map(d => [d.feedName, d.img]))
 
