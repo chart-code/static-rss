@@ -24,6 +24,8 @@ async function main(){
       } catch (e){ console.log(e) }
       await sleep(3000)
     }
+
+    if (d.domain == 'gettingsimple.com') d.favicon = {}
   }
 
   io.writeDataSync(outpath, domains)

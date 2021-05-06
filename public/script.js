@@ -1,5 +1,5 @@
 d3.loadData(
-  window.datapath + 'generated/items.json', 
+  window.datapath + 'generated/items.json?' + Math.random(), 
   window.datapath + 'generated/favicons.json', 
   (err, res) => {
 
@@ -19,7 +19,7 @@ d3.loadData(
   })
   var name2icons = Object.fromEntries(favicons.map(d => [d.feedName, d.img]))
 
-
+  
   var dateSel = d3.select('.items').html('')
     .appendMany('div.date', d3.nestBy(items, d => d.isoDate.split('T')[0]))
   dateSel.append('h3').text(d => d.key)
@@ -47,7 +47,7 @@ d3.loadData(
         .append('p').st({marginTop: 5})
         .append('a').text(hrefPP).at({href: d.href, target: '_blank'}).st({opacity: .4})
 
-      var contentStr = (d['content:encoded'] || d.content)
+      var contentStr = (d['content:encoded'] || d.content || d.summary || '')
         .replaceAll('width: ', 'x-width: ')
         .replaceAll('height: ', 'x-height: ')
       sel.append('div.raw-html').html(contentStr)
@@ -57,6 +57,7 @@ d3.loadData(
 
   titleSel.append('img.icon')
     .at({src: d => name2icons[d.feedName]?.src, width: 20})
+    .on('err', function(d){ d3.select(this).st({opacity: 0})})
   titleSel.append('span').html(d => d.title)
 
   postSel.append('div.content')
