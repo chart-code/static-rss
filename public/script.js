@@ -1,5 +1,32 @@
+console.clear()
+
+window.params = (() => {
+  var url = new URL(window.location)
+  var searchParams = new URLSearchParams(url.search) 
+
+  var rv = {}
+
+  rv.get = key => {
+    return searchParams.get(key)
+  }
+
+  rv.set = (key, value) => {
+    searchParams.set(key, value)
+
+    url.search = searchParams.toString()
+    history.replaceState(null, '', url)
+  }
+
+  return rv
+})()
+
+var itemURL = 'items-today'
+if (params.get('date')) itemURL = 'dates/' + params.get('date')
+if (params.get('feed')) itemURL = 'feeds/' + params.get('feed')
+  
+
 d3.loadData(
-  window.datapath + 'generated/items.json?' + Math.random(), 
+  window.datapath + `generated/${itemURL}.json?` + Math.random(), 
   window.datapath + 'generated/favicons.json', 
   (err, res) => {
 
@@ -19,46 +46,61 @@ d3.loadData(
   })
   var name2icons = Object.fromEntries(favicons.map(d => [d.feedName, d.img]))
 
+  // add today's and yesterday's posts
+  var itemSel = d3.select('.items').html('')
+  drawDays(items)
+
+  // add posts from the last 90 days
+  d3.loadData(
+    window.datapath + `generated/${itemURL.replace('today', 'recent')}.json`, 
+    (err, res) => drawDays(res[0], itemSel.selectAll('div.date').data().map(d => d.key)))
+
+  function drawDays(items, prevDates=[]){
+    var byDate = d3.nestBy(items, d => d.isoDate.split('T')[0])
+      .filter(d => !prevDates.includes(d.key))
+    var dateSel = itemSel.appendMany('div.date', byDate)
+
+    dateSel.append('h3').text(d => d.key)
+
+    var postSel = dateSel.appendMany('div.item', d => d)
+      .classed('read', d => window.localStorage.getItem(d.href))
+
+    var titleSel = postSel.append('div.post-title')
+      .on('click', function(d){
+        d.active = !d.active
+
+        var sel = d3.select(this.parentNode)
+          .classed('read', 1)
+          .classed('active', d.active)
+          .select('.content')
+
+        if (!d.active){
+          var node = this.parentNode
+          if (node.getBoundingClientRect().top < 0) node.scrollIntoView(true)
+          return sel.html('')
+        }
+
+        var hrefPP = d.href.split('//')[1].replace('www.', '').replace('.html', '').split('/')[0]
+        sel
+          .append('p').st({marginTop: 5})
+          .append('a').text(hrefPP).at({href: d.href, target: '_blank'}).st({opacity: .4})
+
+        var contentStr = (d['content:encoded'] || d.content || d.summary || '')
+          .replaceAll('width: ', 'x-width: ')
+          .replaceAll('height: ', 'x-height: ')
+        sel.append('div.raw-html').html(contentStr)
+
+        window.localStorage.setItem(d.href, new Date().toISOString())
+      })
+
+    titleSel.append('img.icon')
+      .at({src: d => name2icons[d.feedName]?.src, width: 20})
+      .on('err', function(d){ d3.select(this).st({opacity: 0})})
+    titleSel.append('span').html(d => d.title)
+
+    postSel.append('div.content')
+
+  }
+
   
-  var dateSel = d3.select('.items').html('')
-    .appendMany('div.date', d3.nestBy(items, d => d.isoDate.split('T')[0]))
-  dateSel.append('h3').text(d => d.key)
-
-  var postSel = dateSel.appendMany('div.item', d => d)
-    .classed('read', d => window.localStorage.getItem(d.href))
-
-  var titleSel = postSel.append('div.post-title')
-    .on('click', function(d){
-      d.active = !d.active
-
-      var sel = d3.select(this.parentNode)
-        .classed('read', 1)
-        .classed('active', d.active)
-        .select('.content')
-
-      if (!d.active){
-        var node = this.parentNode
-        if (node.getBoundingClientRect().top < 0) node.scrollIntoView(true)
-        return sel.html('')
-      }
-
-      var hrefPP = d.href.split('//')[1].replace('www.', '').replace('.html', '').split('/')[0]
-      sel
-        .append('p').st({marginTop: 5})
-        .append('a').text(hrefPP).at({href: d.href, target: '_blank'}).st({opacity: .4})
-
-      var contentStr = (d['content:encoded'] || d.content || d.summary || '')
-        .replaceAll('width: ', 'x-width: ')
-        .replaceAll('height: ', 'x-height: ')
-      sel.append('div.raw-html').html(contentStr)
-
-      window.localStorage.setItem(d.href, new Date().toISOString())
-    })
-
-  titleSel.append('img.icon')
-    .at({src: d => name2icons[d.feedName]?.src, width: 20})
-    .on('err', function(d){ d3.select(this).st({opacity: 0})})
-  titleSel.append('span').html(d => d.title)
-
-  postSel.append('div.content')
 })
