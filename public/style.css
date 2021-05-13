@@ -38,6 +38,9 @@ h3{
   padding-left: 10px;
 }
 
+#items{
+  min-height: 100vh;
+}
 
 .date{
   margin-bottom: 60px;

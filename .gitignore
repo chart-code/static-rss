@@ -6,5 +6,9 @@ bin/items.json
 public/items.json
 public/generated/items.json
 public/generated/items-all.json
+public/generated/items-recent.json
+public/generated/items-today.json
+public/generated/dates/
+public/generated/feeds/
 
 cache

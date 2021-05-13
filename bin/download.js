@@ -15,10 +15,13 @@ jp.nestBy(feeds, d => d.title)
 // delete old downloads 
 // execSync(`cd ${__dirname} && rm cache/*.xml`)
 
+var outdir = __dirname + `/cache/xml`
+if (!fs.existsSync(outdir)) fs.mkdirSync(outdir)
+
 feeds.forEach(feed => {
-  request({url: feed.xmlUrl}, (err, res, body) => {
+  request({url: feed.xmlUrl, timeout: 15*1000}, (err, res, body) => {
     if (!body) return
     console.log(feed.title)
-    fs.writeFileSync(`${__dirname}/cache/${sanitize(feed.title)}.xml`, body)
+    fs.writeFileSync(`${outdir}/${sanitize(feed.title)}.xml`, body)
   })
 })
