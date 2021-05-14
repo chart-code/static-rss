@@ -8,7 +8,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "pub": "cd .. && rsync -a --omit-dir-times --no-perms --exclude node_modules --exclude .git --exclude public/items.json --exclude bin/cache static-rss/ demo@roadtolarissa.com:static-rss/",
+    "pub": "cd .. && rsync -a --omit-dir-times --no-perms --exclude node_modules --exclude .git --exclude public/generated/ --exclude bin/cache static-rss/ demo@roadtolarissa.com:static-rss/",
     "favicons": "node bin/download.js && node bin/parse.js && node bin/favicons.js"
   }
 }

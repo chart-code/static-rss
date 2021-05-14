@@ -11,5 +11,7 @@ public/generated/items-today.json
 public/generated/dates/
 public/generated/feeds/
 
-cachepublic/generated/dates//
-public/generated/feeds//
+cache
+public/generated/dates/
+public/generated/feeds/
+
