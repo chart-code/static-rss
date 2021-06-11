@@ -23,16 +23,6 @@ items.forEach((d, i) => {
 
 var allFiles = glob.sync(cachedir + '/**/*.json')
 
-
-var feeddir = __dirname + '/../public/generated/feeds'
-if (!fs.existsSync(feeddir)) fs.mkdirSync(feeddir)
-
-jp.nestBy(allFiles, d => d.split('_.._')[0].split('/').slice(-1)[0]).forEach(files => {
-  var posts = files.map(io.readDataSync)
-  io.writeDataSync(feeddir + '/' + files.key + '.json', posts)
-})
-
-
 var datedir = __dirname + '/../public/generated/dates'
 if (!fs.existsSync(datedir)) fs.mkdirSync(datedir)
 
@@ -40,6 +30,41 @@ jp.nestBy(allFiles, d => d.split('bin/cache/days/')[1].split('/')[0]).forEach(fi
   var posts = files.map(io.readDataSync)
   io.writeDataSync(datedir + '/' + files.key + '.json', posts)
 })
+
+
+
+var feeddir = __dirname + '/../public/generated/feeds'
+if (!fs.existsSync(feeddir)) fs.mkdirSync(feeddir)
+
+var last10Posts = []
+
+jp.nestBy(allFiles, d => d.split('_.._')[0].split('/').slice(-1)[0]).forEach(files => {
+  var posts = files.map(io.readDataSync)
+  io.writeDataSync(feeddir + '/' + files.key + '.json', posts)
+
+  last10Posts = last10Posts.concat(posts.slice(-10))
+})
+
+
+last10Posts = last10Posts.filter(d => {
+
+  if (d.domain == 'westsiderag.com' && d.content?.includes('SPONSORED: ')) return false
+
+  return true
+})
+
+last10Posts = _.sortBy(last10Posts, d => d.isoDate).reverse()
+
+
+// TODO switch to archive
+io.writeDataSync(__dirname + '/../public/generated/items-recent.json', itemsFromLastNdays(90))
+io.writeDataSync(__dirname + '/../public/generated/items-today.json', itemsFromLastNdays(2), {indent: 2})
+
+function itemsFromLastNdays(n){
+  var isostr = (new Date(new Date() - 1000*60*60*24*n)).toISOString().split('T')[0]
+
+  return last10Posts.filter(d => d.isoDate >= isostr)
+}
 
 
 function getHostnameFromRegex(url){

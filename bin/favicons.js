@@ -7,7 +7,7 @@ async function main(){
   var favicons  = io.readDataSync(outpath)
   var name2favicon = Object.fromEntries(favicons.map(d => [d.feedName, d.favicon]))
 
-  var items = io.readDataSync(__dirname + '/../public/generated/items.json')
+  var items = io.readDataSync(__dirname + '/../public/generated/items-all.json')
 
   var domains = jp.nestBy(items, d => d.feedName)
     .map(d => ({feedName: d.key, href: d[0].href}))
@@ -19,6 +19,7 @@ async function main(){
     if (m && m.icons){
       d.favicon = m
     } else {
+      console.log(d)
       try {
         d.favicon = await (await fetch('http://favicongrabber.com/api/grab/' + d.domain)).json()
       } catch (e){ console.log(e) }

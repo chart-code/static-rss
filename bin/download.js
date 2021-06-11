@@ -12,9 +12,6 @@ feeds = _.flatten(feeds)
 jp.nestBy(feeds, d => d.title)
   .forEach(d => d.length > 1 && console.log(d))
 
-// delete old downloads 
-// execSync(`cd ${__dirname} && rm cache/*.xml`)
-
 var outdir = __dirname + `/cache/xml`
 if (!fs.existsSync(outdir)) fs.mkdirSync(outdir)
 
@@ -25,3 +22,5 @@ feeds.forEach(feed => {
     fs.writeFileSync(`${outdir}/${sanitize(feed.title)}.xml`, body)
   })
 })
+
+
