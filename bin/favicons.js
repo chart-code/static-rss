@@ -29,7 +29,7 @@ async function main(){
     if (d.domain == 'gettingsimple.com') d.favicon = {}
   }
 
-  io.writeDataSync(outpath, domains)
+  io.writeDataSync(outpath, domains, {indent: 2})
 
 }
 main()

@@ -2,7 +2,9 @@
 <opml version="1.0">
     <body>
         
+        
         <outline type="rss" title="xkcd" text="xkcd" xmlUrl="https://xkcd.com/atom.xml"/>
+        <outline type="rss" title="rossbarkan" text="rossbarkan" xmlUrl="https://rossbarkan.substack.com/feed"/>
         <outline type="rss" title="westsiderag" text="westsiderag" xmlUrl="https://www.westsiderag.com/feed"/>
 
         <outline type="rss" title="data-is-plural" text="data-is-plural" xmlUrl="https://www.data-is-plural.com/feed.xml"/>
