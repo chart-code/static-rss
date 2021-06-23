@@ -88,7 +88,14 @@ d3.loadData(
         var contentStr = (d['content:encoded'] || d.content || d.summary || '')
           .replaceAll('width: ', 'x-width: ')
           .replaceAll('height: ', 'x-height: ')
-        sel.append('div.raw-html').html(contentStr)
+        var rawHTMLSel = sel.append('div.raw-html').html(contentStr)
+
+        // open all links in a new tab
+        rawHTMLSel.selectAll('a').at({target: 'blank'})
+
+        if (hrefPP == 'xkcd.com'){
+          rawHTMLSel.append('p').text(rawHTMLSel.select('img').attr('title'))
+        }
 
         window.localStorage.setItem(d.href, new Date().toISOString())
       })
