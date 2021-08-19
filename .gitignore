@@ -1,5 +1,6 @@
 node_modules
 
+yarn.lock
 yarn-error.log
 bin/cache
 bin/items.json

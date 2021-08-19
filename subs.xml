@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <opml version="1.0">
     <body>
-        
-        
-        <outline type="rss" title="xkcd" text="xkcd" xmlUrl="https://xkcd.com/atom.xml"/>
+        <outline type="rss" title="Data Colada" text="Data Colada" xmlUrl="http://datacolada.org/feed"/>
+        <outline type="rss" title="Amanda Askell" text="Amanda Askell" xmlUrl="https://askell.io/feed.xml"/>
+        <outline type="rss" title="Siegeltown" text="Siegeltown" xmlUrl="https://buttondown.email/siegeltown/rss"/>
+        <outline type="rss" title="josephg" text="josephg" xmlUrl="https://josephg.com/blog/rss/"/>
+        <outline type="rss" title="foreverwars" text="foreverwars" xmlUrl="https://foreverwars.substack.com/feed"/>
+
+
         <outline type="rss" title="rossbarkan" text="rossbarkan" xmlUrl="https://rossbarkan.substack.com/feed"/>
         <outline type="rss" title="westsiderag" text="westsiderag" xmlUrl="https://www.westsiderag.com/feed"/>
 
