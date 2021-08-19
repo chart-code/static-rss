@@ -1,7 +1,7 @@
 [
   {
     "feedName": "137",
-    "href": "https://mathani.tumblr.com/post/654252097077985280",
+    "href": "https://mathani.tumblr.com/post/656235521833615360",
     "domain": "mathani.tumblr.com",
     "favicon": {
       "domain": "mathani.tumblr.com",
@@ -74,7 +74,7 @@
   },
   {
     "feedName": "Acko.net",
-    "href": "http://acko.net/blog/on-sperging-out/",
+    "href": "http://acko.net/blog/live-headless-react/",
     "domain": "acko.net",
     "favicon": {
       "domain": "acko.net",
@@ -94,7 +94,7 @@
   },
   {
     "feedName": "AI Explorables",
-    "href": "https://pair.withgoogle.com/explorables/measuring-diversity/",
+    "href": "https://pair.withgoogle.com/explorables/fill-in-the-blank/",
     "domain": "pair.withgoogle.com",
     "favicon": {
       "domain": "pair.withgoogle.com",
@@ -138,7 +138,7 @@
   },
   {
     "feedName": "Alex Irpan",
-    "href": "http://www.alexirpan.com/2021/05/23/world-can-change.html",
+    "href": "http://www.alexirpan.com/2021/08/18/six-years.html",
     "domain": "www.alexirpan.com",
     "favicon": {
       "domain": "www.alexirpan.com",
@@ -173,6 +173,111 @@
     }
   },
   {
+    "feedName": "Amanda Askell",
+    "href": "https://askell.io/posts/2021/03/self-serving-utilitarian-arguments",
+    "domain": "askell.io",
+    "favicon": {
+      "domain": "askell.io",
+      "icons": [
+        {
+          "sizes": "32x32",
+          "src": "https://askell.io/images/favicon-32x32.png",
+          "type": "image/png"
+        },
+        {
+          "sizes": "192x192",
+          "src": "https://askell.io/images/android-chrome-192x192.png",
+          "type": "image/png"
+        },
+        {
+          "sizes": "96x96",
+          "src": "https://askell.io/images/favicon-96x96.png",
+          "type": "image/png"
+        },
+        {
+          "sizes": "16x16",
+          "src": "https://askell.io/images/favicon-16x16.png",
+          "type": "image/png"
+        },
+        {
+          "src": "https://askell.io/images/favicon.ico"
+        },
+        {
+          "sizes": "57x57",
+          "src": "https://askell.io/images/apple-touch-icon-57x57.png"
+        },
+        {
+          "sizes": "60x60",
+          "src": "https://askell.io/images/apple-touch-icon-60x60.png"
+        },
+        {
+          "sizes": "72x72",
+          "src": "https://askell.io/images/apple-touch-icon-72x72.png"
+        },
+        {
+          "sizes": "76x76",
+          "src": "https://askell.io/images/apple-touch-icon-76x76.png"
+        },
+        {
+          "sizes": "114x114",
+          "src": "https://askell.io/images/apple-touch-icon-114x114.png"
+        },
+        {
+          "sizes": "120x120",
+          "src": "https://askell.io/images/apple-touch-icon-120x120.png"
+        },
+        {
+          "sizes": "144x144",
+          "src": "https://askell.io/images/apple-touch-icon-144x144.png"
+        },
+        {
+          "sizes": "152x152",
+          "src": "https://askell.io/images/apple-touch-icon-152x152.png"
+        },
+        {
+          "sizes": "180x180",
+          "src": "https://askell.io/images/apple-touch-icon-180x180.png"
+        },
+        {
+          "src": "https://askell.io/images/safari-pinned-tab.svg"
+        },
+        {
+          "src": "https://askell.io/android-icon-36x36.png",
+          "sizes": "36x36",
+          "type": "image/png"
+        },
+        {
+          "src": "https://askell.io/android-icon-48x48.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        },
+        {
+          "src": "https://askell.io/android-icon-72x72.png",
+          "sizes": "72x72",
+          "type": "image/png"
+        },
+        {
+          "src": "https://askell.io/android-icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        },
+        {
+          "src": "https://askell.io/android-icon-144x144.png",
+          "sizes": "144x144",
+          "type": "image/png"
+        },
+        {
+          "src": "https://askell.io/android-icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "https://askell.io/images/mstile-144x144.png"
+        }
+      ]
+    }
+  },
+  {
     "feedName": "Amelia McNamara",
     "href": "https://www.amelia.mn/blog/misc/2020/04/16/presentations.html",
     "domain": "www.amelia.mn",
@@ -187,7 +292,7 @@
   },
   {
     "feedName": "Andrej Karpathy blog",
-    "href": "http://karpathy.github.io/2021/03/27/forward-pass/",
+    "href": "http://karpathy.github.io/2021/06/21/blockchain/",
     "domain": "karpathy.github.io",
     "favicon": {
       "domain": "karpathy.github.io",
@@ -196,7 +301,7 @@
   },
   {
     "feedName": "astralcodexten",
-    "href": "https://astralcodexten.substack.com/p/vote-in-the-book-review-contest",
+    "href": "https://astralcodexten.substack.com/p/links-for-august",
     "domain": "astralcodexten.substack.com",
     "favicon": {
       "domain": "astralcodexten.substack.com",
@@ -304,7 +409,7 @@
   },
   {
     "feedName": "Benedict Evans",
-    "href": "https://kill-the-newsletter.com/alternates/ep4439maai7tt7dy.html",
+    "href": "https://kill-the-newsletter.com/alternates/oe8769e4f1su5cpk.html",
     "domain": "kill-the-newsletter.com",
     "favicon": {
       "domain": "kill-the-newsletter.com",
@@ -345,7 +450,7 @@
   },
   {
     "feedName": "BLDGBLOG",
-    "href": "https://www.bldgblog.com/?p=36947",
+    "href": "https://www.bldgblog.com/?p=37150",
     "domain": "www.bldgblog.com",
     "favicon": {
       "domain": "www.bldgblog.com",
@@ -373,7 +478,7 @@
   },
   {
     "feedName": "Blobs in Games",
-    "href": "https://simblob.blogspot.com/2021/05/rewriting-my-grid-parts-page.html",
+    "href": "https://simblob.blogspot.com/2021/06/highlighting-diagrams-and-text-together.html",
     "domain": "simblob.blogspot.com",
     "favicon": {
       "domain": "simblob.blogspot.com",
@@ -537,7 +642,7 @@
   },
   {
     "feedName": "Cap'n Transit Rides Again",
-    "href": "https://capntransit.blogspot.com/2021/01/dont-make-land-proxy-for-people.html",
+    "href": "https://capntransit.blogspot.com/2021/07/cities-dont-think.html",
     "domain": "capntransit.blogspot.com",
     "favicon": {
       "domain": "capntransit.blogspot.com",
@@ -560,7 +665,7 @@
   },
   {
     "feedName": "Cat and Girl",
-    "href": "https://catandgirl.com/?p=8577",
+    "href": "https://catandgirl.com/?p=8647",
     "domain": "catandgirl.com",
     "favicon": {
       "domain": "catandgirl.com",
@@ -604,7 +709,7 @@
   },
   {
     "feedName": "Charlie's Diary",
-    "href": "http://www.antipope.org/charlie/blog-static/2021/05/starship-bloopers.html",
+    "href": "http://www.antipope.org/charlie/blog-static/2021/08/on-inappropriate-reactions-to-.html",
     "domain": "www.antipope.org",
     "favicon": {
       "domain": "www.antipope.org",
@@ -618,7 +723,7 @@
   },
   {
     "feedName": "Chartable",
-    "href": "https://blog.datawrapper.de/?p=8436",
+    "href": "https://blog.datawrapper.de/?p=10762",
     "domain": "blog.datawrapper.de",
     "favicon": {
       "domain": "blog.datawrapper.de",
@@ -663,7 +768,7 @@
   },
   {
     "feedName": "ChinAI Newsletter",
-    "href": "https://chinai.substack.com/p/chinai-145-enlightenment-via-large",
+    "href": "https://chinai.substack.com/p/chinai-152-mining-chinai-news-from",
     "domain": "chinai.substack.com",
     "favicon": {
       "domain": "chinai.substack.com",
@@ -796,7 +901,7 @@
   },
   {
     "feedName": "Computational Complexity",
-    "href": "https://blog.computationalcomplexity.org/2021/06/benny-chor-1956-2021.html",
+    "href": "http://blog.computationalcomplexity.org/2021/08/what-are-most-important-46-papers-in.html",
     "domain": "blog.computationalcomplexity.org",
     "favicon": {
       "domain": "blog.computationalcomplexity.org",
@@ -810,7 +915,7 @@
   },
   {
     "feedName": "corey robin",
-    "href": "https://coreyrobin.com/?p=9826",
+    "href": "https://coreyrobin.com/?p=9833",
     "domain": "coreyrobin.com",
     "favicon": {
       "domain": "coreyrobin.com",
@@ -862,7 +967,7 @@
   },
   {
     "feedName": "Crooked Timber — Out of the crooked timber of humanity, no straight",
-    "href": "https://crookedtimber.org/?p=48864",
+    "href": "https://crookedtimber.org/?p=48991",
     "domain": "crookedtimber.org",
     "favicon": {
       "domain": "crookedtimber.org",
@@ -993,8 +1098,32 @@
     }
   },
   {
+    "feedName": "Data Colada",
+    "href": "http://datacolada.org/?p=6142",
+    "domain": "datacolada.org",
+    "favicon": {
+      "domain": "datacolada.org",
+      "icons": [
+        {
+          "sizes": "32x32",
+          "src": "http://datacolada.org/storage_strong/2018/12/cropped-Narrow-colada-logo-32x32.png"
+        },
+        {
+          "sizes": "192x192",
+          "src": "http://datacolada.org/storage_strong/2018/12/cropped-Narrow-colada-logo-192x192.png"
+        },
+        {
+          "src": "http://datacolada.org/storage_strong/2018/12/cropped-Narrow-colada-logo-180x180.png"
+        },
+        {
+          "src": "http://datacolada.org/storage_strong/2018/12/cropped-Narrow-colada-logo-270x270.png"
+        }
+      ]
+    }
+  },
+  {
     "feedName": "Data Stories",
-    "href": "https://datastori.es/164-edward-tuftes-complete-work-with-sandra-rendgen/",
+    "href": "https://datastori.es/165-accessibility-with-sarah-fossheim/",
     "domain": "datastori.es",
     "favicon": {
       "domain": "datastori.es",
@@ -1018,7 +1147,7 @@
   },
   {
     "feedName": "data-is-plural",
-    "href": "http://www.data-is-plural.com/archive/2021-06-16-edition",
+    "href": "http://www.data-is-plural.com/archive/2021-08-18-edition",
     "domain": "www.data-is-plural.com",
     "favicon": {
       "domain": "www.data-is-plural.com",
@@ -1046,7 +1175,7 @@
   },
   {
     "feedName": "deeplearningweekly",
-    "href": "https://www.deeplearningweekly.com/p/deep-learning-weekly-issue-202",
+    "href": "https://www.deeplearningweekly.com/p/deep-learning-weekly-issue-211",
     "domain": "www.deeplearningweekly.com",
     "favicon": {
       "domain": "www.deeplearningweekly.com",
@@ -1117,7 +1246,7 @@
   },
   {
     "feedName": "Dinosaur Comics",
-    "href": "http://www.qwantz.com/index.php?comic=3760",
+    "href": "http://www.qwantz.com/index.php?comic=3786",
     "domain": "www.qwantz.com",
     "favicon": {
       "domain": "www.qwantz.com",
@@ -1131,7 +1260,7 @@
   },
   {
     "feedName": "Dominion Strategy",
-    "href": "http://dominionstrategy.com/?p=17218",
+    "href": "http://dominionstrategy.com/?p=17377",
     "domain": "dominionstrategy.com",
     "favicon": {
       "domain": "dominionstrategy.com",
@@ -1176,7 +1305,7 @@
   },
   {
     "feedName": "emilyoster",
-    "href": "https://emilyoster.substack.com/p/family-planning-more-kids",
+    "href": "https://emilyoster.substack.com/p/we-still-do-not-have-the-covid-data",
     "domain": "emilyoster.substack.com",
     "favicon": {
       "domain": "emilyoster.substack.com",
@@ -1261,7 +1390,7 @@
   },
   {
     "feedName": "Family Inequality",
-    "href": "http://familyinequality.wordpress.com/?p=20012",
+    "href": "http://familyinequality.wordpress.com/?p=20131",
     "domain": "familyinequality.wordpress.com",
     "favicon": {
       "domain": "familyinequality.wordpress.com",
@@ -1289,7 +1418,7 @@
   },
   {
     "feedName": "Felix Salmon",
-    "href": "https://www.felixsalmon.com/?p=6916",
+    "href": "https://www.felixsalmon.com/?p=6933",
     "domain": "www.felixsalmon.com",
     "favicon": {
       "domain": "www.felixsalmon.com",
@@ -1303,7 +1432,7 @@
   },
   {
     "feedName": "FlowingData",
-    "href": "https://flowingdata.com/?p=64787",
+    "href": "https://flowingdata.com/?p=65337",
     "domain": "flowingdata.com",
     "favicon": {
       "domain": "flowingdata.com",
@@ -1339,6 +1468,73 @@
         },
         {
           "src": "https://flowingdata.com/wp-content/uploads/2014/10/logo-lone-square-600-5451c585_site_icon.png"
+        }
+      ]
+    }
+  },
+  {
+    "feedName": "foreverwars",
+    "href": "https://foreverwars.substack.com/p/deus-vult-said-the-cosmopolitans",
+    "domain": "foreverwars.substack.com",
+    "favicon": {
+      "domain": "foreverwars.substack.com",
+      "icons": [
+        {
+          "sizes": "16x16",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/favicon-16x16.png",
+          "type": "image/png"
+        },
+        {
+          "sizes": "32x32",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/favicon-32x32.png",
+          "type": "image/png"
+        },
+        {
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/favicon.ico"
+        },
+        {
+          "sizes": "57x57",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-57x57.png"
+        },
+        {
+          "sizes": "60x60",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-60x60.png"
+        },
+        {
+          "sizes": "72x72",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-72x72.png"
+        },
+        {
+          "sizes": "76x76",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-76x76.png"
+        },
+        {
+          "sizes": "114x114",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-114x114.png"
+        },
+        {
+          "sizes": "120x120",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-120x120.png"
+        },
+        {
+          "sizes": "144x144",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-144x144.png"
+        },
+        {
+          "sizes": "152x152",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-152x152.png"
+        },
+        {
+          "sizes": "167x167",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-167x167.png"
+        },
+        {
+          "sizes": "180x180",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-180x180.png"
+        },
+        {
+          "sizes": "1024x1024",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/248fb02d-b524-4c22-bbb7-b53564391cd0/apple-touch-icon-1024x1024.png"
         }
       ]
     }
@@ -1382,13 +1578,13 @@
   },
   {
     "feedName": "Getting Simple",
-    "href": "https://gettingsimple.com/hector-ruiz-show",
+    "href": "https://gettingsimple.com/bytes-stylegan",
     "domain": "gettingsimple.com",
     "favicon": {}
   },
   {
     "feedName": "Google AI",
-    "href": "http://ai.googleblog.com/2021/06/learning-accurate-physics-simulator-via.html",
+    "href": "http://ai.googleblog.com/2021/08/soundstream-end-to-end-neural-audio.html",
     "domain": "ai.googleblog.com",
     "favicon": {
       "domain": "ai.googleblog.com",
@@ -1505,7 +1701,7 @@
   },
   {
     "feedName": "I Love Typography",
-    "href": "https://ilovetypography.com/?p=37128",
+    "href": "https://ilovetypography.com/?p=37918",
     "domain": "ilovetypography.com",
     "favicon": {
       "domain": "ilovetypography.com",
@@ -1557,7 +1753,7 @@
   },
   {
     "feedName": "Import AI",
-    "href": "http://jack-clark.net/?p=2210",
+    "href": "http://jack-clark.net/?p=2239",
     "domain": "jack-clark.net",
     "favicon": {
       "domain": "jack-clark.net",
@@ -1692,7 +1888,7 @@
   },
   {
     "feedName": "jenniferdaniel",
-    "href": "https://jenniferdaniel.substack.com/p/i-dont-understand",
+    "href": "https://jenniferdaniel.substack.com/p/merry-emoji-calendar-day-to-you",
     "domain": "jenniferdaniel.substack.com",
     "favicon": {
       "domain": "jenniferdaniel.substack.com",
@@ -1786,8 +1982,21 @@
     }
   },
   {
+    "feedName": "josephg",
+    "href": "https://josephg.com/blog/crdts-go-brrr/",
+    "domain": "josephg.com",
+    "favicon": {
+      "domain": "josephg.com",
+      "icons": [
+        {
+          "src": "https://josephg.com/blog/favicon.ico"
+        }
+      ]
+    }
+  },
+  {
     "feedName": "journal.stuffwithstuff.com",
-    "href": "http://journal.stuffwithstuff.com/2020/04/05/crafting-crafting-interpreters",
+    "href": "http://journal.stuffwithstuff.com/2021/07/29/640-pages-in-15-months",
     "domain": "journal.stuffwithstuff.com",
     "favicon": {
       "domain": "journal.stuffwithstuff.com",
@@ -1796,7 +2005,7 @@
   },
   {
     "feedName": "Julia Evens",
-    "href": "https://jvns.ca/blog/2021/06/08/reasons-why-bugs-might-feel-impossible/",
+    "href": "https://jvns.ca/blog/2021/07/08/writing-great-examples/",
     "domain": "jvns.ca",
     "favicon": {
       "domain": "jvns.ca",
@@ -1844,7 +2053,7 @@
   },
   {
     "feedName": "Lambda the Ultimate - Programming Languages Weblog (1)",
-    "href": "http://lambda-the-ultimate.org/google-announces-logica",
+    "href": "http://lambda-the-ultimate.org/introducing-google-path-query",
     "domain": "lambda-the-ultimate.org",
     "favicon": {
       "domain": "lambda-the-ultimate.org",
@@ -1858,7 +2067,7 @@
   },
   {
     "feedName": "Language Log",
-    "href": "https://languagelog.ldc.upenn.edu/nll/?p=51265",
+    "href": "https://languagelog.ldc.upenn.edu/nll/?p=51767",
     "domain": "languagelog.ldc.upenn.edu",
     "favicon": {
       "error": "General API error."
@@ -1894,7 +2103,7 @@
   },
   {
     "feedName": "Lil’Log",
-    "href": "https://lilianweng.github.io/lil-log/2021/05/31/contrastive-representation-learning.html",
+    "href": "https://lilianweng.github.io/lil-log/2021/07/11/diffusion-models.html",
     "domain": "lilianweng.github.io",
     "favicon": {
       "domain": "lilianweng.github.io",
@@ -1912,7 +2121,7 @@
   },
   {
     "feedName": "Luke Oakden-Rayner",
-    "href": "http://lukeoakdenrayner.wordpress.com/?p=9729",
+    "href": "http://lukeoakdenrayner.wordpress.com/?p=9911",
     "domain": "lukeoakdenrayner.wordpress.com",
     "favicon": {
       "domain": "lukeoakdenrayner.wordpress.com",
@@ -1948,7 +2157,7 @@
   },
   {
     "feedName": "macwright",
-    "href": "https://macwright.com/2021/06/11/the-theme.html",
+    "href": "https://macwright.com/2021/08/01/recently.html",
     "domain": "macwright.com",
     "favicon": {
       "domain": "macwright.com",
@@ -1966,7 +2175,7 @@
   },
   {
     "feedName": "Marco Hernandez",
-    "href": "http://mhinfographics.com/?p=2234",
+    "href": "http://mhinfographics.com/?p=2385",
     "domain": "mhinfographics.com",
     "favicon": {
       "domain": "mhinfographics.com",
@@ -2010,7 +2219,7 @@
   },
   {
     "feedName": "Marginal Revolution",
-    "href": "https://marginalrevolution.com/?p=81332",
+    "href": "https://marginalrevolution.com/?p=81747",
     "domain": "marginalrevolution.com",
     "favicon": {
       "domain": "marginalrevolution.com",
@@ -2169,91 +2378,6 @@
     }
   },
   {
-    "feedName": "Matthias Nehlsen",
-    "href": "https://matthiasnehlsen.com/blog/2019/02/28/meins-intro/",
-    "domain": "matthiasnehlsen.com",
-    "favicon": {
-      "domain": "matthiasnehlsen.com",
-      "icons": [
-        {
-          "src": "https://matthiasnehlsen.com/icons/icon-48x48.png"
-        },
-        {
-          "sizes": "48x48",
-          "src": "https://matthiasnehlsen.com/icons/icon-48x48.png"
-        },
-        {
-          "sizes": "72x72",
-          "src": "https://matthiasnehlsen.com/icons/icon-72x72.png"
-        },
-        {
-          "sizes": "96x96",
-          "src": "https://matthiasnehlsen.com/icons/icon-96x96.png"
-        },
-        {
-          "sizes": "144x144",
-          "src": "https://matthiasnehlsen.com/icons/icon-144x144.png"
-        },
-        {
-          "sizes": "192x192",
-          "src": "https://matthiasnehlsen.com/icons/icon-192x192.png"
-        },
-        {
-          "sizes": "256x256",
-          "src": "https://matthiasnehlsen.com/icons/icon-256x256.png"
-        },
-        {
-          "sizes": "384x384",
-          "src": "https://matthiasnehlsen.com/icons/icon-384x384.png"
-        },
-        {
-          "sizes": "512x512",
-          "src": "https://matthiasnehlsen.com/icons/icon-512x512.png"
-        },
-        {
-          "src": "https://matthiasnehlsen.com/icons/icon-48x48.png",
-          "sizes": "48x48",
-          "type": "image/png"
-        },
-        {
-          "src": "https://matthiasnehlsen.com/icons/icon-72x72.png",
-          "sizes": "72x72",
-          "type": "image/png"
-        },
-        {
-          "src": "https://matthiasnehlsen.com/icons/icon-96x96.png",
-          "sizes": "96x96",
-          "type": "image/png"
-        },
-        {
-          "src": "https://matthiasnehlsen.com/icons/icon-144x144.png",
-          "sizes": "144x144",
-          "type": "image/png"
-        },
-        {
-          "src": "https://matthiasnehlsen.com/icons/icon-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        },
-        {
-          "src": "https://matthiasnehlsen.com/icons/icon-256x256.png",
-          "sizes": "256x256",
-          "type": "image/png"
-        },
-        {
-          "src": "https://matthiasnehlsen.com/icons/icon-384x384.png",
-          "sizes": "384x384",
-          "type": "image/png"
-        },
-        {
-          "src": "https://matthiasnehlsen.com/icons/icon-512x512.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        }
-      ]
-    }
-  },
-  {
     "feedName": "Max Hallinan",
     "href": "https://maxhallinan.com/posts/2019/11/20/how-does-callcc-work/",
     "domain": "maxhallinan.com",
@@ -2370,7 +2494,7 @@
   },
   {
     "feedName": "NPR visuals team blog",
-    "href": "http://blog.apps.npr.org/2021/02/22/summer-2021-internships.html",
+    "href": "http://blog.apps.npr.org/2021/07/12/winter-2021-internships.html",
     "domain": "blog.apps.npr.org",
     "favicon": {
       "domain": "blog.apps.npr.org",
@@ -2411,7 +2535,7 @@
   },
   {
     "feedName": "Off the convex path",
-    "href": "http://offconvex.github.io/2021/04/07/ripvanwinkle/",
+    "href": "http://offconvex.github.io/2021/07/08/imp-reg-tf/",
     "domain": "offconvex.github.io",
     "favicon": {
       "domain": "offconvex.github.io",
@@ -2447,7 +2571,7 @@
   },
   {
     "feedName": "openai",
-    "href": "https://openai.com/blog/improving-language-model-behavior/",
+    "href": "https://openai.com/blog/openai-codex/",
     "domain": "openai.com",
     "favicon": {
       "domain": "openai.com",
@@ -2485,7 +2609,7 @@
   },
   {
     "feedName": "Pedestrian Observations",
-    "href": "http://pedestrianobservations.com/?p=6290",
+    "href": "http://pedestrianobservations.com/?p=6535",
     "domain": "pedestrianobservations.com",
     "favicon": {
       "domain": "pedestrianobservations.com",
@@ -2544,7 +2668,7 @@
   },
   {
     "feedName": "ProPublica Articles and Investigations",
-    "href": "https://www.propublica.org/article/how-our-investigation-into-untested-dna-evidence-helped-solve-a-1983-murder#1074360",
+    "href": "https://www.propublica.org/article/audit-confirms-that-a-program-for-brain-damaged-kids-arbitrarily-denied-claims-and-overspent-on-perks#1105673",
     "domain": "www.propublica.org",
     "favicon": {
       "domain": "www.propublica.org",
@@ -2594,7 +2718,7 @@
   },
   {
     "feedName": "Punk Rock Operations Research",
-    "href": "http://punkrockor.com/?p=7444",
+    "href": "http://punkrockor.com/?p=7474",
     "domain": "punkrockor.com",
     "favicon": {
       "domain": "punkrockor.com",
@@ -2644,7 +2768,7 @@
   },
   {
     "feedName": "rachelbythebay",
-    "href": "https://rachelbythebay.com/w/2021/06/02/air/",
+    "href": "https://rachelbythebay.com/w/2021/08/18/infra/",
     "domain": "rachelbythebay.com",
     "favicon": {
       "domain": "rachelbythebay.com",
@@ -2745,8 +2869,8 @@
   },
   {
     "feedName": "Robin's blog",
-    "href": "https://society.robinsloan.com/archive/dreams-of-discord/",
-    "domain": "society.robinsloan.com",
+    "href": "https://www.robinsloan.com/notes/ghost-faves/",
+    "domain": "www.robinsloan.com",
     "favicon": {
       "domain": "society.robinsloan.com",
       "icons": [
@@ -2789,7 +2913,7 @@
   },
   {
     "feedName": "rossbarkan",
-    "href": "https://rossbarkan.substack.com/p/kathryn-garcia-the-dark-horse-who",
+    "href": "https://rossbarkan.substack.com/p/the-end-of-andrew-cuomo",
     "domain": "rossbarkan.substack.com",
     "favicon": {
       "domain": "rossbarkan.substack.com",
@@ -2856,15 +2980,6 @@
           "type": "image/x-icon"
         }
       ]
-    }
-  },
-  {
-    "feedName": "Roy.red",
-    "href": "http://roy.red/generating-spherical-and-hyperbolic-tilings-in-glsl-.html",
-    "domain": "roy.red",
-    "favicon": {
-      "domain": "roy.red",
-      "icons": []
     }
   },
   {
@@ -2941,7 +3056,7 @@
   },
   {
     "feedName": "Saying the Unsaid in New York",
-    "href": "http://larrylittlefield.wordpress.com/?p=6065",
+    "href": "http://larrylittlefield.wordpress.com/?p=6139",
     "domain": "larrylittlefield.wordpress.com",
     "favicon": {
       "domain": "larrylittlefield.wordpress.com",
@@ -2968,7 +3083,7 @@
   },
   {
     "feedName": "Schneier on Security",
-    "href": "https://www.schneier.com/blog/archives/2021/06/friday-squid-blogging-video-of-giant-squid-hunting-prey.html",
+    "href": "https://www.schneier.com/blog/archives/2021/08/apples-neuralhash-algorithm-has-been-reverse-engineered.html",
     "domain": "www.schneier.com",
     "favicon": {
       "domain": "www.schneier.com",
@@ -3009,8 +3124,8 @@
   },
   {
     "feedName": "Sebastian Ruder",
-    "href": "http://newsletter.ruder.io/issues/eacl-iclr-naacl-papers-round-up-research-reality-checks-ml-on-code-592784",
-    "domain": "newsletter.ruder.io",
+    "href": "https://www.getrevue.co/profile/nlp/issues/icml-round-up-open-collaboration-clip-art-internet-augmentation-new-glue-style-benchmarks-692828",
+    "domain": "www.getrevue.co",
     "favicon": {
       "domain": "newsletter.ruder.io",
       "icons": [
@@ -3028,7 +3143,7 @@
   },
   {
     "feedName": "Second Ave. Sagas",
-    "href": "https://secondavenuesagas.com/?p=17586",
+    "href": "https://secondavenuesagas.com/?p=17588",
     "domain": "secondavenuesagas.com",
     "favicon": {
       "domain": "secondavenuesagas.com",
@@ -3048,6 +3163,11 @@
       "domain": "shainer.github.io",
       "icons": []
     }
+  },
+  {
+    "feedName": "Siegeltown",
+    "href": "https://buttondown.email/siegeltown/archive/old-time-xenophobia-covid-edition/",
+    "domain": "buttondown.email"
   },
   {
     "feedName": "Signal Problems",
@@ -3191,7 +3311,7 @@
   },
   {
     "feedName": "slowboring",
-    "href": "https://www.slowboring.com/p/something-really-good-is-happening",
+    "href": "https://www.slowboring.com/p/afghan-war",
     "domain": "www.slowboring.com",
     "favicon": {
       "domain": "www.slowboring.com",
@@ -3262,7 +3382,7 @@
   },
   {
     "feedName": "smbc",
-    "href": "https://www.smbc-comics.com/comic/space-5",
+    "href": "https://www.smbc-comics.com/comic/running",
     "domain": "www.smbc-comics.com",
     "favicon": {
       "domain": "www.smbc-comics.com",
@@ -3288,7 +3408,7 @@
   },
   {
     "feedName": "Source",
-    "href": "https://source.opennews.org/articles/burnout-culture-is-everwhere/",
+    "href": "https://source.opennews.org/articles/sincerely-leaders-color-hurtful-corporate-speak/",
     "domain": "source.opennews.org",
     "favicon": {
       "domain": "source.opennews.org",
@@ -3324,7 +3444,7 @@
   },
   {
     "feedName": "Statistical Modeling, Causal Inference, and Social Science",
-    "href": "https://statmodeling.stat.columbia.edu/?p=44449",
+    "href": "https://statmodeling.stat.columbia.edu/?p=46250",
     "domain": "statmodeling.stat.columbia.edu",
     "favicon": {
       "domain": "statmodeling.stat.columbia.edu",
@@ -3379,61 +3499,11 @@
   },
   {
     "feedName": "The Berkeley Artificial Intelligence Research Blog",
-    "href": "http://bair.berkeley.edu/blog/2021/05/03/rlsp/",
+    "href": "http://bair.berkeley.edu/blog/2021/07/22/spml/",
     "domain": "bair.berkeley.edu",
     "favicon": {
       "domain": "bair.berkeley.edu",
       "icons": []
-    }
-  },
-  {
-    "feedName": "The Big Board",
-    "href": "http://nybigboard.com/?p=1456",
-    "domain": "nybigboard.com",
-    "favicon": {
-      "domain": "nybigboard.com",
-      "icons": [
-        {
-          "sizes": "16x16",
-          "src": "https://s1.wp.com/i/favicon.ico",
-          "type": "image/x-icon"
-        },
-        {
-          "sizes": "32x32",
-          "src": "https://wpcom.files.wordpress.com/2017/11/cropped-wordpress.png"
-        },
-        {
-          "sizes": "192x192",
-          "src": "https://wpcom.files.wordpress.com/2017/11/cropped-wordpress.png"
-        },
-        {
-          "sizes": "16x16",
-          "src": "https://s1.wp.com/i/favicon.ico",
-          "type": "image/x-icon"
-        },
-        {
-          "sizes": "16x16 32x32 48x48",
-          "src": "https://s1.wp.com/i/favicon.ico",
-          "type": "image/vnd.microsoft.icon"
-        },
-        {
-          "sizes": "512x512",
-          "src": "https://s1.wp.com/i/webclip.png"
-        },
-        {
-          "src": "https://wpcom.files.wordpress.com/2017/11/cropped-wordpress.png"
-        },
-        {
-          "src": "https://s1.wp.com/wp-content/themes/h4/i/fluidicon.png"
-        },
-        {
-          "src": "https://wordpress.com/favicon.ico",
-          "type": "image/x-icon"
-        },
-        {
-          "src": "https://wordpress.com/wp-content/themes/h4/tabs/images/wpcom-logo-144.png"
-        }
-      ]
     }
   },
   {
@@ -3533,7 +3603,7 @@
   },
   {
     "feedName": "The Kugelmass Episodes",
-    "href": "http://kugelmass.wordpress.com/?p=4548",
+    "href": "http://kugelmass.wordpress.com/?p=4553",
     "domain": "kugelmass.wordpress.com",
     "favicon": {
       "domain": "kugelmass.wordpress.com",
@@ -3595,7 +3665,7 @@
   },
   {
     "feedName": "The Practical Nomad",
-    "href": "https://hasbrouck.org/blog/archives/002613.html",
+    "href": "https://hasbrouck.org/blog/archives/002616.html",
     "domain": "hasbrouck.org",
     "favicon": {
       "domain": "hasbrouck.org",
@@ -3691,7 +3761,7 @@
   },
   {
     "feedName": "theinsight",
-    "href": "https://www.theinsight.org/p/bring-back-the-weekly-newspaper",
+    "href": "https://www.theinsight.org/p/its-not-subtle",
     "domain": "www.theinsight.org",
     "favicon": {
       "domain": "www.theinsight.org",
@@ -3762,7 +3832,7 @@
   },
   {
     "feedName": "Three-Toed Sloth",
-    "href": "http://bactra.org/weblog/ineq-f21.html",
+    "href": "http://bactra.org/weblog/clear-2022.html",
     "domain": "bactra.org",
     "favicon": {
       "domain": "bactra.org",
@@ -3810,7 +3880,7 @@
   },
   {
     "feedName": "todayintabs",
-    "href": "https://www.todayintabs.com/p/tomato-grustle",
+    "href": "https://www.todayintabs.com/p/season-four-finale",
     "domain": "www.todayintabs.com",
     "favicon": {
       "domain": "www.todayintabs.com",
@@ -3881,7 +3951,7 @@
   },
   {
     "feedName": "TOPLAP",
-    "href": "http://toplap.org/?p=6523",
+    "href": "https://toplap.org/?p=6550",
     "domain": "toplap.org",
     "favicon": {
       "domain": "toplap.org",
@@ -3905,7 +3975,7 @@
   },
   {
     "feedName": "trashberg",
-    "href": "https://www.trashberg.com/p/partisanship-is-tearing-wikifeet",
+    "href": "https://www.trashberg.com/p/someones-gotta-stop-giving-lena-dunham",
     "domain": "www.trashberg.com",
     "favicon": {
       "domain": "www.trashberg.com",
@@ -4003,7 +4073,7 @@
   },
   {
     "feedName": "urbababble",
-    "href": "https://buttondown.email/urbababble/archive/abolish-the-driving-test/",
+    "href": "https://buttondown.email/urbababble/archive/we-have-to-build-useful-stuff/",
     "domain": "buttondown.email",
     "favicon": {
       "domain": "buttondown.email",
@@ -4115,7 +4185,7 @@
   },
   {
     "feedName": "Visualising Data",
-    "href": "https://www.visualisingdata.com/?p=18636",
+    "href": "https://www.visualisingdata.com/?p=18588",
     "domain": "www.visualisingdata.com",
     "favicon": {
       "domain": "www.visualisingdata.com",
@@ -4132,7 +4202,7 @@
   },
   {
     "feedName": "warzel",
-    "href": "https://warzel.substack.com/p/newsrooms-dont-understand-the-internet",
+    "href": "https://warzel.substack.com/p/never-going-back-again",
     "domain": "warzel.substack.com",
     "favicon": {
       "domain": "warzel.substack.com",
@@ -4203,7 +4273,7 @@
   },
   {
     "feedName": "West Coast Stat Views (on Observational Epidemiology and more)",
-    "href": "http://observationalepidemiology.blogspot.com/2021/06/flying-cars-are-still-out-of-range.html",
+    "href": "http://observationalepidemiology.blogspot.com/2021/08/self-cons-and-lies-of-obfuscation.html",
     "domain": "observationalepidemiology.blogspot.com",
     "favicon": {
       "domain": "observationalepidemiology.blogspot.com",
@@ -4217,7 +4287,7 @@
   },
   {
     "feedName": "westsiderag",
-    "href": "https://www.westsiderag.com/?p=61909",
+    "href": "https://www.westsiderag.com/?p=62455",
     "domain": "www.westsiderag.com",
     "favicon": {
       "domain": "www.westsiderag.com",
@@ -4277,7 +4347,7 @@
   },
   {
     "feedName": "WJW",
-    "href": "http://www.walterjonwilliams.net/?p=9412",
+    "href": "http://www.walterjonwilliams.net/?p=9488",
     "domain": "www.walterjonwilliams.net",
     "favicon": {
       "domain": "www.walterjonwilliams.net",
@@ -4286,7 +4356,7 @@
   },
   {
     "feedName": "Worthwhile Canadian Initiative",
-    "href": "https://worthwhile.typepad.com/worthwhile_canadian_initi/2021/06/bitcoin-as-paygo-pension-plan-and-land.html",
+    "href": "https://worthwhile.typepad.com/worthwhile_canadian_initi/2021/07/10-things-every-canadian-public-finance-student-needs-to-know.html",
     "domain": "worthwhile.typepad.com",
     "favicon": {
       "domain": "worthwhile.typepad.com",
@@ -4300,7 +4370,7 @@
   },
   {
     "feedName": "Writing In Case",
-    "href": "https://blog.ncase.me/posts/new-explorable-covid-19-futures-explained-with-playable-simulations/",
+    "href": "https://blog.ncase.me/posts/back-to-the-future-with-rss/",
     "domain": "blog.ncase.me",
     "favicon": {
       "domain": "blog.ncase.me",
@@ -4314,7 +4384,7 @@
   },
   {
     "feedName": "xkcd",
-    "href": "https://xkcd.com/2478/",
+    "href": "https://xkcd.com/2504/",
     "domain": "xkcd.com",
     "favicon": {
       "domain": "xkcd.com",
