@@ -164,7 +164,7 @@
         
         <outline type="rss" title="Lambda the Ultimate - Programming Languages Weblog (1)" text="Lambda the Ultimate - Programming Languages Weblog (1)" xmlUrl="http://lambda-the-ultimate.org/node/feed"/>
         
-        <outline type="rss" title="Language Log" text="Language Log" xmlUrl="http://languagelog.ldc.upenn.edu/nll/?feed=rss2"/>
+        <!-- <outline type="rss" title="Language Log" text="Language Log" xmlUrl="http://languagelog.ldc.upenn.edu/nll/?feed=rss2"/> -->
         
         <outline type="rss" title="Leah Letter Archive Feed" text="Leah Letter Archive Feed" xmlUrl="http://us14.campaign-archive2.com/feed?u=7d9a179d9349586da8d1fd80f&amp;id=47c259ca85"/>
         
