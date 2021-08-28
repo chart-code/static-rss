@@ -173,6 +173,77 @@
     }
   },
   {
+    "feedName": "Alex Pareene",
+    "href": "https://theap.substack.com/p/i-was-really-tempted-to-give-this",
+    "domain": "theap.substack.com",
+    "favicon": {
+      "domain": "theap.substack.com",
+      "icons": [
+        {
+          "sizes": "16x16",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/favicon-16x16.png",
+          "type": "image/png"
+        },
+        {
+          "sizes": "32x32",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/favicon-32x32.png",
+          "type": "image/png"
+        },
+        {
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/favicon.ico"
+        },
+        {
+          "sizes": "57x57",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-57x57.png"
+        },
+        {
+          "sizes": "60x60",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-60x60.png"
+        },
+        {
+          "sizes": "72x72",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-72x72.png"
+        },
+        {
+          "sizes": "76x76",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-76x76.png"
+        },
+        {
+          "sizes": "114x114",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-114x114.png"
+        },
+        {
+          "sizes": "120x120",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-120x120.png"
+        },
+        {
+          "sizes": "144x144",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-144x144.png"
+        },
+        {
+          "sizes": "152x152",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-152x152.png"
+        },
+        {
+          "sizes": "167x167",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-167x167.png"
+        },
+        {
+          "sizes": "180x180",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-180x180.png"
+        },
+        {
+          "sizes": "1024x1024",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/74784728-4b93-4617-ae09-6848edbdac5b/apple-touch-icon-1024x1024.png"
+        },
+        {
+          "src": "https://theap.substack.com/favicon.ico",
+          "type": "image/x-icon"
+        }
+      ]
+    }
+  },
+  {
     "feedName": "Amanda Askell",
     "href": "https://askell.io/posts/2021/03/self-serving-utilitarian-arguments",
     "domain": "askell.io",
@@ -300,8 +371,21 @@
     }
   },
   {
+    "feedName": "apenwarr",
+    "href": "https://apenwarr.ca/log/20201227",
+    "domain": "apenwarr.ca",
+    "favicon": {
+      "domain": "apenwarr.ca",
+      "icons": [
+        {
+          "src": "https://apenwarr.ca/img/chicken.gif"
+        }
+      ]
+    }
+  },
+  {
     "feedName": "astralcodexten",
-    "href": "https://astralcodexten.substack.com/p/links-for-august",
+    "href": "https://astralcodexten.substack.com/p/berkeley-meetup-this-saturday",
     "domain": "astralcodexten.substack.com",
     "favicon": {
       "domain": "astralcodexten.substack.com",
@@ -409,7 +493,7 @@
   },
   {
     "feedName": "Benedict Evans",
-    "href": "https://kill-the-newsletter.com/alternates/oe8769e4f1su5cpk.html",
+    "href": "https://kill-the-newsletter.com/alternates/u5iwzmrpj3wp764f.html",
     "domain": "kill-the-newsletter.com",
     "favicon": {
       "domain": "kill-the-newsletter.com",
@@ -642,7 +726,7 @@
   },
   {
     "feedName": "Cap'n Transit Rides Again",
-    "href": "https://capntransit.blogspot.com/2021/07/cities-dont-think.html",
+    "href": "https://capntransit.blogspot.com/2021/08/the-people-who-had-no-reason-to-leave.html",
     "domain": "capntransit.blogspot.com",
     "favicon": {
       "domain": "capntransit.blogspot.com",
@@ -723,7 +807,7 @@
   },
   {
     "feedName": "Chartable",
-    "href": "https://blog.datawrapper.de/?p=10762",
+    "href": "https://blog.datawrapper.de/?p=11206",
     "domain": "blog.datawrapper.de",
     "favicon": {
       "domain": "blog.datawrapper.de",
@@ -768,7 +852,7 @@
   },
   {
     "feedName": "ChinAI Newsletter",
-    "href": "https://chinai.substack.com/p/chinai-152-mining-chinai-news-from",
+    "href": "https://chinai.substack.com/p/chinai-153-the-translators-dilemma",
     "domain": "chinai.substack.com",
     "favicon": {
       "domain": "chinai.substack.com",
@@ -901,7 +985,7 @@
   },
   {
     "feedName": "Computational Complexity",
-    "href": "http://blog.computationalcomplexity.org/2021/08/what-are-most-important-46-papers-in.html",
+    "href": "http://blog.computationalcomplexity.org/2021/08/the-long-road.html",
     "domain": "blog.computationalcomplexity.org",
     "favicon": {
       "domain": "blog.computationalcomplexity.org",
@@ -967,7 +1051,7 @@
   },
   {
     "feedName": "Crooked Timber — Out of the crooked timber of humanity, no straight",
-    "href": "https://crookedtimber.org/?p=48991",
+    "href": "https://crookedtimber.org/?p=49020",
     "domain": "crookedtimber.org",
     "favicon": {
       "domain": "crookedtimber.org",
@@ -981,7 +1065,7 @@
   },
   {
     "feedName": "Dan Luu",
-    "href": "https://danluu.com/essential-complexity/",
+    "href": "https://danluu.com/why-benchmark/",
     "domain": "danluu.com",
     "favicon": {
       "domain": "danluu.com",
@@ -1147,7 +1231,7 @@
   },
   {
     "feedName": "data-is-plural",
-    "href": "http://www.data-is-plural.com/archive/2021-08-18-edition",
+    "href": "http://www.data-is-plural.com/archive/2021-08-25-edition",
     "domain": "www.data-is-plural.com",
     "favicon": {
       "domain": "www.data-is-plural.com",
@@ -1175,7 +1259,7 @@
   },
   {
     "feedName": "deeplearningweekly",
-    "href": "https://www.deeplearningweekly.com/p/deep-learning-weekly-issue-211",
+    "href": "https://www.deeplearningweekly.com/p/deep-learning-weekly-issue-212",
     "domain": "www.deeplearningweekly.com",
     "favicon": {
       "domain": "www.deeplearningweekly.com",
@@ -1246,7 +1330,7 @@
   },
   {
     "feedName": "Dinosaur Comics",
-    "href": "http://www.qwantz.com/index.php?comic=3786",
+    "href": "http://www.qwantz.com/index.php?comic=3790",
     "domain": "www.qwantz.com",
     "favicon": {
       "domain": "www.qwantz.com",
@@ -1305,7 +1389,7 @@
   },
   {
     "feedName": "emilyoster",
-    "href": "https://emilyoster.substack.com/p/we-still-do-not-have-the-covid-data",
+    "href": "https://emilyoster.substack.com/p/gone-fishing-figuratively",
     "domain": "emilyoster.substack.com",
     "favicon": {
       "domain": "emilyoster.substack.com",
@@ -1390,7 +1474,7 @@
   },
   {
     "feedName": "Family Inequality",
-    "href": "http://familyinequality.wordpress.com/?p=20131",
+    "href": "http://familyinequality.wordpress.com/?p=20142",
     "domain": "familyinequality.wordpress.com",
     "favicon": {
       "domain": "familyinequality.wordpress.com",
@@ -1432,7 +1516,7 @@
   },
   {
     "feedName": "FlowingData",
-    "href": "https://flowingdata.com/?p=65337",
+    "href": "https://flowingdata.com/?p=65420",
     "domain": "flowingdata.com",
     "favicon": {
       "domain": "flowingdata.com",
@@ -1474,7 +1558,7 @@
   },
   {
     "feedName": "foreverwars",
-    "href": "https://foreverwars.substack.com/p/deus-vult-said-the-cosmopolitans",
+    "href": "https://foreverwars.substack.com/p/biden-wont-free-the-last-two-afghans",
     "domain": "foreverwars.substack.com",
     "favicon": {
       "domain": "foreverwars.substack.com",
@@ -1692,7 +1776,7 @@
   },
   {
     "feedName": "Hilltop Analytics",
-    "href": "http://www.hilltop-analytics.com/?p=1122",
+    "href": "http://www.hilltop-analytics.com/?p=1180",
     "domain": "www.hilltop-analytics.com",
     "favicon": {
       "domain": "www.hilltop-analytics.com",
@@ -1701,7 +1785,7 @@
   },
   {
     "feedName": "I Love Typography",
-    "href": "https://ilovetypography.com/?p=37918",
+    "href": "https://ilovetypography.com/?p=38217",
     "domain": "ilovetypography.com",
     "favicon": {
       "domain": "ilovetypography.com",
@@ -1753,7 +1837,7 @@
   },
   {
     "feedName": "Import AI",
-    "href": "http://jack-clark.net/?p=2239",
+    "href": "http://jack-clark.net/?p=2242",
     "domain": "jack-clark.net",
     "favicon": {
       "domain": "jack-clark.net",
@@ -2005,7 +2089,7 @@
   },
   {
     "feedName": "Julia Evens",
-    "href": "https://jvns.ca/blog/2021/07/08/writing-great-examples/",
+    "href": "https://jvns.ca/blog/confusing-explanations/",
     "domain": "jvns.ca",
     "favicon": {
       "domain": "jvns.ca",
@@ -2067,7 +2151,7 @@
   },
   {
     "feedName": "Language Log",
-    "href": "https://languagelog.ldc.upenn.edu/nll/?p=51767",
+    "href": "https://languagelog.ldc.upenn.edu/nll/?p=51897",
     "domain": "languagelog.ldc.upenn.edu",
     "favicon": {
       "error": "General API error."
@@ -2096,6 +2180,38 @@
         },
         {
           "src": "https://mailchimp.com/favicon.ico",
+          "type": "image/x-icon"
+        }
+      ]
+    }
+  },
+  {
+    "feedName": "LGA_A320",
+    "href": "http://homesignalblog.wordpress.com/?p=933",
+    "domain": "homesignalblog.wordpress.com"
+  },
+  {
+    "feedName": "Liam O'Connell",
+    "href": "http://liamoconnell.com/?p=699",
+    "domain": "liamoconnell.com",
+    "favicon": {
+      "domain": "liamoconnell.com",
+      "icons": [
+        {
+          "sizes": "16x16 24x24 32x32 48x48",
+          "src": "https://s1.wp.com/i/favicon.ico",
+          "type": "image/x-icon"
+        },
+        {
+          "sizes": "16x16 24x24 32x32 48x48",
+          "src": "https://s1.wp.com/i/favicon.ico",
+          "type": "image/x-icon"
+        },
+        {
+          "src": "https://s2.wp.com/i/webclip.png"
+        },
+        {
+          "src": "https://liamoconnell.com/favicon.ico",
           "type": "image/x-icon"
         }
       ]
@@ -2219,7 +2335,7 @@
   },
   {
     "feedName": "Marginal Revolution",
-    "href": "https://marginalrevolution.com/?p=81747",
+    "href": "https://marginalrevolution.com/?p=81812",
     "domain": "marginalrevolution.com",
     "favicon": {
       "domain": "marginalrevolution.com",
@@ -2268,7 +2384,7 @@
   },
   {
     "feedName": "maryrosecook",
-    "href": "https://maryrosecook.substack.com/p/a-software-maker-doesnt-need-to-define",
+    "href": "https://maryrosecook.substack.com/p/build-software-faster-august-2021",
     "domain": "maryrosecook.substack.com",
     "favicon": {
       "domain": "maryrosecook.substack.com",
@@ -2609,7 +2725,7 @@
   },
   {
     "feedName": "Pedestrian Observations",
-    "href": "http://pedestrianobservations.com/?p=6535",
+    "href": "http://pedestrianobservations.com/?p=6596",
     "domain": "pedestrianobservations.com",
     "favicon": {
       "domain": "pedestrianobservations.com",
@@ -2668,7 +2784,7 @@
   },
   {
     "feedName": "ProPublica Articles and Investigations",
-    "href": "https://www.propublica.org/article/audit-confirms-that-a-program-for-brain-damaged-kids-arbitrarily-denied-claims-and-overspent-on-perks#1105673",
+    "href": "https://www.propublica.org/article/these-afghans-won-the-visa-lottery-two-years-ago-now-theyre-stuck-in-kabul-and-out-of-luck#1115269",
     "domain": "www.propublica.org",
     "favicon": {
       "domain": "www.propublica.org",
@@ -2768,7 +2884,7 @@
   },
   {
     "feedName": "rachelbythebay",
-    "href": "https://rachelbythebay.com/w/2021/08/18/infra/",
+    "href": "https://rachelbythebay.com/w/2021/08/23/shield/",
     "domain": "rachelbythebay.com",
     "favicon": {
       "domain": "rachelbythebay.com",
@@ -2810,7 +2926,7 @@
   },
   {
     "feedName": "Ready-to-hand  Dean Eckles on people, technology & inference",
-    "href": "http://www.deaneckles.com/blog/?p=815",
+    "href": "http://www.deaneckles.com/blog/?p=835",
     "domain": "www.deaneckles.com",
     "favicon": {
       "domain": "www.deaneckles.com",
@@ -2869,7 +2985,7 @@
   },
   {
     "feedName": "Robin's blog",
-    "href": "https://www.robinsloan.com/notes/ghost-faves/",
+    "href": "https://www.robinsloan.com/notes/whomst-styles/",
     "domain": "www.robinsloan.com",
     "favicon": {
       "domain": "society.robinsloan.com",
@@ -2913,7 +3029,7 @@
   },
   {
     "feedName": "rossbarkan",
-    "href": "https://rossbarkan.substack.com/p/the-end-of-andrew-cuomo",
+    "href": "https://rossbarkan.substack.com/p/andrew-cuomo-was-not-the-master-builder",
     "domain": "rossbarkan.substack.com",
     "favicon": {
       "domain": "rossbarkan.substack.com",
@@ -3083,7 +3199,7 @@
   },
   {
     "feedName": "Schneier on Security",
-    "href": "https://www.schneier.com/blog/archives/2021/08/apples-neuralhash-algorithm-has-been-reverse-engineered.html",
+    "href": "https://www.schneier.com/blog/archives/2021/08/friday-squid-blogging-tentacle-doorknob.html",
     "domain": "www.schneier.com",
     "favicon": {
       "domain": "www.schneier.com",
@@ -3143,7 +3259,7 @@
   },
   {
     "feedName": "Second Ave. Sagas",
-    "href": "https://secondavenuesagas.com/?p=17588",
+    "href": "https://secondavenuesagas.com/?p=17592",
     "domain": "secondavenuesagas.com",
     "favicon": {
       "domain": "secondavenuesagas.com",
@@ -3166,8 +3282,53 @@
   },
   {
     "feedName": "Siegeltown",
-    "href": "https://buttondown.email/siegeltown/archive/old-time-xenophobia-covid-edition/",
-    "domain": "buttondown.email"
+    "href": "https://buttondown.email/siegeltown/archive/the-way-the-world-ends/",
+    "domain": "buttondown.email",
+    "favicon": {
+      "domain": "buttondown.email",
+      "icons": [
+        {
+          "src": "https://buttondown.email/static/images/icons/icon@72.png"
+        },
+        {
+          "src": "https://buttondown.email/static/images/icons/icon-square@144.png"
+        },
+        {
+          "src": "https://buttondown.email/images/icons/icon@48.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        },
+        {
+          "src": "https://buttondown.email/images/icons/icon@72.png",
+          "sizes": "72x72",
+          "type": "image/png"
+        },
+        {
+          "src": "https://buttondown.email/images/icons/icon@96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        },
+        {
+          "src": "https://buttondown.email/images/icons/icon@144.png",
+          "sizes": "144x144",
+          "type": "image/png"
+        },
+        {
+          "src": "https://buttondown.email/images/icons/icon@192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "https://buttondown.email/images/icons/icon@512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        },
+        {
+          "src": "https://buttondown.email/favicon.ico",
+          "type": "image/x-icon"
+        }
+      ]
+    }
   },
   {
     "feedName": "Signal Problems",
@@ -3311,7 +3472,7 @@
   },
   {
     "feedName": "slowboring",
-    "href": "https://www.slowboring.com/p/afghan-war",
+    "href": "https://www.slowboring.com/p/dcs-teacher-compensation-reform-is",
     "domain": "www.slowboring.com",
     "favicon": {
       "domain": "www.slowboring.com",
@@ -3382,7 +3543,7 @@
   },
   {
     "feedName": "smbc",
-    "href": "https://www.smbc-comics.com/comic/running",
+    "href": "https://www.smbc-comics.com/comic/double-edged",
     "domain": "www.smbc-comics.com",
     "favicon": {
       "domain": "www.smbc-comics.com",
@@ -3408,7 +3569,7 @@
   },
   {
     "feedName": "Source",
-    "href": "https://source.opennews.org/articles/sincerely-leaders-color-hurtful-corporate-speak/",
+    "href": "https://source.opennews.org/articles/sloc-how-not-ask-help-finding-applicants/",
     "domain": "source.opennews.org",
     "favicon": {
       "domain": "source.opennews.org",
@@ -3444,7 +3605,7 @@
   },
   {
     "feedName": "Statistical Modeling, Causal Inference, and Social Science",
-    "href": "https://statmodeling.stat.columbia.edu/?p=46250",
+    "href": "https://statmodeling.stat.columbia.edu/?p=46317",
     "domain": "statmodeling.stat.columbia.edu",
     "favicon": {
       "domain": "statmodeling.stat.columbia.edu",
@@ -3731,22 +3892,6 @@
     }
   },
   {
-    "feedName": "The Word of Notch",
-    "href": "https://notch.tumblr.com/post/58707926941",
-    "domain": "notch.tumblr.com",
-    "favicon": {
-      "domain": "notch.tumblr.com",
-      "icons": [
-        {
-          "src": "https://64.media.tumblr.com/avatar_dfda22355b0b_128.pnj"
-        },
-        {
-          "src": "https://64.media.tumblr.com/avatar_dfda22355b0b_128.pnj"
-        }
-      ]
-    }
-  },
-  {
     "feedName": "theaetette",
     "href": "https://theaetette.tumblr.com/post/74843447728",
     "domain": "theaetette.tumblr.com",
@@ -3760,8 +3905,79 @@
     }
   },
   {
+    "feedName": "thef5",
+    "href": "https://thef5.substack.com/p/trae-young-shooting-fouls",
+    "domain": "thef5.substack.com",
+    "favicon": {
+      "domain": "thef5.substack.com",
+      "icons": [
+        {
+          "sizes": "16x16",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/favicon-16x16.png",
+          "type": "image/png"
+        },
+        {
+          "sizes": "32x32",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/favicon-32x32.png",
+          "type": "image/png"
+        },
+        {
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/favicon.ico"
+        },
+        {
+          "sizes": "57x57",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-57x57.png"
+        },
+        {
+          "sizes": "60x60",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-60x60.png"
+        },
+        {
+          "sizes": "72x72",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-72x72.png"
+        },
+        {
+          "sizes": "76x76",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-76x76.png"
+        },
+        {
+          "sizes": "114x114",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-114x114.png"
+        },
+        {
+          "sizes": "120x120",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-120x120.png"
+        },
+        {
+          "sizes": "144x144",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-144x144.png"
+        },
+        {
+          "sizes": "152x152",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-152x152.png"
+        },
+        {
+          "sizes": "167x167",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-167x167.png"
+        },
+        {
+          "sizes": "180x180",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-180x180.png"
+        },
+        {
+          "sizes": "1024x1024",
+          "src": "https://bucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com/public/images/d028e3a3-2d25-4e7f-8654-877270ecb188/apple-touch-icon-1024x1024.png"
+        },
+        {
+          "src": "https://thef5.substack.com/favicon.ico",
+          "type": "image/x-icon"
+        }
+      ]
+    }
+  },
+  {
     "feedName": "theinsight",
-    "href": "https://www.theinsight.org/p/its-not-subtle",
+    "href": "https://www.theinsight.org/p/new-pieces-new-projects",
     "domain": "www.theinsight.org",
     "favicon": {
       "domain": "www.theinsight.org",
@@ -3951,7 +4167,7 @@
   },
   {
     "feedName": "TOPLAP",
-    "href": "https://toplap.org/?p=6550",
+    "href": "https://toplap.org/?p=6567",
     "domain": "toplap.org",
     "favicon": {
       "domain": "toplap.org",
@@ -3975,7 +4191,7 @@
   },
   {
     "feedName": "trashberg",
-    "href": "https://www.trashberg.com/p/someones-gotta-stop-giving-lena-dunham",
+    "href": "https://www.trashberg.com/p/whats-in-your-search-history-mike",
     "domain": "www.trashberg.com",
     "favicon": {
       "domain": "www.trashberg.com",
@@ -4073,7 +4289,7 @@
   },
   {
     "feedName": "urbababble",
-    "href": "https://buttondown.email/urbababble/archive/we-have-to-build-useful-stuff/",
+    "href": "https://buttondown.email/urbababble/archive/theyre-nearly-there-except-for-all-the-hard-stuff/",
     "domain": "buttondown.email",
     "favicon": {
       "domain": "buttondown.email",
@@ -4202,7 +4418,7 @@
   },
   {
     "feedName": "warzel",
-    "href": "https://warzel.substack.com/p/never-going-back-again",
+    "href": "https://warzel.substack.com/p/work-from-borg",
     "domain": "warzel.substack.com",
     "favicon": {
       "domain": "warzel.substack.com",
@@ -4273,7 +4489,7 @@
   },
   {
     "feedName": "West Coast Stat Views (on Observational Epidemiology and more)",
-    "href": "http://observationalepidemiology.blogspot.com/2021/08/self-cons-and-lies-of-obfuscation.html",
+    "href": "http://observationalepidemiology.blogspot.com/2021/08/isaacson-knows-how-to-nail-job-interview.html",
     "domain": "observationalepidemiology.blogspot.com",
     "favicon": {
       "domain": "observationalepidemiology.blogspot.com",
@@ -4287,7 +4503,7 @@
   },
   {
     "feedName": "westsiderag",
-    "href": "https://www.westsiderag.com/?p=62455",
+    "href": "https://www.westsiderag.com/?p=62543",
     "domain": "www.westsiderag.com",
     "favicon": {
       "domain": "www.westsiderag.com",
@@ -4347,7 +4563,7 @@
   },
   {
     "feedName": "WJW",
-    "href": "http://www.walterjonwilliams.net/?p=9488",
+    "href": "http://www.walterjonwilliams.net/?p=9497",
     "domain": "www.walterjonwilliams.net",
     "favicon": {
       "domain": "www.walterjonwilliams.net",
