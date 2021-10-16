@@ -82,13 +82,20 @@ d3.loadData(
 
         var hrefPP = d.href.split('//')[1].replace('www.', '').replace('.html', '').split('/')[0]
         sel
-          .append('p').st({marginTop: 5})
-          .append('a').text(hrefPP).at({href: d.href, target: '_blank'}).st({opacity: .4})
+          .append('p').st({marginTop: 5, opacity: .4})
+          .append('a').text(hrefPP).at({href: d.href, target: '_blank'})
+          .parent()
+          .append('a').text('>').at({href: '?feed=' + hrefPP}).st({marginLeft: '1em'})
+
+        var width = sel.select('p').node().offsetWidth
 
         var contentStr = (d['content:encoded'] || d.content || d.summary || '')
           .replaceAll('width: ', 'x-width: ')
           .replaceAll('height: ', 'x-height: ')
         var rawHTMLSel = sel.append('div.raw-html').html(contentStr)
+
+        // responsive youtube embed
+        rawHTMLSel.selectAll('iframe').at({width, height: width*9/16})
 
         // open all links in a new tab
         rawHTMLSel.selectAll('a').at({target: 'blank'})
@@ -100,13 +107,14 @@ d3.loadData(
         window.localStorage.setItem(d.href, new Date().toISOString())
       })
 
+    // titleSel.each(function(d){ d3.select(this).on('click').call(this, d) })
+
     titleSel.append('img.icon')
       .at({src: d => name2icons[d.feedName]?.src, width: 20})
       .on('err', function(d){ d3.select(this).st({opacity: 0})})
     titleSel.append('span').html(d => d.title)
 
     postSel.append('div.content')
-
   }
 
   

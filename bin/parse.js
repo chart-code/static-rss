@@ -41,6 +41,9 @@ async function main(){
       if (isPaywall) console.log('PAYWALL', d.href)
       return !isPaywall
     }) 
+    .filter(d => {
+      return !d['content:encoded'] || !d['content:encoded'].includes('Listen to more mind-expanding audio on')
+    })
 
   io.writeDataSync(__dirname + '/../public/generated/items-all.json', items)
 
