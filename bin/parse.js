@@ -35,7 +35,7 @@ async function main(){
     .filter(d => {
       if (!d['content:encoded']) return true
 
-      var paywallStr = 'Read more\n                            </a>'
+      var paywallStr = '              Read more'
       var isPaywall = d['content:encoded'].includes(paywallStr)
 
       if (isPaywall) console.log('PAYWALL', d.href)
