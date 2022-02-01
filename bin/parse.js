@@ -1,4 +1,5 @@
 var {fs, d3, io, jp, _, glob, request} = require('scrape-stl')
+var util = require('./util.js')
 
 var Parser = require('rss-parser')
 var parser = new Parser()
@@ -45,8 +46,7 @@ async function main(){
       return !d['content:encoded'] || !d['content:encoded'].includes('Listen to more mind-expanding audio on')
     })
 
-  io.writeDataSync(__dirname + '/../public/generated/items-all.json', items)
-
+  util.saveItems(items)
 
   // // debug large feed files
   // jp.nestBy(items, d => d.feedName).forEach(feed => {

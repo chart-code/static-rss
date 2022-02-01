@@ -1,7 +1,8 @@
 var {fs, d3, io, jp, glob, _, glob, request} = require('scrape-stl')
 var sanitize = require('sanitize-filename')
   
-var items = io.readDataSync(__dirname + '/../public/generated/items-all.json')
+var util = require('./util.js')
+var items = util.loadItems()
 
 var cachedir = __dirname + '/cache/days'
 if (!fs.existsSync(cachedir)) fs.mkdirSync(cachedir)

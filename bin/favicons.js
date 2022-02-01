@@ -7,7 +7,8 @@ async function main(){
   var favicons  = io.readDataSync(outpath)
   var name2favicon = Object.fromEntries(favicons.map(d => [d.feedName, d.favicon]))
 
-  var items = io.readDataSync(__dirname + '/../public/generated/items-all.json')
+  var util = require('./util.js')
+  var items = util.loadItems()
 
   var domains = jp.nestBy(items, d => d.feedName)
     .map(d => ({feedName: d.key, href: d[0].href}))
