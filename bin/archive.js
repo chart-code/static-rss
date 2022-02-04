@@ -1,12 +1,13 @@
 var {fs, d3, io, jp, glob, _, glob, request} = require('scrape-stl')
 var sanitize = require('sanitize-filename')
-  
 var util = require('./util.js')
-var items = util.loadItems()
+  
 
 var cachedir = __dirname + '/cache/days'
 if (!fs.existsSync(cachedir)) fs.mkdirSync(cachedir)
 
+
+var items = util.loadItems()
 items.forEach((d, i) => {
   if (!d.isoDate) d.isoDate = '2020-01-01T'
 
@@ -20,37 +21,37 @@ items.forEach((d, i) => {
 
   io.writeDataSync(outdir + '/' + d.slug + '.json', d)
 })
+delete items
 
 
 var allFiles = glob.sync(cachedir + '/**/*.json')
 
+// Save items by date
 var datedir = __dirname + '/../public/generated/dates'
 if (!fs.existsSync(datedir)) fs.mkdirSync(datedir)
 
 jp.nestBy(allFiles, d => d.split('bin/cache/days/')[1].split('/')[0]).forEach(files => {
-  var posts = files.map(io.readDataSync)
-  io.writeDataSync(datedir + '/' + files.key + '.json', posts)
+  if (!files.key.includes('2022')) return
+  var posts = files.map(path => JSON.parse(fs.readFileSync(path, 'utf8')))
+  fs.writeFileSync(datedir + '/' + files.key + '.json', JSON.stringify(posts))
 })
 
-
-
+// Save items by feed
 var feeddir = __dirname + '/../public/generated/feeds'
 if (!fs.existsSync(feeddir)) fs.mkdirSync(feeddir)
 
 var last10Posts = []
 
 jp.nestBy(allFiles, d => d.split('_.._')[0].split('/').slice(-1)[0]).forEach(files => {
-  var posts = files.map(io.readDataSync)
-  io.writeDataSync(feeddir + '/' + files.key + '.json', posts)
+  var posts = files.map(path => JSON.parse(fs.readFileSync(path, 'utf8')))
+  fs.writeFileSync(datedir + '/' + files.key + '.json', JSON.stringify(posts))
 
-  last10Posts = last10Posts.concat(posts.slice(-10))
+  last10Posts.push(...posts.slice(-10))
 })
 
 
 last10Posts = last10Posts.filter(d => {
-
   if (d.domain == 'westsiderag.com' && d.content?.includes('SPONSORED: ')) return false
-
   return true
 })
 
