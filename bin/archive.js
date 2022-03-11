@@ -50,10 +50,13 @@ jp.nestBy(allFiles, d => d.split('_.._')[0].split('/').slice(-1)[0]).forEach(fil
 })
 
 
-last10Posts = last10Posts.filter(d => {
-  if (d.domain == 'westsiderag.com' && d.content?.includes('SPONSORED: ')) return false
-  return true
-})
+last10Posts = last10Posts
+  .filter(d => {
+    if (d.domain == 'westsiderag.com' && d.content?.includes('SPONSORED: ')) return false
+    return true
+  })
+  // TODO filter future posts
+  .filter(d => !d.title.includes('0021: hytradboi schedule + tickets'))
 
 last10Posts = _.sortBy(last10Posts, d => d.isoDate).reverse()
 

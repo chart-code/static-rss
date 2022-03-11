@@ -63,7 +63,7 @@
         <outline type="rss" title="urbababble" text="urbababble" xmlUrl="https://buttondown.email/urbababble/rss"/>
         <outline type="rss" title="warzel" text="warzel" xmlUrl="https://warzel.substack.com/feed"/>
         <outline type="rss" title="jenniferdaniel" text="jenniferdaniel" xmlUrl="https://jenniferdaniel.substack.com/feed"/>
-        <outline type="rss" title="astralcodexten" text="astralcodexten" xmlUrl="https://astralcodexten.substack.com/feed"/>
+        <!-- <outline type="rss" title="astralcodexten" text="astralcodexten" xmlUrl="https://astralcodexten.substack.com/feed"/> -->
         <outline type="rss" title="janellecshane" text="janellecshane" xmlUrl="https://janellecshane.substack.com/feed"/>
         <outline type="rss" title="emilyoster" text="emilyoster" xmlUrl="https://emilyoster.substack.com/feed"/>
 
