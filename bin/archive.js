@@ -56,7 +56,7 @@ last10Posts = last10Posts
     return true
   })
   // TODO filter future posts
-  .filter(d => !d.title.includes('0021: hytradboi schedule + tickets'))
+  .filter(d => !d.title || !d.title.includes('0021: hytradboi schedule + tickets'))
 
 last10Posts = _.sortBy(last10Posts, d => d.isoDate).reverse()
 
