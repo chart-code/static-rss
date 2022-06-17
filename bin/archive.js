@@ -43,6 +43,9 @@ if (!fs.existsSync(feeddir)) fs.mkdirSync(feeddir)
 var last10Posts = []
 
 jp.nestBy(allFiles, d => d.split('_.._')[0].split('/').slice(-1)[0]).forEach(files => {
+  if (files.key === 'propublica.org') return // OOM error
+
+  // TODO only parse 10 most recent posts
   var posts = files.map(path => JSON.parse(fs.readFileSync(path, 'utf8')))
   fs.writeFileSync(datedir + '/' + files.key + '.json', JSON.stringify(posts))
 
@@ -62,7 +65,7 @@ last10Posts = _.sortBy(last10Posts, d => d.isoDate).reverse()
 
 
 // TODO switch to archive
-io.writeDataSync(__dirname + '/../public/generated/items-recent.json', itemsFromLastNdays(90))
+io.writeDataSync(__dirname + '/../public/generated/items-recent.json', itemsFromLastNdays(10))
 io.writeDataSync(__dirname + '/../public/generated/items-today.json', itemsFromLastNdays(2), {indent: 2})
 
 function itemsFromLastNdays(n){
