@@ -6,6 +6,6 @@ do
   node parse.js 
   sleep 1  
   node archive.js 
-  # node favicons.js
+  node favicons.js
   sleep 3600
 done
