@@ -58,6 +58,8 @@ d3.loadData(
   function drawDays(items, prevDates=[]){
     var byDate = d3.nestBy(items, d => d.isoDate.split('T')[0])
       .filter(d => !prevDates.includes(d.key))
+      .filter(d => new Date(d.key) < +(new Date()) + 24*60*60*1000)
+
     var dateSel = itemSel.appendMany('div.date', _.sortBy(byDate, d => d.key).reverse())
 
     dateSel.append('h3').text(d => d.key)
