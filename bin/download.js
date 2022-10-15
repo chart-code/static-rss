@@ -6,10 +6,15 @@ var fetch = require('node-fetch')
 
 
 async function main(){
-  var xmlStr = fs.readFileSync(__dirname + '/../subs.xml', 'utf8')
-  var feeds = xml2json.toJson(xmlStr, {object: true}).opml.body.outline
-    .map(d => d.outline || d)
-  feeds = _.flatten(feeds)
+  try {
+    var xmlStr = fs.readFileSync(__dirname + '/../subs.xml', 'utf8')
+    var feeds = xml2json.toJson(xmlStr, {object: true}).opml.body.outline
+      .map(d => d.outline || d)
+    feeds = _.flatten(feeds)
+  } catch (e){
+    console.log(e)
+    feeds = []
+  }
 
   // Also get list of feeds from
   // https://docs.google.com/spreadsheets/d/14nBbfTEPPzncQhRXuNkSUjBWwPc3OCH3bibuB9UbwfM/edit#gid=0
