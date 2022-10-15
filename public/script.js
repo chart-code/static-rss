@@ -93,6 +93,7 @@ d3.loadData(
 
         var contentStr = (d['content:encoded'] || d.content || d.summary || '')
           .replaceAll('width: ', 'x-width: ')
+          .replaceAll(' width=', ' x-width=')
           .replaceAll('height: ', 'x-height: ')
         var rawHTMLSel = sel.append('div.raw-html').html(contentStr)
 
