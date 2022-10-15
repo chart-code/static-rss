@@ -230,7 +230,7 @@
         
         <outline type="rss" title="Science Fiction Interfaces" text="Science Fiction Interfaces" xmlUrl="http://sciencefictioninterfaces.tumblr.com/rss"/>
         
-        <!-- <outline type="rss" title="Sebastian Ruder" text="Sebastian Ruder" xmlUrl="http://ruder.io/rss/index.rss"/> -->
+        <outline type="rss" title="Sebastian Ruder" text="Sebastian Ruder" xmlUrl="http://ruder.io/rss/index.rss"/>
         
         <outline type="rss" title="Second Ave. Sagas" text="Second Ave. Sagas" xmlUrl="http://secondavenuesagas.com/feed/"/>
         
@@ -284,8 +284,8 @@
         
         <outline type="rss" title="Visual Simplicity" text="Visual Simplicity" xmlUrl="http://blog.yasiv.com/feeds/posts/default"/>
         
-        <outline type="rss" title="West Coast Stat Views (on Observational Epidemiology and more)" text="West Coast Stat Views (on Observational Epidemiology and more)" xmlUrl="http://observationalepidemiology.blogspot.com//feeds/posts/default?alt=rss"/>
-        
+<!--         <outline type="rss" title="West Coast Stat Views (on Observational Epidemiology and more)" text="West Coast Stat Views (on Observational Epidemiology and more)" xmlUrl="http://observationalepidemiology.blogspot.com//feeds/posts/default?alt=rss"/>
+ -->        
         <outline type="rss" title="Whimsley" text="Whimsley" xmlUrl="http://tomslee.net/feed"/>
         
         <!-- <outline type="rss" title="Whimsley" text="Whimsley" xmlUrl="http://whimsley.typepad.com/whimsley/atom.xml"/> -->

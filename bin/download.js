@@ -30,6 +30,8 @@ async function main(){
   if (!fs.existsSync(outdir)) fs.mkdirSync(outdir)
 
   feeds.forEach(feed => {
+    if (feed.ignore) return console.log('ignore', feed)
+
     request({url: feed.xmlUrl, timeout: 15*1000}, (err, res, body) => {
       if (!body) return
       console.log(feed.title)
