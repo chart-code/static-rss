@@ -95,6 +95,14 @@ d3.loadData(
           .replaceAll('width: ', 'x-width: ')
           .replaceAll(' width=', ' x-width=')
           .replaceAll('height: ', 'x-height: ')
+
+        if (hrefPP == 'thecity.nyc'){
+          contentStr = contentStr
+            .replaceAll(` src="`, ` x-src="`)
+            .replaceAll(` srcset="`, ` x-srcset="`)
+            .replaceAll(` data-src="`, ` src="`)
+        }
+
         var rawHTMLSel = sel.append('div.raw-html').html(contentStr)
 
         // responsive youtube embed
@@ -103,9 +111,15 @@ d3.loadData(
         // open all links in a new tab
         rawHTMLSel.selectAll('a').at({target: 'blank'})
 
+        rawHTMLSel.selectAll('.subscription-widget-wrap,.button-wrapper').remove()
+
         if (hrefPP == 'xkcd.com'){
           rawHTMLSel.append('p').text(rawHTMLSel.select('img').attr('title'))
         }
+        if (hrefPP == 'thecity.nyc'){
+          rawHTMLSel.selectAll('.Enhancement-item').remove()
+        }
+
 
         window.localStorage.setItem(d.href, new Date().toISOString())
       })
