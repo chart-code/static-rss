@@ -9,6 +9,7 @@
   "license": "MIT",
   "scripts": {
     "pub": "cd .. && rsync -a --omit-dir-times --no-perms --exclude node_modules --exclude .git --exclude public/generated/ --exclude bin/cache static-rss/ demo@roadtolarissa.com:static-rss/",
+    "watch": "ls bin/*.js | entr yarn pub",
     "favicons": "node bin/download.js && node bin/parse.js && node bin/archive.js && node bin/favicons.js"
   }
 }

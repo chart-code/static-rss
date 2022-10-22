@@ -19,6 +19,11 @@ function loadItems(){
   return items
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 
-module.exports = {loadItems, saveItems}
+
+
+module.exports = { loadItems, saveItems, sleep }
