@@ -57,7 +57,7 @@ async function main(){
       fs.writeFileSync(feeddir + '/' + files.key + '.json', JSON.stringify(posts))
     }
 
-    last30Posts.push(...posts.slice(-30))
+    last30Posts.push(...posts.slice(-999))
   }
 
 
@@ -65,6 +65,10 @@ async function main(){
   last30Posts = last30Posts
     .filter(d => {
       if (d.domain == 'westsiderag.com' && d.content?.includes('SPONSORED: ')) return false
+      return true
+    })
+    .filter(d => {
+      if (d['content:encoded']?.includes(`\" target=\"_blank\" rel=\"noopener\">Click here.</a></p>\n`)) return false
       return true
     })
     // TODO filter future posts
@@ -75,7 +79,7 @@ async function main(){
 
   // TODO switch to archive
   console.log('saving items-*.json')
-  io.writeDataSync(__dirname + '/../public/generated/items-recent.json', itemsFromLastNdays(10))
+  io.writeDataSync(__dirname + '/../public/generated/items-recent.json', itemsFromLastNdays(31))
   io.writeDataSync(__dirname + '/../public/generated/items-today.json', itemsFromLastNdays(2), {indent: 2})
 
   function itemsFromLastNdays(n){
