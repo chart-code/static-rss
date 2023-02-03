@@ -33,7 +33,7 @@ async function main(){
   var csvUrl = process.env.STATIC_RSS_CSV_URL || ''
   try {
     var csvStr = await (await fetch(csvUrl)).text()
-    feeds = feeds.conat(d3.csvParse(csvStr))
+    feeds = feeds.concat(d3.csvParse(csvStr))
 
     feeds.forEach(d => {
       d.xmlUrl = d.xmlUrl || d.feed
@@ -42,9 +42,6 @@ async function main(){
   } catch(e) {
     console.log('Missing ', {csvUrl})
   }
-
-  // console.log(feeds)
-  return
 
   // check for duplicate titles
   jp.nestBy(feeds, d => d.title)

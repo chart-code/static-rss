@@ -81,7 +81,7 @@ async function main(){
   function itemsFromLastNdays(n){
     var isostr = (new Date(new Date() - 1000*60*60*24*n)).toISOString().split('T')[0]
 
-    return last10Posts.filter(d => d.isoDate >= isostr)
+    return last30Posts.filter(d => d.isoDate >= isostr)
   }
 
 

@@ -22,7 +22,7 @@ async function main(){
     } else {
       console.log(d)
       try {
-        d.favicon = await (await fetch('http://favicongrabber.com/api/grab/' + d.domain)).json()
+        // d.favicon = await (await fetch('http://favicongrabber.com/api/grab/' + d.domain)).json()
       } catch (e){ console.log(e) }
       await sleep(3000)
     }
