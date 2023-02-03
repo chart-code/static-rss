@@ -7,7 +7,6 @@ do
   sleep 1  
   node archive.js 
   node favicons.js
-  yarn pubnyc-localdata
   sleep 3600
 done
 
