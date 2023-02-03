@@ -51,18 +51,18 @@ async function main(){
     console.log('saving feed', files.key)
     await util.sleep(100)
 
-    // TODO only parse 10 most recent posts
+    // TODO only parse 30 most recent posts
     var posts = files.map(path => JSON.parse(fs.readFileSync(path, 'utf8')))
     if (!['slowboring.com', 'marginalrevolution.com', 'propublica.org'].includes(files.key)){
       fs.writeFileSync(feeddir + '/' + files.key + '.json', JSON.stringify(posts))
     }
 
-    last10Posts.push(...posts.slice(-10))
+    last30Posts.push(...posts.slice(-30))
   }
 
 
-  console.log('filtering last10posts items by feed')
-  last10Posts = last10Posts
+  console.log('filtering last30posts items by feed')
+  last30Posts = last30Posts
     .filter(d => {
       if (d.domain == 'westsiderag.com' && d.content?.includes('SPONSORED: ')) return false
       return true
@@ -70,7 +70,7 @@ async function main(){
     // TODO filter future posts
     .filter(d => !d.title || !d.title.includes('0021: hytradboi schedule + tickets'))
 
-  last10Posts = _.sortBy(last10Posts, d => d.isoDate).reverse()
+  last30Posts = _.sortBy(last30Posts, d => d.isoDate).reverse()
 
 
   // TODO switch to archive
