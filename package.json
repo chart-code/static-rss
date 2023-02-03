@@ -10,7 +10,7 @@
   "scripts": {
     "pubstatic": "cd .. && rsync -a --omit-dir-times --no-perms --exclude node_modules --exclude .git --exclude public/generated/ --exclude bin/cache static-rss/ demo@roadtolarissa.com:static-rss/",
     "pubnyc":    "cd .. && rsync -a --omit-dir-times --no-perms --exclude node_modules --exclude .git --exclude public/generated/ --exclude bin/cache static-rss/ demo@roadtolarissa.com:feed-nyc/",
-    "pub": "npm pubstatic && npm pubnyc",
+    "pub": "yarn pubstatic && yarn pubnyc",
     "watch": "ls bin/*.js | entr yarn pub",
     "favicons": "node bin/download.js && node bin/parse.js && node bin/archive.js && node bin/favicons.js"
   }
