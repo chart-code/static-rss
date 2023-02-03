@@ -1,6 +1,7 @@
 # static-rss
 
-https://roadtolarissa.com/static-rss/
+- https://roadtolarissa.com/static-rss/
+- https://roadtolarissa.com/nyc-feed/
 
 ## Dev
 
