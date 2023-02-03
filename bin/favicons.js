@@ -9,7 +9,7 @@ async function main(){
   var outpath = __dirname + '/../public/generated/favicons.json'
   var favicons = []
   try {
-    io.readDataSync(outpath)
+    favicons = io.readDataSync(outpath)
   } catch(e){
 
   }
