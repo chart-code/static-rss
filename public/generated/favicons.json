@@ -7,24 +7,15 @@
       "domain": "pair.withgoogle.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "http://pair.withgoogle.com/images/favicon/favicon-32x32.png",
-          "type": "image/png"
+          "src": "https://pair.withgoogle.com/images/favicon/favicon-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "16x16",
-          "src": "http://pair.withgoogle.com/images/favicon/favicon-16x16.png",
-          "type": "image/png"
+          "src": "https://pair.withgoogle.com/images/favicon/favicon-16x16.png",
+          "sizes": "16x16"
         },
         {
-          "src": "http://pair.withgoogle.com/images/favicon/favicon.ico"
-        },
-        {
-          "sizes": "180x180",
-          "src": "http://pair.withgoogle.com/images/favicon/apple-touch-icon.png"
-        },
-        {
-          "src": "http://pair.withgoogle.com/images/favicon/safari-pinned-tab.svg"
+          "src": "https://pair.withgoogle.com/images/favicon.ico"
         }
       ]
     }
@@ -35,7 +26,11 @@
     "domain": "danluu.com",
     "favicon": {
       "domain": "danluu.com",
-      "icons": []
+      "icons": [
+        {
+          "src": "data:;base64,="
+        }
+      ]
     }
   },
   {
@@ -60,8 +55,7 @@
       "domain": "bayridgebeat.blogspot.com",
       "icons": [
         {
-          "src": "http://bayridgebeat.blogspot.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "http://bayridgebeat.blogspot.com/favicon.ico"
         }
       ]
     }
@@ -69,7 +63,10 @@
   {
     "feedName": "Creative AI meetup newsletter Archive Feed",
     "href": "https://mailchi.mp/3245535e6bc4/creative-ai-newsletter-5-machine-learning-for-creativity-and-design-workshop-345001",
-    "domain": "mailchi.mp"
+    "domain": "mailchi.mp",
+    "favicon": {
+      "error": "General API error."
+    }
   },
   {
     "feedName": "Data Colada",
@@ -79,18 +76,12 @@
       "domain": "datacolada.org",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "http://datacolada.org/storage_strong/2018/12/cropped-Narrow-colada-logo-32x32.png"
+          "src": "http://datacolada.org/storage_strong/2018/12/cropped-Narrow-colada-logo-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "192x192",
-          "src": "http://datacolada.org/storage_strong/2018/12/cropped-Narrow-colada-logo-192x192.png"
-        },
-        {
-          "src": "http://datacolada.org/storage_strong/2018/12/cropped-Narrow-colada-logo-180x180.png"
-        },
-        {
-          "src": "http://datacolada.org/storage_strong/2018/12/cropped-Narrow-colada-logo-270x270.png"
+          "src": "http://datacolada.org/storage_strong/2018/12/cropped-Narrow-colada-logo-192x192.png",
+          "sizes": "192x192"
         }
       ]
     }
@@ -103,7 +94,7 @@
       "domain": "josephg.com",
       "icons": [
         {
-          "src": "https://josephg.com/blog/favicon.ico"
+          "src": "/blog/favicon.ico"
         }
       ]
     }
@@ -111,17 +102,35 @@
   {
     "feedName": "Tim Dettmers",
     "href": "http://timdettmers.com/?p=627",
-    "domain": "timdettmers.com",
-    "favicon": {
-      "error": "The connection to a server of the domain timed out."
-    }
+    "domain": "timdettmers.com"
   },
   {
     "feedName": "Amanda Askell",
     "href": "https://askell.io/posts/2018/02/content-and-connotations",
     "domain": "askell.io",
     "favicon": {
-      "error": "General API error."
+      "domain": "askell.io",
+      "icons": [
+        {
+          "src": "https://askell.io/images/favicon-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://askell.io/images/android-chrome-192x192.png",
+          "sizes": "192x192"
+        },
+        {
+          "src": "https://askell.io/images/favicon-96x96.png",
+          "sizes": "96x96"
+        },
+        {
+          "src": "https://askell.io/images/favicon-16x16.png",
+          "sizes": "16x16"
+        },
+        {
+          "src": "/images/favicon.ico"
+        }
+      ]
     }
   },
   {
@@ -141,11 +150,7 @@
       "domain": "colah.github.io",
       "icons": [
         {
-          "src": "http://colah.github.io/favicon.ico"
-        },
-        {
-          "src": "http://colah.github.io/favicon.ico",
-          "type": "image/x-icon"
+          "src": "../../favicon.ico"
         }
       ]
     }
@@ -158,53 +163,15 @@
       "domain": "signalproblems.substack.com",
       "icons": [
         {
-          "sizes": "32x32",
           "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Ffavicon-32x32.png",
-          "type": "image/png"
+          "sizes": "32x32"
         },
         {
-          "sizes": "16x16",
           "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Ffavicon-16x16.png",
-          "type": "image/png"
+          "sizes": "16x16"
         },
         {
           "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Ffavicon.ico"
-        },
-        {
-          "sizes": "57x57",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Fapple-touch-icon-57x57.png"
-        },
-        {
-          "sizes": "60x60",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Fapple-touch-icon-60x60.png"
-        },
-        {
-          "sizes": "72x72",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Fapple-touch-icon-72x72.png"
-        },
-        {
-          "sizes": "76x76",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Fapple-touch-icon-76x76.png"
-        },
-        {
-          "sizes": "114x114",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Fapple-touch-icon-114x114.png"
-        },
-        {
-          "sizes": "120x120",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Fapple-touch-icon-120x120.png"
-        },
-        {
-          "sizes": "144x144",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Fapple-touch-icon-144x144.png"
-        },
-        {
-          "sizes": "152x152",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Fapple-touch-icon-152x152.png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fe0b9e876-23b7-4dbc-b235-f8397b875ef8%2Fapple-touch-icon-180x180.png"
         }
       ]
     }
@@ -217,18 +184,12 @@
       "domain": "www.verysmallarray.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "http://www.verysmallarray.com/wp-content/uploads/cropped-logo3-1-32x32.gif"
+          "src": "http://www.verysmallarray.com/wp-content/uploads/cropped-logo3-1-32x32.gif",
+          "sizes": "32x32"
         },
         {
-          "sizes": "192x192",
-          "src": "http://www.verysmallarray.com/wp-content/uploads/cropped-logo3-1-192x192.gif"
-        },
-        {
-          "src": "http://www.verysmallarray.com/wp-content/uploads/cropped-logo3-1-180x180.gif"
-        },
-        {
-          "src": "http://www.verysmallarray.com/wp-content/uploads/cropped-logo3-1-270x270.gif"
+          "src": "http://www.verysmallarray.com/wp-content/uploads/cropped-logo3-1-192x192.gif",
+          "sizes": "192x192"
         }
       ]
     }
@@ -238,7 +199,12 @@
     "href": "http://acko.net/blog/minds-of-its-own/",
     "domain": "acko.net",
     "favicon": {
-      "error": "General API error."
+      "domain": "acko.net",
+      "icons": [
+        {
+          "src": "/favicon.ico"
+        }
+      ]
     }
   },
   {
@@ -249,65 +215,15 @@
       "domain": "daniellekurtzleben.substack.com",
       "icons": [
         {
-          "sizes": "16x16",
-          "src": "https://substackcdn.com/icons/substack/favicon-16x16.png",
-          "type": "image/png"
-        },
-        {
-          "sizes": "32x32",
-          "src": "https://substackcdn.com/icons/substack/favicon-32x32.png",
-          "type": "image/png"
-        },
-        {
           "src": "https://substackcdn.com/icons/substack/favicon.ico"
         },
         {
-          "sizes": "57x57",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-57x57.png"
+          "src": "https://substackcdn.com/icons/substack/favicon-16x16.png",
+          "sizes": "16x16"
         },
         {
-          "sizes": "60x60",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-60x60.png"
-        },
-        {
-          "sizes": "72x72",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-72x72.png"
-        },
-        {
-          "sizes": "76x76",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-76x76.png"
-        },
-        {
-          "sizes": "114x114",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-114x114.png"
-        },
-        {
-          "sizes": "120x120",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-120x120.png"
-        },
-        {
-          "sizes": "144x144",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-144x144.png"
-        },
-        {
-          "sizes": "152x152",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-152x152.png"
-        },
-        {
-          "sizes": "167x167",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-167x167.png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-180x180.png"
-        },
-        {
-          "sizes": "1024x1024",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-1024x1024.png"
-        },
-        {
-          "src": "https://daniellekurtzleben.substack.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "https://substackcdn.com/icons/substack/favicon-32x32.png",
+          "sizes": "32x32"
         }
       ]
     }
@@ -320,65 +236,15 @@
       "domain": "gwern.substack.com",
       "icons": [
         {
-          "sizes": "16x16",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Ffavicon-16x16.png",
-          "type": "image/png"
-        },
-        {
-          "sizes": "32x32",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Ffavicon-32x32.png",
-          "type": "image/png"
-        },
-        {
           "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Ffavicon.ico"
         },
         {
-          "sizes": "57x57",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-57x57.png"
+          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Ffavicon-16x16.png",
+          "sizes": "16x16"
         },
         {
-          "sizes": "60x60",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-60x60.png"
-        },
-        {
-          "sizes": "72x72",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-72x72.png"
-        },
-        {
-          "sizes": "76x76",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-76x76.png"
-        },
-        {
-          "sizes": "114x114",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-114x114.png"
-        },
-        {
-          "sizes": "120x120",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-120x120.png"
-        },
-        {
-          "sizes": "144x144",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-144x144.png"
-        },
-        {
-          "sizes": "152x152",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-152x152.png"
-        },
-        {
-          "sizes": "167x167",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-167x167.png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-180x180.png"
-        },
-        {
-          "sizes": "1024x1024",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Fapple-touch-icon-1024x1024.png"
-        },
-        {
-          "src": "https://gwern.substack.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F75eb900e-4d08-4d2e-8885-c5f4dd40d586%2Ffavicon-32x32.png",
+          "sizes": "32x32"
         }
       ]
     }
@@ -391,65 +257,15 @@
       "domain": "maryrosecook.substack.com",
       "icons": [
         {
-          "sizes": "16x16",
-          "src": "https://substackcdn.com/icons/substack/favicon-16x16.png",
-          "type": "image/png"
-        },
-        {
-          "sizes": "32x32",
-          "src": "https://substackcdn.com/icons/substack/favicon-32x32.png",
-          "type": "image/png"
-        },
-        {
           "src": "https://substackcdn.com/icons/substack/favicon.ico"
         },
         {
-          "sizes": "57x57",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-57x57.png"
+          "src": "https://substackcdn.com/icons/substack/favicon-16x16.png",
+          "sizes": "16x16"
         },
         {
-          "sizes": "60x60",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-60x60.png"
-        },
-        {
-          "sizes": "72x72",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-72x72.png"
-        },
-        {
-          "sizes": "76x76",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-76x76.png"
-        },
-        {
-          "sizes": "114x114",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-114x114.png"
-        },
-        {
-          "sizes": "120x120",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-120x120.png"
-        },
-        {
-          "sizes": "144x144",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-144x144.png"
-        },
-        {
-          "sizes": "152x152",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-152x152.png"
-        },
-        {
-          "sizes": "167x167",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-167x167.png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-180x180.png"
-        },
-        {
-          "sizes": "1024x1024",
-          "src": "https://substackcdn.com/icons/substack/apple-touch-icon-1024x1024.png"
-        },
-        {
-          "src": "https://maryrosecook.substack.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "https://substackcdn.com/icons/substack/favicon-32x32.png",
+          "sizes": "32x32"
         }
       ]
     }
@@ -463,29 +279,6 @@
       "icons": [
         {
           "src": "https://miro.medium.com/1*m-R_BkNf1Qjr1YbyOIJY2w.png"
-        },
-        {
-          "sizes": "152x152",
-          "src": "https://miro.medium.com/fit/c/152/152/1*sHhtYhaCe2Uc3IU0IgKwIQ.png"
-        },
-        {
-          "sizes": "120x120",
-          "src": "https://miro.medium.com/fit/c/120/120/1*sHhtYhaCe2Uc3IU0IgKwIQ.png"
-        },
-        {
-          "sizes": "76x76",
-          "src": "https://miro.medium.com/fit/c/76/76/1*sHhtYhaCe2Uc3IU0IgKwIQ.png"
-        },
-        {
-          "sizes": "60x60",
-          "src": "https://miro.medium.com/fit/c/60/60/1*sHhtYhaCe2Uc3IU0IgKwIQ.png"
-        },
-        {
-          "src": "https://cdn-static-1.medium.com/_/fp/icons/Medium-Avatar-500x500.svg"
-        },
-        {
-          "src": "https://medium.com/favicon.ico",
-          "type": "image/x-icon"
         }
       ]
     }
@@ -498,8 +291,7 @@
       "domain": "pardonmeforasking.blogspot.com",
       "icons": [
         {
-          "src": "https://pardonmeforasking.blogspot.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "https://pardonmeforasking.blogspot.com/favicon.ico"
         }
       ]
     }
@@ -509,7 +301,12 @@
     "href": "https://flushingblog.com/?p=3523",
     "domain": "flushingblog.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "flushingblog.com",
+      "icons": [
+        {
+          "src": "https://flushingblog.com/wp-content/uploads/2015/08/bqefaviconblank.png"
+        }
+      ]
     }
   },
   {
@@ -520,12 +317,7 @@
       "domain": "bklyner.com",
       "icons": [
         {
-          "src": "https://bklyner.com/content/images/size/w256h256/2021/04/Bklyner-Favicon-Circle-Black-1.png",
-          "type": "image/png"
-        },
-        {
-          "src": "https://bklyner.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "https://bklyner.com/content/images/size/w256h256/2021/04/Bklyner-Favicon-Circle-Black-1.png"
         }
       ]
     }
@@ -559,61 +351,15 @@
       "domain": "annekadet.substack.com",
       "icons": [
         {
-          "sizes": "16x16",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Ffavicon-16x16.png",
-          "type": "image/png"
-        },
-        {
-          "sizes": "32x32",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Ffavicon-32x32.png",
-          "type": "image/png"
-        },
-        {
           "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Ffavicon.ico"
         },
         {
-          "sizes": "57x57",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-57x57.png"
+          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Ffavicon-16x16.png",
+          "sizes": "16x16"
         },
         {
-          "sizes": "60x60",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-60x60.png"
-        },
-        {
-          "sizes": "72x72",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-72x72.png"
-        },
-        {
-          "sizes": "76x76",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-76x76.png"
-        },
-        {
-          "sizes": "114x114",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-114x114.png"
-        },
-        {
-          "sizes": "120x120",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-120x120.png"
-        },
-        {
-          "sizes": "144x144",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-144x144.png"
-        },
-        {
-          "sizes": "152x152",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-152x152.png"
-        },
-        {
-          "sizes": "167x167",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-167x167.png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-180x180.png"
-        },
-        {
-          "sizes": "1024x1024",
-          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Fapple-touch-icon-1024x1024.png"
+          "src": "https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F63a2e6dc-79a2-46f6-a2a0-c2037db3ca68%2Ffavicon-32x32.png",
+          "sizes": "32x32"
         }
       ]
     }
@@ -626,18 +372,12 @@
       "domain": "eastnewyork.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://eastnewyork.com/wp-content/uploads/2016/12/cropped-eny-logo-icon-32x32.png"
+          "src": "https://eastnewyork.com/wp-content/uploads/2016/12/cropped-eny-logo-icon-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "192x192",
-          "src": "https://eastnewyork.com/wp-content/uploads/2016/12/cropped-eny-logo-icon-192x192.png"
-        },
-        {
-          "src": "https://eastnewyork.com/wp-content/uploads/2016/12/cropped-eny-logo-icon-180x180.png"
-        },
-        {
-          "src": "https://eastnewyork.com/wp-content/uploads/2016/12/cropped-eny-logo-icon-270x270.png"
+          "src": "https://eastnewyork.com/wp-content/uploads/2016/12/cropped-eny-logo-icon-192x192.png",
+          "sizes": "192x192"
         }
       ]
     }
@@ -650,18 +390,12 @@
       "domain": "lictalk.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://lictalk.com/wp-content/uploads/2019/05/cropped-favicon-32x32.png"
+          "src": "https://lictalk.com/wp-content/uploads/2019/05/cropped-favicon-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "192x192",
-          "src": "https://lictalk.com/wp-content/uploads/2019/05/cropped-favicon-192x192.png"
-        },
-        {
-          "src": "https://lictalk.com/wp-content/uploads/2019/05/cropped-favicon-180x180.png"
-        },
-        {
-          "src": "https://lictalk.com/wp-content/uploads/2019/05/cropped-favicon-270x270.png"
+          "src": "https://lictalk.com/wp-content/uploads/2019/05/cropped-favicon-192x192.png",
+          "sizes": "192x192"
         }
       ]
     }
@@ -674,32 +408,12 @@
       "domain": "www.nynmedia.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://www.nynmedia.com/favicon-32x32.png",
-          "type": "image/png"
+          "src": "/favicon-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "16x16",
-          "src": "https://www.nynmedia.com/favicon-16x16.png",
-          "type": "image/png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://www.nynmedia.com/apple-touch-icon.png"
-        },
-        {
-          "src": "https://www.nynmedia.com/android-chrome-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        },
-        {
-          "src": "https://www.nynmedia.com/android-chrome-512x512.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        },
-        {
-          "src": "https://www.nynmedia.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "/favicon-16x16.png",
+          "sizes": "16x16"
         }
       ]
     }
@@ -730,7 +444,17 @@
     "href": "https://amsterdamnews.com/?p=10348197",
     "domain": "amsterdamnews.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "amsterdamnews.com",
+      "icons": [
+        {
+          "src": "https://amsterdamnews.com/wp-content/uploads/2021/03/site-icon-100x100.png?crop=1",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://i0.wp.com/amsterdamnews.com/wp-content/uploads/2021/03/site-icon.png?fit=192%2C192&ssl=1",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -738,7 +462,12 @@
     "href": "https://astoriapost.com/astoria-man-arraigned-on-child-exploitation-possession-firearm-feds",
     "domain": "astoriapost.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "astoriapost.com",
+      "icons": [
+        {
+          "src": "https://astoriapost.com/wp-content/uploads/sites/27/2017/12/astoriapost-favicon.png"
+        }
+      ]
     }
   },
   {
@@ -746,7 +475,17 @@
     "href": "https://www.blackcarnews.com/?post_type=article&p=5582",
     "domain": "www.blackcarnews.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.blackcarnews.com",
+      "icons": [
+        {
+          "src": "https://www.blackcarnews.com/wp-content/themes/bcn/favicons/favicon-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://www.blackcarnews.com/wp-content/themes/bcn/favicons/favicon-16x16.png",
+          "sizes": "16x16"
+        }
+      ]
     }
   },
   {
@@ -757,12 +496,7 @@
       "domain": "www.brickunderground.com",
       "icons": [
         {
-          "src": "https://www.brickunderground.com/sites/all/themes/brick_underground/favicon.ico",
-          "type": "image/vnd.microsoft.icon"
-        },
-        {
-          "src": "https://www.brickunderground.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "https://www.brickunderground.com/sites/all/themes/brick_underground/favicon.ico"
         }
       ]
     }
@@ -772,7 +506,28 @@
     "href": "https://www.bxtimes.com/bronx-times-reporter-february-3-2023/",
     "domain": "www.bxtimes.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.bxtimes.com",
+      "icons": [
+        {
+          "src": "//s.calameoassets.com/pinwheel/8470-82cdf0/platform/img/favicon/favicon-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "//s.calameoassets.com/pinwheel/8470-82cdf0/platform/img/favicon/android-chrome-192x192.png",
+          "sizes": "192x192"
+        },
+        {
+          "src": "//s.calameoassets.com/pinwheel/8470-82cdf0/platform/img/favicon/favicon-96x96.png",
+          "sizes": "96x96"
+        },
+        {
+          "src": "//s.calameoassets.com/pinwheel/8470-82cdf0/platform/img/favicon/favicon-16x16.png",
+          "sizes": "16x16"
+        },
+        {
+          "src": "//s.calameoassets.com/pinwheel/8470-82cdf0/platform/img/favicon/favicon.ico"
+        }
+      ]
     }
   },
   {
@@ -780,7 +535,17 @@
     "href": "https://brooklyneagle.com/?p=136762",
     "domain": "brooklyneagle.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "brooklyneagle.com",
+      "icons": [
+        {
+          "src": "https://brooklyneagle.com/wp-content/uploads/2018/11/cropped-BEagle-Logo-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://brooklyneagle.com/wp-content/uploads/2018/11/cropped-BEagle-Logo-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -788,7 +553,28 @@
     "href": "https://www.brooklynpaper.com/park-slope-courier-february-3-2023/",
     "domain": "www.brooklynpaper.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.brooklynpaper.com",
+      "icons": [
+        {
+          "src": "//s.calameoassets.com/pinwheel/8470-82cdf0/platform/img/favicon/favicon-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "//s.calameoassets.com/pinwheel/8470-82cdf0/platform/img/favicon/android-chrome-192x192.png",
+          "sizes": "192x192"
+        },
+        {
+          "src": "//s.calameoassets.com/pinwheel/8470-82cdf0/platform/img/favicon/favicon-96x96.png",
+          "sizes": "96x96"
+        },
+        {
+          "src": "//s.calameoassets.com/pinwheel/8470-82cdf0/platform/img/favicon/favicon-16x16.png",
+          "sizes": "16x16"
+        },
+        {
+          "src": "//s.calameoassets.com/pinwheel/8470-82cdf0/platform/img/favicon/favicon.ico"
+        }
+      ]
     }
   },
   {
@@ -796,7 +582,8 @@
     "href": "https://brooklynreporter.com/?p=214417",
     "domain": "brooklynreporter.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "brooklynreporter.com",
+      "icons": []
     }
   },
   {
@@ -804,7 +591,12 @@
     "href": "https://www.brownstoner.com/?p=483579",
     "domain": "www.brownstoner.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.brownstoner.com",
+      "icons": [
+        {
+          "src": "/wp-content/themes/Newspaper-child/assets/img/favicon/favicon.ico"
+        }
+      ]
     }
   },
   {
@@ -815,16 +607,10 @@
       "domain": "ny.chalkbeat.org",
       "icons": [
         {
-          "src": "https://ny.chalkbeat.org/favicon-32x32.png",
-          "type": "image/png"
+          "src": "/favicon-32x32.png"
         },
         {
-          "src": "https://ny.chalkbeat.org/favicon-16x16.png",
-          "type": "image/png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://ny.chalkbeat.org/apple-touch-icon.png"
+          "src": "/favicon-16x16.png"
         }
       ]
     }
@@ -850,32 +636,12 @@
       "domain": "www.cityandstateny.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://www.cityandstateny.com/favicon-32x32.png",
-          "type": "image/png"
+          "src": "/favicon-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "16x16",
-          "src": "https://www.cityandstateny.com/favicon-16x16.png",
-          "type": "image/png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://www.cityandstateny.com/apple-touch-icon.png"
-        },
-        {
-          "src": "https://www.cityandstateny.com/android-chrome-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        },
-        {
-          "src": "https://www.cityandstateny.com/android-chrome-512x512.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        },
-        {
-          "src": "https://www.cityandstateny.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "/favicon-16x16.png",
+          "sizes": "16x16"
         }
       ]
     }
@@ -888,24 +654,15 @@
       "domain": "citylimits.org",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://citylimits.org/wp-content/uploads/2018/12/cropped-ZlAVLNKY_400x400-2-32x32.jpg"
-        },
-        {
-          "sizes": "192x192",
-          "src": "https://citylimits.org/wp-content/uploads/2018/12/cropped-ZlAVLNKY_400x400-2-192x192.jpg"
-        },
-        {
           "src": "https://citylimits.org/wp-content/uploads/2014/10/Favicon-1219.ico"
         },
         {
-          "src": "https://citylimits.org/wp-content/uploads/2014/10/Square.png"
+          "src": "https://citylimits.org/wp-content/uploads/2018/12/cropped-ZlAVLNKY_400x400-2-32x32.jpg",
+          "sizes": "32x32"
         },
         {
-          "src": "https://citylimits.org/wp-content/uploads/2018/12/cropped-ZlAVLNKY_400x400-2-180x180.jpg"
-        },
-        {
-          "src": "https://citylimits.org/wp-content/uploads/2018/12/cropped-ZlAVLNKY_400x400-2-270x270.jpg"
+          "src": "https://citylimits.org/wp-content/uploads/2018/12/cropped-ZlAVLNKY_400x400-2-192x192.jpg",
+          "sizes": "192x192"
         }
       ]
     }
@@ -918,32 +675,7 @@
       "domain": "www.crainsnewyork.com",
       "icons": [
         {
-          "src": "https://s3-prod.crainsnewyork.com/s3fs-public/Icon-Small-50x50%402x_0.png",
-          "type": "image/png"
-        },
-        {
-          "sizes": "72x72",
-          "src": "https://s3-prod.crainsnewyork.com/app-icons/72x72.png"
-        },
-        {
-          "sizes": "76x76",
-          "src": "https://s3-prod.crainsnewyork.com/app-icons/Icon-App-76x76-1x.png"
-        },
-        {
-          "sizes": "120x120",
-          "src": "https://s3-prod.crainsnewyork.com/app-icons/Icon-App-60x60-2x.png"
-        },
-        {
-          "sizes": "144x144",
-          "src": "https://s3-prod.crainsnewyork.com/app-icons/144x144.png"
-        },
-        {
-          "sizes": "152x152",
-          "src": "https://s3-prod.crainsnewyork.com/app-icons/Icon-App-76x76-2x.png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://s3-prod.crainsnewyork.com/app-icons/Icon-App-60x60-3x.png"
+          "src": "https://s3-prod.crainsnewyork.com/s3fs-public/Icon-Small-50x50%402x_0.png"
         }
       ]
     }
@@ -953,7 +685,21 @@
     "href": "https://eastsidefeed.com/?p=13615",
     "domain": "eastsidefeed.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "eastsidefeed.com",
+      "icons": [
+        {
+          "src": "https://eastsidefeed.com/wp-content/uploads/2021/04/cropped-East-Side-Feed-512-x-512-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://eastsidefeed.com/wp-content/uploads/2021/04/cropped-East-Side-Feed-512-x-512-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://eastsidefeed.com/wp-content/uploads/2021/04/cropped-East-Side-Feed-512-x-512-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -961,7 +707,12 @@
     "href": "https://eldiariony.com/?p=2973716",
     "domain": "eldiariony.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "eldiariony.com",
+      "icons": [
+        {
+          "src": "https://eldiariony.com/wp-content/themes/impre-eldiariony/images/logos/favicon.ico?v2.0"
+        }
+      ]
     }
   },
   {
@@ -969,7 +720,17 @@
     "href": "https://epicenter-nyc.com/?p=8037",
     "domain": "epicenter-nyc.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "epicenter-nyc.com",
+      "icons": [
+        {
+          "src": "https://epicenter-nyc.com/wp-content/uploads/2021/08/epicenter_icon_512-100x100.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://i0.wp.com/epicenter-nyc.com/wp-content/uploads/2021/08/epicenter_icon_512.png?fit=192%2C192&ssl=1",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -980,8 +741,7 @@
       "domain": "evgrieve.com",
       "icons": [
         {
-          "src": "https://evgrieve.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "https://evgrieve.com/favicon.ico"
         }
       ]
     }
@@ -994,35 +754,12 @@
       "domain": "gothamist.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://gothamist.com/favicon-32x32.png",
-          "type": "image/png"
+          "src": "/favicon-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "16x16",
-          "src": "https://gothamist.com/favicon-16x16.png",
-          "type": "image/png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://gothamist.com/apple-touch-icon.png"
-        },
-        {
-          "src": "https://gothamist.com/safari-pinned-tab.svg"
-        },
-        {
-          "src": "https://gothamist.com/android-chrome-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        },
-        {
-          "src": "https://gothamist.com/android-chrome-512x512.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        },
-        {
-          "src": "https://gothamist.com/favicon.ico",
-          "type": "image/x-icon"
+          "src": "/favicon-16x16.png",
+          "sizes": "16x16"
         }
       ]
     }
@@ -1035,31 +772,12 @@
       "domain": "greenpointers.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://greenpointers.com/app/uploads/2020/08/GP-Social-Icon-150x150.png"
+          "src": "https://greenpointers.com/app/uploads/2020/08/GP-Social-Icon-150x150.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "192x192",
-          "src": "https://i2.wp.com/greenpointers.com/app/uploads/2020/08/GP-Social-Icon.png"
-        },
-        {
-          "src": "https://i2.wp.com/greenpointers.com/app/uploads/2020/08/GP-Social-Icon.png"
-        },
-        {
-          "src": "https://i2.wp.com/greenpointers.com/app/uploads/2020/08/GP-Social-Icon.png"
-        },
-        {
-          "src": "https://i2.wp.com/greenpointers.com/app/uploads/2020/08/GP-Social-Icon.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        },
-        {
-          "src": "https://i2.wp.com/greenpointers.com/app/uploads/2020/08/GP-Social-Icon.png",
-          "sizes": "512x512",
-          "type": "image/png"
-        },
-        {
-          "src": "https://i2.wp.com/greenpointers.com/app/uploads/2020/08/GP-Social-Icon.png"
+          "src": "https://i2.wp.com/greenpointers.com/app/uploads/2020/08/GP-Social-Icon.png?fit=192%2C192&ssl=1",
+          "sizes": "192x192"
         }
       ]
     }
@@ -1067,22 +785,40 @@
   {
     "feedName": "Hell Gate",
     "href": "https://hellgatenyc.com/?p=8665",
-    "domain": "hellgatenyc.com",
-    "favicon": {
-      "error": "The connection to a server of the domain timed out."
-    }
+    "domain": "hellgatenyc.com"
   },
   {
     "feedName": "I Love the Upper West Side",
     "href": "https://ilovetheupperwestside.com/?p=133711",
-    "domain": "ilovetheupperwestside.com"
+    "domain": "ilovetheupperwestside.com",
+    "favicon": {
+      "domain": "ilovetheupperwestside.com",
+      "icons": [
+        {
+          "src": "https://ilovetheupperwestside.com/material/media/2019/10/iltuws-favicon2.png"
+        },
+        {
+          "src": "https://ilovetheupperwestside.com/material/media/2021/09/cropped-uws-favicon-1-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://ilovetheupperwestside.com/material/media/2021/09/cropped-uws-favicon-1-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   },
   {
     "feedName": "LIC Post",
     "href": "https://licpost.com/?p=34528",
     "domain": "licpost.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "licpost.com",
+      "icons": [
+        {
+          "src": "https://licpost.com/wp-content/uploads/sites/28/2017/12/licpost-favicon-1.png"
+        }
+      ]
     }
   },
   {
@@ -1093,18 +829,12 @@
       "domain": "manhattanexpressnews.nyc",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://manhattanexpressnews.nyc/wp-content/uploads/2022/07/cropped-cropped-MA-32x32.png"
+          "src": "https://manhattanexpressnews.nyc/wp-content/uploads/2022/07/cropped-cropped-MA-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "192x192",
-          "src": "https://manhattanexpressnews.nyc/wp-content/uploads/2022/07/cropped-cropped-MA-192x192.png"
-        },
-        {
-          "src": "https://manhattanexpressnews.nyc/wp-content/uploads/2022/07/cropped-cropped-MA-180x180.png"
-        },
-        {
-          "src": "https://manhattanexpressnews.nyc/wp-content/uploads/2022/07/cropped-cropped-MA-270x270.png"
+          "src": "https://manhattanexpressnews.nyc/wp-content/uploads/2022/07/cropped-cropped-MA-192x192.png",
+          "sizes": "192x192"
         }
       ]
     }
@@ -1114,7 +844,17 @@
     "href": "https://www.manhattantimesnews.com/?p=96024",
     "domain": "www.manhattantimesnews.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.manhattantimesnews.com",
+      "icons": [
+        {
+          "src": "https://www.manhattantimesnews.com/wp-content/uploads/2013/07/MTFavicon.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://www.manhattantimesnews.com/wp-content/uploads/2013/07/MTFavicon.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -1125,22 +865,12 @@
       "domain": "motthavenherald.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://motthavenherald.com/wp-content/uploads/2022/01/cropped-towerfav-32x32.png"
+          "src": "https://motthavenherald.com/wp-content/uploads/2022/01/cropped-towerfav-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "192x192",
-          "src": "https://motthavenherald.com/wp-content/uploads/2022/01/cropped-towerfav-192x192.png"
-        },
-        {
-          "src": "https://motthavenherald.com/wp-content/uploads/2022/01/cropped-towerfav-180x180.png"
-        },
-        {
-          "src": "https://motthavenherald.com/favicon.ico",
-          "type": "image/x-icon"
-        },
-        {
-          "src": "https://motthavenherald.com/wp-content/uploads/2022/01/cropped-towerfav-270x270.png"
+          "src": "https://motthavenherald.com/wp-content/uploads/2022/01/cropped-towerfav-192x192.png",
+          "sizes": "192x192"
         }
       ]
     }
@@ -1150,7 +880,17 @@
     "href": "https://www.jta.org/?p=1827144",
     "domain": "www.jta.org",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.jta.org",
+      "icons": [
+        {
+          "src": "https://www.jta.org/wp-content/uploads/2018/12/cropped-homeicon-square@2x-1-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://www.jta.org/wp-content/uploads/2018/12/cropped-homeicon-square@2x-1-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -1158,7 +898,17 @@
     "href": "https://www.norwoodnews.org/?p=81448",
     "domain": "www.norwoodnews.org",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.norwoodnews.org",
+      "icons": [
+        {
+          "src": "https://i1.wp.com/www.norwoodnews.org/wp-content/uploads/2020/03/cropped-Norwood-News-Vol.-33-No.-6-1.jpg?fit=32%2C32&ssl=1",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://i1.wp.com/www.norwoodnews.org/wp-content/uploads/2020/03/cropped-Norwood-News-Vol.-33-No.-6-1.jpg?fit=192%2C192&ssl=1",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -1183,96 +933,23 @@
       "domain": "queenslatino.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/favicon-32x32.png",
-          "type": "image/png"
+          "src": "/wp-content/uploads/fbrfg/favicon-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "192x192",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/android-chrome-192x192.png",
-          "type": "image/png"
+          "src": "/wp-content/uploads/fbrfg/android-chrome-192x192.png",
+          "sizes": "192x192"
         },
         {
-          "sizes": "96x96",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/favicon-96x96.png",
-          "type": "image/png"
+          "src": "/wp-content/uploads/fbrfg/favicon-96x96.png",
+          "sizes": "96x96"
         },
         {
-          "sizes": "16x16",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/favicon-16x16.png",
-          "type": "image/png"
+          "src": "/wp-content/uploads/fbrfg/favicon-16x16.png",
+          "sizes": "16x16"
         },
         {
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/favicon.ico"
-        },
-        {
-          "sizes": "57x57",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/apple-touch-icon-57x57.png"
-        },
-        {
-          "sizes": "60x60",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/apple-touch-icon-60x60.png"
-        },
-        {
-          "sizes": "72x72",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/apple-touch-icon-72x72.png"
-        },
-        {
-          "sizes": "76x76",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/apple-touch-icon-76x76.png"
-        },
-        {
-          "sizes": "114x114",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/apple-touch-icon-114x114.png"
-        },
-        {
-          "sizes": "120x120",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/apple-touch-icon-120x120.png"
-        },
-        {
-          "sizes": "144x144",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/apple-touch-icon-144x144.png"
-        },
-        {
-          "sizes": "152x152",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/apple-touch-icon-152x152.png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/apple-touch-icon-180x180.png"
-        },
-        {
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/android-chrome-36x36.png",
-          "sizes": "36x36",
-          "type": "image/png"
-        },
-        {
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/android-chrome-48x48.png",
-          "sizes": "48x48",
-          "type": "image/png"
-        },
-        {
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/android-chrome-72x72.png",
-          "sizes": "72x72",
-          "type": "image/png"
-        },
-        {
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/android-chrome-96x96.png",
-          "sizes": "96x96",
-          "type": "image/png"
-        },
-        {
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/android-chrome-144x144.png",
-          "sizes": "144x144",
-          "type": "image/png"
-        },
-        {
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/android-chrome-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        },
-        {
-          "src": "https://queenslatino.com/wp-content/uploads/fbrfg/mstile-144x144.png"
+          "src": "/wp-content/uploads/fbrfg/favicon.ico"
         }
       ]
     }
@@ -1288,14 +965,32 @@
   {
     "feedName": "Queens Post",
     "href": "https://queenspost.com/?p=62601",
-    "domain": "queenspost.com"
+    "domain": "queenspost.com",
+    "favicon": {
+      "domain": "queenspost.com",
+      "icons": [
+        {
+          "src": "https://queenspost.com/wp-content/uploads/2017/12/queenspost-favicon.png"
+        }
+      ]
+    }
   },
   {
     "feedName": "Red Hook Star Revue",
     "href": "https://www.star-revue.com/?p=16061",
     "domain": "www.star-revue.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.star-revue.com",
+      "icons": [
+        {
+          "src": "https://i0.wp.com/www.star-revue.com/wp-content/uploads/2019/06/cropped-star-revue-star.jpg?fit=32%2C32&ssl=1",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://i0.wp.com/www.star-revue.com/wp-content/uploads/2019/06/cropped-star-revue-star.jpg?fit=192%2C192&ssl=1",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -1303,7 +998,12 @@
     "href": "https://www.silive.com/giants/2023/02/eagles-defend-nick-sirianni-after-diss-from-giants-julian-love-thats-just-stupid.html",
     "domain": "www.silive.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.silive.com",
+      "icons": [
+        {
+          "src": "/pf/resources/images/silive/favicon.ico?d=988"
+        }
+      ]
     }
   },
   {
@@ -1311,16 +1011,23 @@
     "href": "https://nyc.streetsblog.org/?p=493600",
     "domain": "nyc.streetsblog.org",
     "favicon": {
-      "error": "General API error."
+      "domain": "nyc.streetsblog.org",
+      "icons": [
+        {
+          "src": "https://nyc.streetsblog.org/wp-content/uploads/2019/08/streetsblog-nyc-twitter_400x400.png?w=32",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://nyc.streetsblog.org/wp-content/uploads/2019/08/streetsblog-nyc-twitter_400x400.png?w=192",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
     "feedName": "The Broadsheet",
     "href": "https://www.ebroadsheet.com/?p=20089",
-    "domain": "www.ebroadsheet.com",
-    "favicon": {
-      "error": "General API error."
-    }
+    "domain": "www.ebroadsheet.com"
   },
   {
     "feedName": "The Bronx Chronicle",
@@ -1352,16 +1059,10 @@
       "domain": "www.thecity.nyc",
       "icons": [
         {
-          "src": "https://www.thecity.nyc/favicon-32x32.png",
-          "type": "image/png"
+          "src": "/favicon-32x32.png"
         },
         {
-          "src": "https://www.thecity.nyc/favicon-16x16.png",
-          "type": "image/png"
-        },
-        {
-          "sizes": "180x180",
-          "src": "https://www.thecity.nyc/apple-touch-icon.png"
+          "src": "/favicon-16x16.png"
         }
       ]
     }
@@ -1371,7 +1072,17 @@
     "href": "http://northbrooklynnews.com/?p=15301",
     "domain": "northbrooklynnews.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "northbrooklynnews.com",
+      "icons": [
+        {
+          "src": "https://secure.gravatar.com/blavatar/c4a8974926acb0c0058bc2b2b45782c4?s=32",
+          "sizes": "16x16"
+        },
+        {
+          "src": "https://secure.gravatar.com/blavatar/c4a8974926acb0c0058bc2b2b45782c4?s=32",
+          "sizes": "16x16"
+        }
+      ]
     }
   },
   {
@@ -1379,7 +1090,20 @@
     "href": "https://www.thelodownny.com/?p=126689",
     "domain": "www.thelodownny.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.thelodownny.com",
+      "icons": [
+        {
+          "src": "https://149786977.v2.pressablecdn.com/wp-content/uploads/2022/03/favicon_large.png"
+        },
+        {
+          "src": "https://149786977.v2.pressablecdn.com/wp-content/uploads/2021/04/cropped-favicon_large-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://149786977.v2.pressablecdn.com/wp-content/uploads/2021/04/cropped-favicon_large-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -1533,7 +1257,12 @@
     "href": "https://theskint.com/?p=70353",
     "domain": "theskint.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "theskint.com",
+      "icons": [
+        {
+          "src": "https://theskint.com/wp-content/themes/the-skint/favicon.ico"
+        }
+      ]
     }
   },
   {
@@ -1541,7 +1270,17 @@
     "href": "https://www.rockawave.com/?post_type=oht_article&p=288212",
     "domain": "www.rockawave.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.rockawave.com",
+      "icons": [
+        {
+          "src": "https://www.rockawave.com/wp-content/uploads/2020/05/cropped-wave-print-640x480-1-32x32.jpg",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://www.rockawave.com/wp-content/uploads/2020/05/cropped-wave-print-640x480-1-192x192.jpg",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -1549,7 +1288,20 @@
     "href": "https://tribecacitizen.com/?p=176049",
     "domain": "tribecacitizen.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "tribecacitizen.com",
+      "icons": [
+        {
+          "src": "https://tribecacitizen.com/wp-content/themes/tribeca/images/favicon.ico?v=2"
+        },
+        {
+          "src": "https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_32,h_32/https://tribecacitizen.com/wp-content/uploads/2016/12/cropped-TC-glyph-512-32x32.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://sp-ao.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_192,h_192/https://tribecacitizen.com/wp-content/uploads/2016/12/cropped-TC-glyph-512-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -1560,22 +1312,12 @@
       "domain": "www.uppereastsite.com",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "https://www.uppereastsite.com/wp-content/uploads/2021/04/cropped-UES-SQUARE-32x32.png"
+          "src": "https://www.uppereastsite.com/wp-content/uploads/2021/04/cropped-UES-SQUARE-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "192x192",
-          "src": "https://www.uppereastsite.com/wp-content/uploads/2021/04/cropped-UES-SQUARE-192x192.png"
-        },
-        {
-          "src": "https://www.uppereastsite.com/wp-content/uploads/2021/04/cropped-UES-SQUARE-180x180.png"
-        },
-        {
-          "src": "https://www.uppereastsite.com/favicon.ico",
-          "type": "image/x-icon"
-        },
-        {
-          "src": "https://www.uppereastsite.com/wp-content/uploads/2021/04/cropped-UES-SQUARE-270x270.png"
+          "src": "https://www.uppereastsite.com/wp-content/uploads/2021/04/cropped-UES-SQUARE-192x192.png",
+          "sizes": "192x192"
         }
       ]
     }
@@ -1585,7 +1327,17 @@
     "href": "https://w42st.com/?p=64173",
     "domain": "w42st.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "w42st.com",
+      "icons": [
+        {
+          "src": "https://w42st.com/wp-content/uploads/2020/10/siteicon.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://i0.wp.com/w42st.com/wp-content/uploads/2020/10/siteicon.png?fit=32%2C32&ssl=1",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -1593,7 +1345,17 @@
     "href": "https://welcome2thebronx.com/?p=22313",
     "domain": "welcome2thebronx.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "welcome2thebronx.com",
+      "icons": [
+        {
+          "src": "https://i0.wp.com/welcome2thebronx.com/wp-content/uploads/2020/05/wp-1588972971353.jpg?fit=32%2C32&ssl=1",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://i0.wp.com/welcome2thebronx.com/wp-content/uploads/2020/05/wp-1588972971353.jpg?fit=192%2C192&ssl=1",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -1601,7 +1363,17 @@
     "href": "https://www.westsiderag.com/?p=71539",
     "domain": "www.westsiderag.com",
     "favicon": {
-      "error": "General API error."
+      "domain": "www.westsiderag.com",
+      "icons": [
+        {
+          "src": "https://westsiderag.wpenginepowered.com/wp-content/uploads/2016/08/fav.png",
+          "sizes": "32x32"
+        },
+        {
+          "src": "https://westsiderag.wpenginepowered.com/wp-content/uploads/2016/08/fav.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   },
   {
@@ -1612,18 +1384,12 @@
       "domain": "westviewnews.org",
       "icons": [
         {
-          "sizes": "32x32",
-          "src": "http://westviewnews.org/wp-content/uploads/2016/05/cropped-icon-32x32.png"
+          "src": "http://westviewnews.org/wp-content/uploads/2016/05/cropped-icon-32x32.png",
+          "sizes": "32x32"
         },
         {
-          "sizes": "192x192",
-          "src": "http://westviewnews.org/wp-content/uploads/2016/05/cropped-icon-192x192.png"
-        },
-        {
-          "src": "http://westviewnews.org/wp-content/uploads/2016/05/cropped-icon-180x180.png"
-        },
-        {
-          "src": "http://westviewnews.org/wp-content/uploads/2016/05/cropped-icon-270x270.png"
+          "src": "http://westviewnews.org/wp-content/uploads/2016/05/cropped-icon-192x192.png",
+          "sizes": "192x192"
         }
       ]
     }

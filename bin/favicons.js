@@ -1,6 +1,9 @@
 var {io, jp} = require('scrape-stl')
 var fetch = require('node-fetch')
 
+const request = require('request')
+const cheerio = require("cheerio")
+
 async function main(){
   // favicon api frequently errors; only look up new domains
   var outpath = __dirname + '/../public/generated/favicons.json'
@@ -17,14 +20,21 @@ async function main(){
     d.domain = getHostnameFromRegex(d.href)
 
     var m = name2favicon[d.feedName]
-    if (m && m.icons){
+    if (m && m.icons && m.icons.length){
       d.favicon = m
     } else {
-      console.log(d)
-      try {
-        // d.favicon = await (await fetch('http://favicongrabber.com/api/grab/' + d.domain)).json()
-      } catch (e){ console.log(e) }
-      await sleep(3000)
+      try{
+        console.log('loading...', d)
+        d.favicon = await getFavicon(d.href)
+        console.log('getFavicon', d.favicon)
+        if (!d.favicon.icons.length){
+          d.favicon = await (await fetch('http://favicongrabber.com/api/grab/' + d.domain)).json()
+          console.log('favicongrabber', d.favicon)
+        }
+        
+      } catch(e){
+        console.log({e, d})
+      }
     }
 
     if (d.domain == 'gettingsimple.com') d.favicon = {}
@@ -34,6 +44,26 @@ async function main(){
 
 }
 main()
+
+async function getFavicon(url) {
+  return new Promise((resolve, reject) => {
+    request({url, timeout: 3000}, (error, response, body) => {
+      if (error) return reject(error)
+
+      var $ = cheerio.load(body)
+      var favicon = {domain: getHostnameFromRegex(url), icons: []}
+      $("link[rel='icon'], link[rel='shortcut icon']").each((i, el) => {
+        var src = $(el).attr("href")
+        var sizes = $(el).attr("sizes")
+        favicon.icons.push({src, sizes})
+      })
+      resolve(favicon)
+    })
+  })
+}
+
+
+
 
 function getHostnameFromRegex(url){
   var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i)
