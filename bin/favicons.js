@@ -7,7 +7,12 @@ const cheerio = require("cheerio")
 async function main(){
   // favicon api frequently errors; only look up new domains
   var outpath = __dirname + '/../public/generated/favicons.json'
-  var favicons  = io.readDataSync(outpath)
+  var favicons = []
+  try {
+    io.readDataSync(outpath)
+  } catch(e){
+
+  }
   var name2favicon = Object.fromEntries(favicons.map(d => [d.feedName, d.favicon]))
 
   var util = require('./util.js')
@@ -46,14 +51,16 @@ async function main(){
 main()
 
 async function getFavicon(url) {
+  var domain = getHostnameFromRegex(url)
   return new Promise((resolve, reject) => {
     request({url, timeout: 3000}, (error, response, body) => {
       if (error) return reject(error)
 
       var $ = cheerio.load(body)
-      var favicon = {domain: getHostnameFromRegex(url), icons: []}
+      var favicon = {domain, icons: []}
       $("link[rel='icon'], link[rel='shortcut icon']").each((i, el) => {
         var src = $(el).attr("href")
+        if (src[0] == '/') src = 'https://' + domain + src
         var sizes = $(el).attr("sizes")
         favicon.icons.push({src, sizes})
       })

@@ -27,6 +27,10 @@ async function main(){
           if (d[str] && d[str].length > 40000) d[str] = ''// || console.log('LONG', d.href)
         })
 
+        if (d.link.includes('danluu.com')){
+          console.log(d)
+        }
+
         items.push(d)
       })
     } catch (e){ console.log(feedName, '////', ('' + e).split('\n')[0]) }
