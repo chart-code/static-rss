@@ -43,7 +43,7 @@ async function main(){
   var feeddir = __dirname + '/../public/generated/feeds'
   if (!fs.existsSync(feeddir)) fs.mkdirSync(feeddir)
 
-  var last10Posts = []
+  var last30Posts = []
 
   var byFeed = jp.nestBy(allFiles, d => d.split('_.._')[0].split('/').slice(-1)[0])
   for (files of byFeed){
