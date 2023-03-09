@@ -16,7 +16,7 @@ async function main(){
     xmlFeeds = _.flatten(xmlFeeds)
     feeds = feeds.concat(xmlFeeds)
   } catch (e){
-    console.log('Missing ', {xmlPath})
+    console.log('Error loading: ', {xmlPath})
   }
 
   // Load feeds from feeds.csv
@@ -24,7 +24,7 @@ async function main(){
   try{
     feeds = feeds.concat(io.readDataSync(csvPath))
   } catch(e){
-    console.log('Missing ', {csvPath})
+    console.log('Error loading: ', {csvPath})
   }
 
   // Also get list of feeds from a google doc after share -> publish to web -> csv
@@ -40,7 +40,7 @@ async function main(){
       d.title = d.title || d.org
     })
   } catch(e) {
-    console.log('Missing ', {csvUrl})
+    console.log('Error loading: ', {csvUrl})
   }
 
   // check for duplicate titles
@@ -51,11 +51,11 @@ async function main(){
   if (!fs.existsSync(outdir)) fs.mkdirSync(outdir)
 
   feeds.forEach(feed => {
-    if (feed.ignore) return console.log('ignore', feed)
+    if (feed.ignore) return console.log('IGNORE: ', feed.xmlUrl)
 
     request({url: feed.xmlUrl, timeout: 15*1000}, (err, res, body) => {
-      if (!body) return
-      console.log(feed.title)
+      if (!body) return console.log('NO BODY: ', feed.xmlUrl)
+      console.log(feed.xmlUrl)
       fs.writeFileSync(`${outdir}/${sanitize(feed.title)}.xml`, body)
     })
   })
