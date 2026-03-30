@@ -80,6 +80,8 @@ h3{
 .post-title span{
   padding-left: 30px;
   display: block;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 
