@@ -72,7 +72,9 @@ async function main(){
       return true
     })
     // TODO filter future posts
-    .filter(d => !d.title || !d.title.includes('0021: hytradboi schedule + tickets'))
+    .filter(d => !d.title || typeof d.title !== 'string' || !d.title.includes('0021: hytradboi schedule + tickets'))
+    .filter(d => !(d.feedName === 'nate silver' && d.title && typeof d.title === 'string' && d.title.includes('How popular is the')))
+    .filter(d => !d.href || !d.href.includes('openai.com/academy/operations/'))
 
   last30Posts = _.sortBy(last30Posts, d => d.isoDate).reverse()
 

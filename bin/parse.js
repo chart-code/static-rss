@@ -11,11 +11,15 @@ async function main(){
     var feedName = path.split('/').slice(-1)[0].replace('.xml', '')
 
     try {
-      var feed = await parser.parseString(fs.readFileSync(path, 'utf8'))
+      var xmlStr = fs.readFileSync(path, 'utf8')
+        .replace(/&(?!amp;|lt;|gt;|quot;|apos;|#)/g, '&amp;')
+        .replace(/<(?!\/?[a-zA-Z!?\[])/g, '&lt;')
+      var feed = await parser.parseString(xmlStr)
 
       feed.items.forEach((d, i) => {
         d.feedName = feedName
         d.feedIndex = i
+        if (d.title && typeof d.title !== 'string') d.title = d.title._ || d.title.toString()
         d.href = d.guid && d.guid.includes && d.guid.includes('//') ? d.guid : d.link
 
         // trim feeds and delete unused properties
