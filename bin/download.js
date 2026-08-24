@@ -71,15 +71,17 @@ async function main(){
 
     pending++
     request({url: feed.xmlUrl, timeout: 15*1000, headers, gzip: true}, (err, res, body) => {
-      pending--
-      if (res?.statusCode == 304) return console.log('UNCHANGED: ', feed.xmlUrl)
-      if (err || res.statusCode != 200 || !body){
-        return console.log(`ERROR ${err?.code || res?.statusCode}: `, feed.xmlUrl)
+      if (res?.statusCode == 304){
+        console.log('UNCHANGED: ', feed.xmlUrl)
+      } else if (err || res.statusCode != 200 || !body){
+        console.log(`ERROR ${err?.code || res?.statusCode}: `, feed.xmlUrl)
+      } else {
+        console.log(feed.xmlUrl)
+        fs.writeFileSync(outpath, body)
+        savedHeaders[feed.xmlUrl] = {etag: res.headers.etag, lastModified: res.headers['last-modified']}
       }
 
-      console.log(feed.xmlUrl)
-      fs.writeFileSync(outpath, body)
-      savedHeaders[feed.xmlUrl] = {etag: res.headers.etag, lastModified: res.headers['last-modified']}
+      pending--
       if (!pending) fs.writeFileSync(headersPath, JSON.stringify(savedHeaders, null, 2))
     })
   })
