@@ -98,6 +98,23 @@ h3{
   height: auto !important;
 }
 
+/* keep wide posts (code blocks, tables) from stretching the page on mobile; scroll inside the post instead */
+.raw-html{
+  overflow-x: auto;
+  overflow-wrap: break-word;
+}
+.raw-html pre{
+  overflow-x: auto;
+}
+.raw-html iframe, .raw-html video, .raw-html figure, .raw-html svg{
+  max-width: 100%;
+}
+.raw-html table{
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 
 
 

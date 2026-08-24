@@ -1,8 +1,8 @@
 var {fs, d3, jp, _, request, io} = require('scrape-stl')
-var xml2json = require('xml2json')
 var sanitize = require('sanitize-filename')
-var {execSync} = require('child_process')
 var fetch = require('node-fetch')
+
+var UA = 'static-rss/1.0 (+https://roadtolarissa.com/static-rss)'
 
 async function main(){
   var feeds = []
@@ -11,9 +11,10 @@ async function main(){
   var xmlPath = process.env.STATIC_RSS_XML_PATH || __dirname + '/../feeds.xml'
   try {
     var xmlStr = fs.readFileSync(xmlPath, 'utf8')
-    var xmlFeeds = xml2json.toJson(xmlStr, {object: true}).opml.body.outline
-      .map(d => d.outline || d)
-    xmlFeeds = _.flatten(xmlFeeds)
+    var xmlFeeds = [...xmlStr.matchAll(/<outline [^>]*xmlUrl="([^"]*)"[^>]*>/g)].map(([str, xmlUrl]) => {
+      var title = str.match(/ (?:title|text)="([^"]*)"/)?.[1] || xmlUrl
+      return {title, xmlUrl}
+    })
     feeds = feeds.concat(xmlFeeds)
   } catch (e){
     console.log('Error loading: ', {xmlPath})
@@ -48,15 +49,38 @@ async function main(){
     .forEach(d => d.length > 1 && console.log(d))
 
   var outdir = __dirname + `/cache/xml`
-  if (!fs.existsSync(outdir)) fs.mkdirSync(outdir)
+  if (!fs.existsSync(outdir)) fs.mkdirSync(outdir, {recursive: true})
 
+  // etag/last-modified from the previous run so we can make conditional requests
+  // (sites like rachelbythebay.com block readers that re-download unchanged feeds)
+  var headersPath = __dirname + '/cache/headers.json'
+  var savedHeaders = fs.existsSync(headersPath) ? JSON.parse(fs.readFileSync(headersPath, 'utf8')) : {}
+
+  var pending = 0
   feeds.forEach(feed => {
     if (feed.ignore) return console.log('IGNORE: ', feed.xmlUrl)
+    if (!feed.xmlUrl) return console.log('NO URL: ', feed.title)
 
-    request({url: feed.xmlUrl, timeout: 15*1000}, (err, res, body) => {
-      if (!body) return console.log('NO BODY: ', feed.xmlUrl)
+    var outpath = `${outdir}/${sanitize(feed.title)}.xml`
+    var prev = savedHeaders[feed.xmlUrl] || {}
+    var headers = {'User-Agent': UA}
+    if (fs.existsSync(outpath)){
+      if (prev.etag) headers['If-None-Match'] = prev.etag
+      if (prev.lastModified) headers['If-Modified-Since'] = prev.lastModified
+    }
+
+    pending++
+    request({url: feed.xmlUrl, timeout: 15*1000, headers, gzip: true}, (err, res, body) => {
+      pending--
+      if (res?.statusCode == 304) return console.log('UNCHANGED: ', feed.xmlUrl)
+      if (err || res.statusCode != 200 || !body){
+        return console.log(`ERROR ${err?.code || res?.statusCode}: `, feed.xmlUrl)
+      }
+
       console.log(feed.xmlUrl)
-      fs.writeFileSync(`${outdir}/${sanitize(feed.title)}.xml`, body)
+      fs.writeFileSync(outpath, body)
+      savedHeaders[feed.xmlUrl] = {etag: res.headers.etag, lastModified: res.headers['last-modified']}
+      if (!pending) fs.writeFileSync(headersPath, JSON.stringify(savedHeaders, null, 2))
     })
   })
 }

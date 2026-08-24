@@ -1,5 +1,6 @@
 var {fs, d3, io, jp, _, glob, request} = require('scrape-stl')
 var util = require('./util.js')
+var fulltext = require('./fulltext.js')
 
 var Parser = require('rss-parser')
 var parser = new Parser()
@@ -49,6 +50,8 @@ async function main(){
     .filter(d => {
       return !d['content:encoded'] || !d['content:encoded'].includes('Listen to more mind-expanding audio on')
     })
+
+  items = await fulltext.addFullText(items)
 
   util.saveItems(items)
 
