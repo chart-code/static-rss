@@ -21,6 +21,7 @@ function feedHtml(d){
 }
 
 function needsFullText(d){
+  if (d.longPost) return false
   var html = feedHtml(d)
   return textOf(html).length < 400 && !/<img/i.test(html)
 }

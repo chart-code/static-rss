@@ -91,7 +91,22 @@ d3.loadData(
 
         var width = sel.select('p').node().offsetWidth
 
-        var contentStr = (d['content:encoded'] || d.content || d.summary || '')
+        var contentStr = d['content:encoded'] || d.content || d.summary || ''
+
+        // long posts are saved to their own file and fetched on click
+        if (!contentStr && d.longPost){
+          var rawHTMLSel = sel.append('div.raw-html').html('<p style="opacity:.4">loading…</p>')
+          d3.loadData(window.datapath + 'generated/longposts/' + d.longPost + '.json', (err, res) => {
+            if (err || !res[0][0]) return rawHTMLSel.html('<p style="opacity:.4">couldn\'t load post</p>')
+            renderContent(res[0][0].html)
+          })
+        } else {
+          var rawHTMLSel = sel.append('div.raw-html')
+          renderContent(contentStr)
+        }
+
+        function renderContent(contentStr){
+        contentStr = contentStr
           .replaceAll('width: ', 'x-width: ')
           .replaceAll(' width=', ' x-width=')
           .replaceAll('height: ', 'x-height: ')
@@ -103,7 +118,7 @@ d3.loadData(
             .replaceAll(` data-src="`, ` src="`)
         }
 
-        var rawHTMLSel = sel.append('div.raw-html').html(contentStr)
+        rawHTMLSel.html(contentStr)
 
         // responsive youtube embed
         rawHTMLSel.selectAll('iframe').at({width, height: width*9/16})
@@ -119,7 +134,7 @@ d3.loadData(
         if (hrefPP == 'thecity.nyc'){
           rawHTMLSel.selectAll('.Enhancement-item').remove()
         }
-
+        }
 
         window.localStorage.setItem(d.href, new Date().toISOString())
       })

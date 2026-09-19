@@ -2,6 +2,12 @@ var {fs, d3, io, jp, _, glob, request} = require('scrape-stl')
 var util = require('./util.js')
 var fulltext = require('./fulltext.js')
 
+var sanitize = require('sanitize-filename')
+
+var longpostdir = __dirname + '/../public/generated/longposts/'
+var fs2 = require('fs')
+if (!fs2.existsSync(longpostdir)) fs2.mkdirSync(longpostdir, {recursive: true})
+
 var Parser = require('rss-parser')
 var parser = new Parser()
 
@@ -28,8 +34,13 @@ async function main(){
         delete d['content:contentSnippet']
         if (d['content:encoded']) delete d.content
 
+        // long posts are saved to their own file and fetched on click
         'content content:encoded'.split(' ').forEach(str => {
-          if (d[str] && d[str].length > 40000) d[str] = ''// || console.log('LONG', d.href)
+          if (d[str] && d[str].length > 40000){
+            d.longPost = sanitize(d.href || d.title).slice(-150)
+            fs.writeFileSync(longpostdir + d.longPost + '.json', JSON.stringify([{html: d[str]}]))
+            d[str] = ''
+          }
         })
 
         items.push(d)
