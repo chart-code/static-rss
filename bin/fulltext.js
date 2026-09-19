@@ -66,6 +66,26 @@ async function fetchArticle(url){
       var el = doc.querySelector(sel)
       if (el && textOf(el.innerHTML).length > 200){ container = el; break }
     }
+    if (container){
+      // cruft: the reader already shows the title, so drop a leading h1/dateline;
+      // drop nav links like 'to the blog home page'
+      var h1 = container.querySelector('h1')
+      if (h1) h1.remove()
+      var first = container.firstElementChild
+      for (var i = 0; i < 3 && first; i++){
+        var t = first.textContent.replace(/\s+/g, ' ').trim()
+        var next = first.nextElementSibling
+        if (t.length < 40 && /^\w+ \d{1,2}, \d{4}$/.test(t)) first.remove()
+        first = next
+      }
+      container.querySelectorAll('a').forEach(a => {
+        var t = a.textContent.trim()
+        if (/^((back |go |return )?to the (blog )?home ?page|home|back to top|read more posts)$/i.test(t)){
+          var p = a.closest('p, div')
+          ;(p && textOf(p.innerHTML).length < 60 ? p : a).remove()
+        }
+      })
+    }
     rv.html = container 
       ? container.innerHTML 
       : new Readability(doc).parse()?.content || ''
