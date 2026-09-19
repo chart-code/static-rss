@@ -20,8 +20,13 @@ function feedHtml(d){
   return d['content:encoded'] || d.content || d.summary || '' 
 }
 
+// feeds whose pages are richer than their feed content (e.g. stratechery strips
+// the bolded highlights); always prefer the fetched article
+var alwaysFetchRegex = /stratechery\.com/
+
 function needsFullText(d){
   if (d.longPost) return false
+  if (alwaysFetchRegex.test(d.href || '')) return true
   var html = feedHtml(d)
   return textOf(html).length < 400 && !/<img/i.test(html)
 }
@@ -44,15 +49,25 @@ async function fetchArticle(url){
     var pageHtml = await res.text()
 
     var doc = new JSDOM(pageHtml, {url, virtualConsole: new VirtualConsole()}).window.document // VirtualConsole hides css parse errors
-    doc.querySelectorAll('script, style, nav, footer, form, iframe, noscript').forEach(d => d.remove())
+    doc.querySelectorAll('script, style, nav, footer, form, iframe, noscript, header').forEach(d => d.remove())
+    // lazy-loaded images: promote data-src to src so they show up
+    doc.querySelectorAll('img').forEach(d => {
+      var lazy = d.getAttribute('data-src') || d.getAttribute('data-lazy-src') || d.getAttribute('data-original')
+      if (lazy && !d.getAttribute('src')) d.setAttribute('src', lazy)
+    })
     doc.querySelectorAll('img[src], a[href]').forEach(d => {
       if (d.src) d.setAttribute('src', d.src)
       if (d.href) d.setAttribute('href', d.href)
     })
 
-    var article = doc.querySelector('article')
-    rv.html = article && textOf(article.innerHTML).length > 200 
-      ? article.innerHTML 
+    // article, then main (readability often drops figures), then readability
+    var container = null
+    for (var sel of ['article', 'main']){
+      var el = doc.querySelector(sel)
+      if (el && textOf(el.innerHTML).length > 200){ container = el; break }
+    }
+    rv.html = container 
+      ? container.innerHTML 
       : new Readability(doc).parse()?.content || ''
     rv.text = textOf(rv.html)
     // only short posts get here, so a short page with subscribe language is almost always a teaser
@@ -83,8 +98,9 @@ async function addFullText(items, maxFetches=100){
     if (article.paywall){
       console.log('PAYWALL', d.href)
       d.paywall = true
-    } else if (article.text && article.text.length > textOf(feedHtml(d)).length && article.html.length < 40000){
-      d['content:encoded'] = article.html
+    } else if (article.text && article.html.length < 300000 &&
+        (alwaysFetchRegex.test(d.href) || article.text.length > textOf(feedHtml(d)).length)){
+      d['content:encoded'] = article.html // oversize posts are offloaded to longposts/ later in parse.js
     }
   }
 
