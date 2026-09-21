@@ -121,3 +121,16 @@ h3{
 
 
 
+
+/* posts are merged in above what's on screen; script.js holds the open post in place itself */
+html, body{
+  overflow-anchor: none;
+}
+
+.rss-status{
+  padding: 10px;
+  padding-bottom: 60px;
+  font-size: 14px;
+  opacity: .4;
+  min-height: 21px;
+}
