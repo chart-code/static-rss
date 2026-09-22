@@ -16,7 +16,7 @@ var scopePath = new URL(SCOPE).pathname
 // caches are named after the app folder (matching script.js's basePath), so the standalone page
 // and the embedding post share one data cache
 var PREFIX = 'static-rss ' + appPath + ' '
-var SHELL_CACHE = PREFIX + 'shell-v4'
+var SHELL_CACHE = PREFIX + 'shell-v5'
 var DATA_CACHE = PREFIX + 'data'
 var SHELL = ['script.js', 'style.css', 'd3_.js', 'manifest.json',
   'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'favicon.png'].map(d => new URL(d, APP).href)

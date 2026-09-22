@@ -71,13 +71,14 @@ if (isDefaultView){
     addPosts(stored)
     var hadPosts = stored.length > 0
 
+    var today = []
     getJSON('items-today', !hadPosts)
-      .then(mergePosts)
+      .then(d => { today = d; mergePosts(d) })
       .catch(() => {})
       .then(() => getJSON('items-recent', !hadPosts && !itemSel.select('.item').size()))
       .then(recent => {
         mergePosts(recent)
-        expirePosts(recent)
+        expirePosts(recent, today)
         saveLongPosts(true)
       })
       .catch(() => saveLongPosts(false))
@@ -139,17 +140,39 @@ function mergePosts(fresh){
 
 // items-recent is the last 31 days; drop anything older that isn't in it. Measured from its
 // newest post rather than today, so a feed whose update loop has stopped doesn't empty out
-function expirePosts(recent){
+function expirePosts(recent, today){
   var tomorrow = Date.now() + 24*60*60*1000
   var newest = d3.max(recent, d => new Date(d.isoDate) < tomorrow ? d.isoDate : null)
   if (!newest) return
   var cutoff = new Date(+new Date(newest) - 31*24*60*60*1000).toISOString()
-  var inRecent = new Set(recent.map(d => d.href))
+  var inFresh = new Set(recent.concat(today || []).map(d => d.href))
 
-  var old = _.values(posts).filter(d => d.isoDate < cutoff && !inRecent.has(d.href))
+  var old = _.values(posts).filter(d => d.isoDate < cutoff && !inFresh.has(d.href))
   store.del(old.map(d => d.href)).catch(() => {})
   // left on screen until the next load; an open one stays put
   old.forEach(d => d.expired = true)
+
+  // inside the window but gone from the files: removed upstream (a dropped feed, a deleted
+  // post). Forget it and take it off the page now, holding the scroll position; an open post
+  // stays until the next load
+  var gone = _.values(posts).filter(d => d.isoDate >= cutoff && d.isoDate <= newest && !inFresh.has(d.href))
+  store.del(gone.map(d => d.href)).catch(() => {})
+  gone.forEach(d => {
+    if (d.active || !d.node) return d.expired = true
+    removeNode(d.node)
+    delete posts[d.href]
+  })
+  _.keys(groups).forEach(k => {
+    if (groups[k].querySelector('.item')) return
+    removeNode(groups[k])
+    delete groups[k]
+  })
+}
+
+function removeNode(node){
+  var r = node.getBoundingClientRect()
+  node.remove()
+  if (r.bottom <= 0) window.scrollBy(0, -r.height)
 }
 
 // posts are slotted into their date, newest first, without redrawing anything. An open post,
