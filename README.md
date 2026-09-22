@@ -1,7 +1,7 @@
 # static-rss
 
-- https://rss.roadtolarissa.com/ (the app, installable, works offline)
-- https://roadtolarissa.com/static-rss/ (blog post embedding it)
+- https://roadtolarissa.com/static-rss/ (installable, works offline; nginx serves the app files here behind the blog post)
+- https://rss.roadtolarissa.com/ (same app, no blog chrome)
 - https://roadtolarissa.com/nyc-feed/
 
 ## Dev

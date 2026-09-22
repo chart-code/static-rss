@@ -6,10 +6,12 @@
 // caches: every cache here is named after this worker's scope, and activate only ever deletes
 // caches carrying that prefix. The trailing space keeps a worker at / from matching /nyc-feed/
 var PREFIX = 'static-rss ' + new URL(self.registration.scope).pathname + ' '
-var SHELL_CACHE = PREFIX + 'shell-v1'
+var SHELL_CACHE = PREFIX + 'shell-v2'
 var DATA_CACHE = PREFIX + 'data'
 var SHELL = ['./', 'index.html', 'script.js', 'style.css', 'd3_.js', 'manifest.json',
   'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'favicon.png']
+// under /static-rss/ the page is the blog post, which also needs the site's own stylesheet
+if (new URL(self.registration.scope).pathname != '/') SHELL.push('/style.css')
 var shellPaths = new Set(SHELL.map(d => new URL(d, self.registration.scope).pathname))
 
 self.addEventListener('install', e => {
