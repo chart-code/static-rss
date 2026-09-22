@@ -1,6 +1,7 @@
 # static-rss
 
-- https://roadtolarissa.com/static-rss/
+- https://rss.roadtolarissa.com/ (the app, installable, works offline)
+- https://roadtolarissa.com/static-rss/ (blog post embedding it)
 - https://roadtolarissa.com/nyc-feed/
 
 ## Dev
