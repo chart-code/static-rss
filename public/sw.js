@@ -2,29 +2,49 @@
 // network-first with a cache fallback. script.js saves long posts into DATA_CACHE itself
 // (fetching them with ?offline, which this worker leaves alone)
 //
-// /slinks/static-rss/, /slinks/nyc-feed/ and /reader/ all live on one origin and share its
-// caches: every cache here is named after this worker's scope, and activate only ever deletes
-// caches carrying that prefix. The trailing space keeps a worker at / from matching /nyc-feed/
-var PREFIX = 'static-rss ' + new URL(self.registration.scope).pathname + ' '
-var SHELL_CACHE = PREFIX + 'shell-v2'
+// /slinks/static-rss/, /slinks/nyc-feed/, the blog posts and /reader/ all live on one origin and
+// share its caches: every cache here carries this app's prefix, and activate only ever deletes
+// caches carrying it (or the old per-scope prefix). The trailing space keeps / from matching /nyc-feed/
+// The worker lives with the app (/slinks/static-rss/, or / on rss.roadtolarissa.com) and can also
+// control a blog post that embeds the app (scope /static-rss/, allowed by nginx's
+// Service-Worker-Allowed header). App files resolve against the worker's own folder, the
+// page itself against the scope, so the post keeps its absolute /slinks/ links.
+var APP = new URL('./', self.location).href
+var SCOPE = self.registration.scope
+var appPath = new URL(APP).pathname
+var scopePath = new URL(SCOPE).pathname
+// caches are named after the app folder (matching script.js's basePath), so the standalone page
+// and the embedding post share one data cache
+var PREFIX = 'static-rss ' + appPath + ' '
+var SHELL_CACHE = PREFIX + 'shell-v4'
 var DATA_CACHE = PREFIX + 'data'
-var SHELL = ['./', 'index.html', 'script.js', 'style.css', 'd3_.js', 'manifest.json',
-  'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'favicon.png']
-// under /static-rss/ the page is the blog post, which also needs the site's own stylesheet
-if (new URL(self.registration.scope).pathname != '/') SHELL.push('/style.css')
-var shellPaths = new Set(SHELL.map(d => new URL(d, self.registration.scope).pathname))
+var SHELL = ['script.js', 'style.css', 'd3_.js', 'manifest.json',
+  'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'favicon.png'].map(d => new URL(d, APP).href)
+SHELL.push(SCOPE, new URL('index.html', SCOPE).href)
+// the embedding post also needs its manifest, plus the blog's own stylesheet and header icons.
+// The blog files are saved best-effort, so a change to the blog template can't break install.
+var EXTRA = []
+if (scopePath != appPath){
+  var name = scopePath.split('/').filter(d => d).pop()
+  SHELL.push(new URL('manifest-' + name + '.json', APP).href)
+  EXTRA = ['/style.css', '/img/favicon.png', '/images/github.svg', '/images/twitter.svg',
+    '/images/mail.svg', '/images/rss.svg'].map(d => new URL(d, SCOPE).href)
+}
+SHELL = [...new Set(SHELL)]
+var shellPaths = new Set(SHELL.concat(EXTRA).map(d => new URL(d).pathname))
 
 self.addEventListener('install', e => {
   // 'reload' skips the http cache: nginx sends no cache headers, so the browser may be holding an old script.js
   e.waitUntil(caches.open(SHELL_CACHE)
-    .then(c => c.addAll(SHELL.map(d => new Request(d, {cache: 'reload'}))))
+    .then(c => c.addAll(SHELL.map(d => new Request(d, {cache: 'reload'})))
+      .then(() => Promise.all(EXTRA.map(d => c.add(new Request(d, {cache: 'reload'})).catch(() => {})))))
     .then(() => self.skipWaiting()))
 })
 
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys()
     .then(keys => Promise.all(keys
-      .filter(k => k.startsWith(PREFIX) && k != SHELL_CACHE && k != DATA_CACHE)
+      .filter(k => (k.startsWith(PREFIX) || k.startsWith('static-rss ' + scopePath + ' ')) && k != SHELL_CACHE && k != DATA_CACHE)
       .map(k => caches.delete(k))))
     .then(() => self.clients.claim()))
 })

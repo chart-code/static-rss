@@ -389,7 +389,10 @@ if (navigator.storage && navigator.storage.persist){
     .catch(() => {})
 }
 
-// only the standalone page is inside sw.js's scope
-if (!window.datapath && 'serviceWorker' in navigator && (location.protocol == 'https:' || location.hostname == 'localhost')){
-  navigator.serviceWorker.register('sw.js').catch(() => {})
+// standalone: sw.js sits next to the page. Embedded in a blog post: the worker stays in the app
+// folder (datapath) and takes the post's folder as its scope, which nginx allows with
+// Service-Worker-Allowed. A worker must be same-origin, so a cross-origin datapath just fails here.
+if ('serviceWorker' in navigator && (location.protocol == 'https:' || location.hostname == 'localhost')){
+  var swOpts = window.datapath ? {scope: './'} : undefined
+  navigator.serviceWorker.register((window.datapath || '') + 'sw.js', swOpts).catch(() => {})
 }
