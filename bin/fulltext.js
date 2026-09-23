@@ -12,6 +12,15 @@ if (!fs.existsSync(cachedir)) fs.mkdirSync(cachedir, {recursive: true})
 
 var paywallRegex = /paid subscribers|paying subscribers|subscribers only|subscribe to (read|continue|keep reading|unlock)|to continue reading|already (a (paid )?subscriber|subscribed)|members only|sign in to (read|continue)|this post is for|available to subscribers|become a (paid )?subscriber|for full access|free trial/i
 
+// only short posts get here, so a short page with subscribe language is almost always a teaser.
+// Some teaser pages carry enough site chrome to pass 5000 chars (stratechery's paid updates run
+// ~5700), so an explicit "subscribe to X for full access" counts at any length.
+var hardPaywallRegex = /subscribe to [\w .’'-]{1,40} for full access/i
+function isPaywall(text){
+  text = text || ''
+  return (text.length < 5000 && paywallRegex.test(text)) || hardPaywallRegex.test(text)
+}
+
 function textOf(html){ 
   return (html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() 
 }
@@ -90,8 +99,7 @@ async function fetchArticle(url){
       ? container.innerHTML 
       : new Readability(doc).parse()?.content || ''
     rv.text = textOf(rv.html)
-    // only short posts get here, so a short page with subscribe language is almost always a teaser
-    rv.paywall = rv.text.length < 5000 && paywallRegex.test(rv.text)
+    rv.paywall = isPaywall(rv.text)
   } catch (e){ 
     rv.error = '' + e 
   }
@@ -115,7 +123,8 @@ async function addFullText(items, maxFetches=100){
     }
 
     var article = await fetchArticle(d.href)
-    if (article.paywall){
+    // re-judged every run from the cached text, so a rule change applies to pages fetched before it
+    if (isPaywall(article.text)){
       console.log('PAYWALL', d.href)
       d.paywall = true
     } else if (article.text && article.html.length < 300000 &&
@@ -128,4 +137,4 @@ async function addFullText(items, maxFetches=100){
   return items.filter(d => !d.paywall)
 }
 
-module.exports = {addFullText, fetchArticle, needsFullText}
+module.exports = {isPaywall, addFullText, fetchArticle, needsFullText}
