@@ -44,6 +44,16 @@ function stripSponsors(d){
   } catch (e){}
 }
 
+var str = d => typeof d == 'string' ? d : ''
+var hasPodcastUrl = d => /podcast/i.test(str(d.href))
+var titledPodcast = d => /\bpodcast:\s/i.test(str(d.title))
+var podcastFilters = {
+  'The City': d => /^\s*listen\b/i.test(str(d.title)) || hasPodcastUrl(d),
+  'Streetsblog NYC': d => titledPodcast(d) || hasPodcastUrl(d),
+  // not a bare /^listen/ here: propublica runs investigations like "Listen to 911 Calls ..."
+  'ProPublica Articles and Investigations': d => titledPodcast(d) || hasPodcastUrl(d),
+}
+
 async function main(){
   var items = []
 
@@ -86,6 +96,15 @@ async function main(){
     }) 
     .filter(d => {
       return !d['content:encoded'] || !d['content:encoded'].includes('Listen to more mind-expanding audio on')
+    })
+    // podcast episodes from feeds worth reading but not listening to. Keyed by feed name, so
+    // renaming one of these in the sheet turns its filter off. A news story that merely mentions
+    // a podcast is kept: only a /podcast url, a LISTEN: headline or an "X Podcast:" title counts.
+    .filter(d => {
+      var isPodcast = podcastFilters[d.feedName]
+      if (!isPodcast || !isPodcast(d)) return true
+      console.log('PODCAST', d.feedName, '//', d.href)
+      return false
     })
 
   items = await fulltext.addFullText(items)
