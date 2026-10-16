@@ -44,6 +44,12 @@ function stripSponsors(d){
   } catch (e){}
 }
 
+var authorOf = d => {
+  var a = d['dc:creator'] || d.creator || d.author
+  if (a && typeof a == 'object') a = a.name || a['#text']
+  return typeof a == 'string' ? a.trim() : ''
+}
+
 var str = d => typeof d == 'string' ? d : ''
 var hasPodcastUrl = d => /podcast/i.test(str(d.href))
 var titledPodcast = d => /\bpodcast:\s/i.test(str(d.title))
@@ -109,6 +115,29 @@ async function main(){
 
   items = await fulltext.addFullText(items)
   items.forEach(stripSponsors)
+
+  // Multi-author blogs (crooked timber, the city) don't repeat the byline in the post body, so
+  // the reader can't tell who wrote it. Authors seen per feed accumulate in a cache file, so a
+  // week where one person happens to write everything doesn't drop the byline. Runs after
+  // addFullText, since the fetched article often carries the name the feed omitted.
+  var authorsPath = __dirname + '/cache/feed-authors.json'
+  var feedAuthors = {}
+  try { feedAuthors = JSON.parse(fs.readFileSync(authorsPath, 'utf8')) } catch (e){}
+
+  items.forEach(d => {
+    var author = authorOf(d)
+    if (!author) return
+    var seen = feedAuthors[d.feedName] = feedAuthors[d.feedName] || []
+    if (!seen.includes(author)) seen.push(author)
+  })
+  fs.writeFileSync(authorsPath, JSON.stringify(feedAuthors, null, 2))
+
+  items.forEach(d => {
+    var author = authorOf(d)
+    if (!author || (feedAuthors[d.feedName] || []).length < 2) return
+    var shown = str(d.title) + ' ' + str(d['content:encoded']) + ' ' + str(d.content)
+    if (!shown.includes(author)) d.byline = author
+  })
 
   // long posts are saved to their own file and fetched on click
   items.forEach(d => {

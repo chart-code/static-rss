@@ -145,6 +145,8 @@ d3.loadData(
       .at({src: d => name2icons[d.feedName]?.src, width: 20})
       .on('error', function(d){ d3.select(this).st({opacity: 0})})
     titleSel.append('span').html(d => d.title)
+    // only set on feeds with more than one author whose posts don't name them (see bin/parse.js)
+    titleSel.filter(d => d.byline).append('span.byline').text(d => d.byline)
 
     postSel.append('div.content')
   }
