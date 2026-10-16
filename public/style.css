@@ -85,12 +85,6 @@ h3{
 }
 
 
-.post-title .byline{
-  display: block;
-  padding-left: 30px;
-  font-size: 13px;
-  opacity: .4;
-}
 
 .active .post-title, .read .post-title{
   background: #333;

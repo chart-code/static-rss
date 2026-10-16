@@ -117,24 +117,46 @@ async function main(){
   items.forEach(stripSponsors)
 
   // Multi-author blogs (crooked timber, the city) don't repeat the byline in the post body, so
-  // the reader can't tell who wrote it. Authors seen per feed accumulate in a cache file, so a
-  // week where one person happens to write everything doesn't drop the byline. Runs after
-  // addFullText, since the fetched article often carries the name the feed omitted.
+  // the reader can't tell who wrote it. Counts per feed accumulate in a cache file. A feed with a
+  // regular writer (scott alexander on acx, bruce schneier) only gets a byline on the exceptions:
+  // naming the usual author on every post is noise. Runs after addFullText, since the fetched
+  // article often carries the name the feed omitted.
   var authorsPath = __dirname + '/cache/feed-authors.json'
   var feedAuthors = {}
   try { feedAuthors = JSON.parse(fs.readFileSync(authorsPath, 'utf8')) } catch (e){}
+  // the first version of this stored a plain list of names
+  Object.keys(feedAuthors).forEach(f => {
+    if (!Array.isArray(feedAuthors[f])) return
+    feedAuthors[f] = Object.fromEntries(feedAuthors[f].map(a => [a, 1]))
+  })
 
   items.forEach(d => {
     var author = authorOf(d)
     if (!author) return
-    var seen = feedAuthors[d.feedName] = feedAuthors[d.feedName] || []
-    if (!seen.includes(author)) seen.push(author)
+    var counts = feedAuthors[d.feedName] = feedAuthors[d.feedName] || {}
+    counts[author] = (counts[author] || 0) + 1
   })
   fs.writeFileSync(authorsPath, JSON.stringify(feedAuthors, null, 2))
 
+  // 'B. Schneier' is 'Bruce Schneier' with a shorter first name, not a guest post
+  var lastName = a => a.toLowerCase().replace(/[^a-z ]/g, '').trim().split(' ').slice(-1)[0]
+  var samePerson = (a, b) => a == b || (!!a && !!b && lastName(a) == lastName(b))
+
+  function regularAuthor(feed){
+    var counts = feedAuthors[feed] || {}
+    var names = Object.keys(counts)
+    var total = names.reduce((sum, a) => sum + counts[a], 0)
+    if (total < 4) return ''
+    var top = names.sort((a, b) => counts[b] - counts[a])[0]
+    return counts[top]/total >= .6 ? top : ''
+  }
+
   items.forEach(d => {
     var author = authorOf(d)
-    if (!author || (feedAuthors[d.feedName] || []).length < 2) return
+    if (!author) return
+    var names = Object.keys(feedAuthors[d.feedName] || {})
+    if (names.length < 2) return
+    if (samePerson(author, regularAuthor(d.feedName))) return
     var shown = str(d.title) + ' ' + str(d['content:encoded']) + ' ' + str(d.content)
     if (!shown.includes(author)) d.byline = author
   })

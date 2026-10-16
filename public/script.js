@@ -83,11 +83,11 @@ d3.loadData(
         }
 
         var hrefPP = d.href.split('//')[1].replace('www.', '').replace('.html', '').split('/')[0]
-        sel
-          .append('p').st({marginTop: 5, opacity: .4})
-          .append('a').text(hrefPP).at({href: d.href, target: '_blank'})
-          .parent()
-          .append('a').text('>').at({href: '?feed=' + hrefPP}).st({marginLeft: '1em'})
+        var headSel = sel.append('p').st({marginTop: 5, opacity: .4})
+        headSel.append('a').text(hrefPP).at({href: d.href, target: '_blank'})
+        headSel.append('a').text('>').at({href: '?feed=' + hrefPP}).st({marginLeft: '1em'})
+        // only set on feeds with more than one author whose posts don't name them (bin/parse.js)
+        if (d.byline) headSel.append('span').text(d.byline).st({float: 'right'})
 
         var width = sel.select('p').node().offsetWidth
 
@@ -146,7 +146,6 @@ d3.loadData(
       .on('error', function(d){ d3.select(this).st({opacity: 0})})
     titleSel.append('span').html(d => d.title)
     // only set on feeds with more than one author whose posts don't name them (see bin/parse.js)
-    titleSel.filter(d => d.byline).append('span.byline').text(d => d.byline)
 
     postSel.append('div.content')
   }
