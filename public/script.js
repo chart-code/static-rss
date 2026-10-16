@@ -25,10 +25,24 @@ if (params.get('date')) itemURL = 'dates/' + params.get('date')
 if (params.get('feed')) itemURL = 'feeds/' + params.get('feed')
   
 
-d3.loadData(
-  window.datapath + `generated/${itemURL}.json?` + Math.random(), 
-  window.datapath + 'generated/favicons.json', 
-  (err, res) => {
+// network first; sw.js keeps a copy of generated/*.json, so the list renders with no signal.
+// The worker isn't controlling the page on a first visit, so also give up on a dead-slow network
+// after 5s and look in the cache directly (keys match sw.js: absolute url, no query string)
+function getJSON(path, bust){
+  var url = new URL(window.datapath + 'generated/' + path + '.json', location.href).href
+  var net = fetch(url + (bust ? '?' + Math.random() : '')).then(res => {
+    if (!res.ok || res.redirected) throw new Error(res.status)
+    return res.json()
+  })
+  var cached = () => !window.caches ?
+    Promise.reject(new Error('no caches')) :
+    caches.match(url).then(res => res ? res.json() : Promise.reject(new Error('no copy')))
+  var slow = new Promise(resolve => setTimeout(() => resolve(cached().catch(() => net)), 5000))
+
+  return Promise.race([net, slow]).catch(cached)
+}
+
+Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(res => {
 
   window.items = _.sortBy(res[0], d => d.isoDate).reverse()
   window.favicons = res[1]
@@ -51,9 +65,9 @@ d3.loadData(
   drawDays(items)
 
   // add posts from the last 90 days
-  d3.loadData(
-    window.datapath + `generated/${itemURL.replace('today', 'recent')}.json`, 
-    (err, res) => drawDays(res[0], itemSel.selectAll('div.date').data().map(d => d.key)))
+  getJSON(itemURL.replace('today', 'recent'))
+    .then(recent => drawDays(recent, itemSel.selectAll('div.date').data().map(d => d.key)))
+    .catch(() => {})
 
   function drawDays(items, prevDates=[]){
     var byDate = d3.nestBy(items, d => d.isoDate.split('T')[0])
@@ -96,10 +110,9 @@ d3.loadData(
         // long posts are saved to their own file and fetched on click
         if (!contentStr && d.longPost){
           var rawHTMLSel = sel.append('div.raw-html').html('<p style="opacity:.4">loading…</p>')
-          d3.loadData(window.datapath + 'generated/longposts/' + d.longPost + '.json', (err, res) => {
-            if (err || !res[0][0]) return rawHTMLSel.html('<p style="opacity:.4">couldn\'t load post</p>')
-            renderContent(res[0][0].html)
-          })
+          getJSON('longposts/' + d.longPost)
+            .then(res => renderContent(res[0].html))
+            .catch(() => rawHTMLSel.html('<p style="opacity:.4">couldn\'t load post</p>'))
         } else {
           var rawHTMLSel = sel.append('div.raw-html')
           renderContent(contentStr)
@@ -149,28 +162,23 @@ d3.loadData(
 
     postSel.append('div.content')
   }
-
-  
+}).catch(err => {
+  console.log(err)
+  d3.select('.items').html('<p style="opacity:.4;padding:10px">couldn\'t load posts</p>')
 })
 
-// the page used to install a service worker and keep posts in indexeddb. Clean up after
-// old installs: unregister this app's workers (only these script paths; the origin is shared)
-// and drop its post stores and caches
-var oldSW = /\/(slinks\/)?(static-rss|nyc-feed)\/sw\.js$|^https:\/\/rss\.roadtolarissa\.com\/sw\.js$/
-if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations){
-  navigator.serviceWorker.getRegistrations()
-    .then(regs => regs.forEach(r => {
-      var w = r.active || r.waiting || r.installing
-      if (w && oldSW.test(w.scriptURL)) r.unregister()
-    }))
-    .catch(() => {})
-}
-if (window.indexedDB){
+// the page used to keep every post in indexeddb (~30MB); drop the old stores once
+if (window.indexedDB && !localStorage.getItem('idb-cleaned')){
   ['/slinks/static-rss/', '/slinks/nyc-feed/', '/static-rss/', '/nyc-feed/', '/']
     .forEach(d => { try { indexedDB.deleteDatabase('static-rss ' + d) } catch (e) {} })
+  localStorage.setItem('idb-cleaned', 1)
 }
-if (window.caches){
-  caches.keys()
-    .then(keys => keys.filter(k => k.startsWith('static-rss /')).forEach(k => caches.delete(k)))
+
+// standalone: sw.js sits next to the page. Embedded in a blog post: the worker stays in the app
+// folder (datapath) and takes the post's folder as its scope, which nginx allows with
+// Service-Worker-Allowed. A worker must be same-origin, so a cross-origin datapath just fails here
+if ('serviceWorker' in navigator && (location.protocol == 'https:' || location.hostname == 'localhost')){
+  navigator.serviceWorker
+    .register((window.datapath || '') + 'sw.js', window.datapath ? {scope: './'} : undefined)
     .catch(() => {})
 }

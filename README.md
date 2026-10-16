@@ -22,6 +22,15 @@ npx hot-server # start a local server to render feeds
 
 The live feed list is the google sheet (`STATIC_RSS_CSV_URL`); `feeds.csv` is a checked-in copy.
 
+## Offline
+
+`public/sw.js` caches the page, `script.js`/`style.css`/`d3_.js` and the `generated/*.json` it has
+fetched, so the list (and any long post opened once) still renders with no signal. Cache-first for
+the app shell, network-first for the feed JSON; caches are named after the app folder so
+`/slinks/static-rss/`, `/slinks/nyc-feed/` and other apps on the origin don't collide.
+
+Deliberately not installable: no manifest, no icons, no install prompt.
+
 ## Prior work
 
 - http://kouio.com/
