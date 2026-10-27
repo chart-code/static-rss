@@ -125,6 +125,19 @@ async function main(){
   items = await fulltext.addFullText(items)
   items.forEach(stripSponsors)
 
+  // feeds that mix real writing with stubs: house of strauss posts a couple of lines for each
+  // podcast/video episode. Runs after addFullText, so a feed that only summarises in rss keeps
+  // its fetched article text. Measured on the text, not the html.
+  var minChars = {'House Of Strauss': 1000}
+  items = items.filter(d => {
+    var min = minChars[d.feedName]
+    if (!min) return true
+    var text = (str(d['content:encoded']) || str(d.content)).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    if (text.length >= min) return true
+    console.log('SHORT', text.length, 'chars:', d.href)
+    return false
+  })
+
   // Multi-author blogs (crooked timber, the city) don't repeat the byline in the post body, so
   // the reader can't tell who wrote it. Counts per feed accumulate in a cache file. A feed with a
   // regular writer (scott alexander on acx, bruce schneier) only gets a byline on the exceptions:
