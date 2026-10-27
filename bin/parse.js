@@ -103,6 +103,15 @@ async function main(){
     .filter(d => {
       return !d['content:encoded'] || !d['content:encoded'].includes('Listen to more mind-expanding audio on')
     })
+    // sponcon the publisher tagged as such: westsiderag files ads under a SPONSORED /
+    // 'sponsored post' / 'sponsored story' category. The body label varies ("SPONSORED: " in
+    // the title, a <strong>Sponsored Content</strong> line), the category doesn't.
+    .filter(d => {
+      var cats = Array.isArray(d.categories) ? d.categories : []
+      if (!cats.some(c => typeof c == 'string' && /^\s*sponsor/i.test(c))) return true
+      console.log('SPONSORED', d.feedName, '//', d.href)
+      return false
+    })
     // podcast episodes from feeds worth reading but not listening to. Keyed by feed name, so
     // renaming one of these in the sheet turns its filter off. A news story that merely mentions
     // a podcast is kept: only a /podcast url, a LISTEN: headline or an "X Podcast:" title counts.
