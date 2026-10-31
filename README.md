@@ -5,7 +5,7 @@
 
 ## Dev
 
-- Replace `subs.xml` or `feeds.csv` with your own [OPML file](https://blog.feedly.com/opml/).
+- Replace `feeds.xml` or `feeds.csv` with your own [OPML file](https://blog.feedly.com/opml/).
 - You can also set `STATIC_RSS_CSV_URL=$yoursheeturl` to your [own sheet](https://docs.google.com/spreadsheets/d/14nBbfTEPPzncQhRXuNkSUjBWwPc3OCH3bibuB9UbwfM/edit#gid=0) containing `title`, `feed` and `ignore` headers. 
 
 Then run: 
@@ -19,6 +19,11 @@ npx hot-server # start a local server to render feeds
 ## How it works
 
 `bin/update.sh` loops forever: `download.js` (fetch feeds, conditional GET w/ etags) → `parse.js` (parse xml, drop paywalled posts, fetch full text for summary-only feeds via `fulltext.js`) → `archive.js` (bake out `public/generated/*.json`) → `favicons.js`.
+
+Every post is kept as its own file under `bin/cache/days/<day>/`; `archive.js` reads the last 31 days
+out of it for `items-today.json`/`items-recent.json` and the sites that got a post for the `?feed=`
+views, so an hourly run costs a readdir and a couple of thousand small reads rather than the whole
+830 MB archive. `bin/README.md` has the layout and the `--full` rebuild.
 
 The live feed list is the google sheet (`STATIC_RSS_CSV_URL`); `feeds.csv` is a checked-in copy.
 
