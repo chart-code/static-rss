@@ -46,6 +46,10 @@ self.addEventListener('fetch', e => {
   var url = new URL(e.request.url)
   // cross-origin favicons and post images pass straight through: opaque responses are huge in quota
   if (e.request.method != 'GET' || url.origin != location.origin) return
+  // a long post's file never changes once written — its name is built from the post's href — so
+  // serve the saved copy at once and refresh it in the background. The rest of generated/
+  // (items-today, items-recent, favicons) is rewritten hourly and stays network-first
+  if (url.pathname.includes('/generated/longposts/') && url.pathname.endsWith('.json')) return e.respondWith(cacheFirstData(e.request))
   if (url.pathname.includes('/generated/') && url.pathname.endsWith('.json')) return e.respondWith(networkFirst(e.request))
   if (shellPaths.has(url.pathname)) return e.respondWith(cacheFirst(e.request))
 })
@@ -61,6 +65,19 @@ function networkFirst(req){
       if (res.ok && !res.redirected && isJSON(res)) c.put(key, res.clone())
       return res
     }).catch(() => c.match(key).then(hit => hit || Response.error())))
+}
+
+// same cache as networkFirst, opposite order: a hit answers immediately and the refresh lands in
+// the cache for next time
+function cacheFirstData(req){
+  var key = noSearch(req)
+  return caches.open(DATA_CACHE).then(c => c.match(key).then(hit => {
+    var net = fetch(req).then(res => {
+      if (res.ok && !res.redirected && isJSON(res)) c.put(key, res.clone())
+      return res
+    }).catch(() => hit || Response.error())
+    return hit || net
+  }))
 }
 
 function cacheFirst(req){

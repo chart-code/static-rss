@@ -25,21 +25,67 @@ if (params.get('date')) itemURL = 'dates/' + params.get('date')
 if (params.get('feed')) itemURL = 'feeds/' + params.get('feed')
   
 
+function dataURL(path){
+  return new URL(window.datapath + 'generated/' + path + '.json', location.href).href
+}
+
+// straight from the cache sw.js filled, no network. Keys match sw.js: absolute url, no query
+// string. caches is missing outside a secure context
+function getCached(path){
+  return !window.caches ?
+    Promise.reject(new Error('no caches')) :
+    caches.match(dataURL(path)).then(res => res ? res.json() : Promise.reject(new Error('no copy')))
+}
+
 // network first; sw.js keeps a copy of generated/*.json, so the list renders with no signal.
 // The worker isn't controlling the page on a first visit, so also give up on a dead-slow network
-// after 5s and look in the cache directly (keys match sw.js: absolute url, no query string)
+// after 5s and look in the cache directly
 function getJSON(path, bust){
-  var url = new URL(window.datapath + 'generated/' + path + '.json', location.href).href
+  var url = dataURL(path)
   var net = fetch(url + (bust ? '?' + Math.random() : '')).then(res => {
     if (!res.ok || res.redirected) throw new Error(res.status)
     return res.json()
   })
-  var cached = () => !window.caches ?
-    Promise.reject(new Error('no caches')) :
-    caches.match(url).then(res => res ? res.json() : Promise.reject(new Error('no copy')))
+  var cached = () => getCached(path)
   var slow = new Promise(resolve => setTimeout(() => resolve(cached().catch(() => net)), 5000))
 
   return Promise.race([net, slow]).catch(cached)
+}
+
+// A failed load retries itself instead of sitting on an error: as soon as the browser fires
+// 'online', and on a short backoff meanwhile before giving up after ~a minute. The failure is
+// never stashed, so the next click starts over, and cancel() leaves no timer or listener behind.
+function retrier(load, onFail){
+  var timer, delays, done, inFlight
+
+  function attempt(){
+    if (done || inFlight) return
+    inFlight = true
+    load().then(stop, () => {
+      inFlight = false
+      if (done) return
+      onFail()
+      var ms = delays.shift()
+      if (ms) timer = setTimeout(attempt, ms)
+    })
+  }
+
+  function start(){
+    clearTimeout(timer)
+    delays = [2000, 5000, 15000, 40000]
+    attempt()
+  }
+
+  function stop(){
+    done = true
+    clearTimeout(timer)
+    window.removeEventListener('online', start)
+  }
+
+  window.addEventListener('online', start)
+  start()
+
+  return {cancel: stop}
 }
 
 Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(res => {
@@ -64,10 +110,10 @@ Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(
   var itemSel = d3.select('.items').html('')
   drawDays(items)
 
-  // add posts from the last 90 days
-  getJSON(itemURL.replace('today', 'recent'))
-    .then(recent => drawDays(recent, itemSel.selectAll('div.date').data().map(d => d.key)))
-    .catch(() => {})
+  // add posts from the last 90 days. Additive, so a failure shows nothing — but it is picked up
+  // if a dead connection comes back
+  retrier(() => getJSON(itemURL.replace('today', 'recent'))
+    .then(recent => drawDays(recent, itemSel.selectAll('div.date').data().map(d => d.key))), () => {})
 
   function drawDays(items, prevDates=[]){
     var byDate = d3.nestBy(items, d => d.isoDate.split('T')[0])
@@ -90,6 +136,9 @@ Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(
           .classed('active', d.active)
           .select('.content')
 
+        // a pending retry belongs to the post that was open; collapsing or reopening drops it
+        if (d.retry) d.retry = d.retry.cancel()
+
         if (!d.active){
           var node = this.parentNode
           if (node.getBoundingClientRect().top < 0) node.scrollIntoView(true)
@@ -107,12 +156,28 @@ Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(
 
         var contentStr = d['content:encoded'] || d.content || d.summary || ''
 
-        // long posts are saved to their own file and fetched on click
+        // Long posts are saved to their own file. A post opened once before is already here — on
+        // the datum within this page, otherwise in the cache, since sw.js keeps longposts/
+        // cache-first and their files never change. Either way it renders with no network wait and
+        // no 'loading…': the placeholder is only for a post that has never been opened.
+        // The datum copy is keyed on longPost, so a post whose file changed drops the stale copy.
         if (!contentStr && d.longPost){
-          var rawHTMLSel = sel.append('div.raw-html').html('<p style="opacity:.4">loading…</p>')
-          getJSON('longposts/' + d.longPost)
-            .then(res => renderContent(res[0].html))
-            .catch(() => rawHTMLSel.html('<p style="opacity:.4">couldn\'t load post</p>'))
+          var rawHTMLSel = sel.append('div.raw-html')
+          if (d.longKey == d.longPost){
+            renderContent(d.longHtml)
+          } else {
+            var render = res => {
+              d.longKey = d.longPost
+              d.longHtml = res[0].html
+              renderContent(d.longHtml)
+            }
+            d.retry = retrier(
+              () => getCached('longposts/' + d.longPost).then(render, () => {
+                rawHTMLSel.html('<p style="opacity:.4">loading…</p>')
+                return getJSON('longposts/' + d.longPost).then(render)
+              }),
+              () => rawHTMLSel.html('<p style="opacity:.4">couldn\'t load post</p>'))
+          }
         } else {
           var rawHTMLSel = sel.append('div.raw-html')
           renderContent(contentStr)
@@ -165,6 +230,8 @@ Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(
 }).catch(err => {
   console.log(err)
   d3.select('.items').html('<p style="opacity:.4;padding:10px">couldn\'t load posts</p>')
+  // nothing rendered and no state to lose, so the cheapest recovery is to start the page over
+  window.addEventListener('online', () => location.reload(), {once: true})
 })
 
 // the page used to keep every post in indexeddb (~30MB); drop the old stores once

@@ -30,8 +30,16 @@ function feedHtml(d){
 }
 
 // feeds whose pages are richer than their feed content (e.g. stratechery strips
-// the bolded highlights); always prefer the fetched article
-var alwaysFetchRegex = /stratechery\.com/
+// the bolded highlights, quanta runs a ~430 character teaser that just clears the
+// length check below); always prefer the fetched article
+var alwaysFetchRegex = /stratechery\.com|quantamagazine\.org/
+
+// pages whose <article>/<main> wraps the piece in site chrome. Quanta's <main> also holds the
+// sticky nav, the newsletter signup, 'Also in Mathematics', the comment policy and a next-post
+// teaser; #postBody is just the article, minus the title block and byline footer already shown.
+var siteRules = [
+  {test: /quantamagazine\.org/, container: '#postBody', drop: '.post__title__wrapper, .post__footer'},
+]
 
 function needsFullText(d){
   if (d.longPost) return false
@@ -55,6 +63,9 @@ async function fetchArticle(url){
     var res = await fetch(url, {headers: {'User-Agent': UA}, signal: controller.signal})
     clearTimeout(timer)
     rv.status = res.status
+    // an error page is not an article: alwaysFetchRegex skips the 'longer than the feed' check
+    // below, so quanta's occasional 404 would otherwise replace the feed summary with its 404 page
+    if (!res.ok) throw new Error('HTTP ' + res.status)
     var pageHtml = await res.text()
 
     var doc = new JSDOM(pageHtml, {url, virtualConsole: new VirtualConsole()}).window.document // VirtualConsole hides css parse errors
@@ -69,13 +80,16 @@ async function fetchArticle(url){
       if (d.href) d.setAttribute('href', d.href)
     })
 
-    // article, then main (readability often drops figures), then readability
+    // the site's own container, then article, then main (readability often drops figures),
+    // then readability
+    var rule = siteRules.find(d => d.test.test(url))
     var container = null
-    for (var sel of ['article', 'main']){
+    for (var sel of (rule ? [rule.container] : []).concat(['article', 'main'])){
       var el = doc.querySelector(sel)
       if (el && textOf(el.innerHTML).length > 200){ container = el; break }
     }
     if (container){
+      if (rule) container.querySelectorAll(rule.drop).forEach(d => d.remove())
       // cruft: the reader already shows the title, so drop a leading h1/dateline;
       // drop nav links like 'to the blog home page'
       var h1 = container.querySelector('h1')
@@ -104,7 +118,9 @@ async function fetchArticle(url){
     rv.error = '' + e 
   }
 
-  fs.writeFileSync(path, JSON.stringify(rv))
+  // only a completed fetch is cached: a timeout or a 5xx is retried by the next run rather than
+  // frozen in. A page that simply yielded no article text still caches, so it isn't refetched hourly
+  if (!rv.error) fs.writeFileSync(path, JSON.stringify(rv))
   return rv
 }
 
