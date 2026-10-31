@@ -1,4 +1,4 @@
-var {fs, d3, jp, _, request, io} = require('scrape-stl')
+var {fs, d3, jp, request, io} = require('scrape-stl')
 var sanitize = require('sanitize-filename')
 var fetch = require('node-fetch')
 

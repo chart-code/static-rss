@@ -1,12 +1,11 @@
-var {fs, d3, io, jp, _, glob, request} = require('scrape-stl')
+var {fs, glob} = require('scrape-stl')
 var util = require('./util.js')
 var fulltext = require('./fulltext.js')
 
 var sanitize = require('sanitize-filename')
 
 var longpostdir = __dirname + '/../public/generated/longposts/'
-var fs2 = require('fs')
-if (!fs2.existsSync(longpostdir)) fs2.mkdirSync(longpostdir, {recursive: true})
+util.mkdir(longpostdir)
 
 var Parser = require('rss-parser')
 var parser = new Parser()
@@ -195,11 +194,6 @@ async function main(){
   })
 
   util.saveItems(items)
-
-  // // debug large feed files
-  // jp.nestBy(items, d => d.feedName).forEach(feed => {
-  //   io.writeDataSync(__dirname + '/../cache/feed-json/' + feed.key + '.json', feed)
-  // })
 }
 main()
 
