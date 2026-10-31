@@ -12,7 +12,10 @@ var {fs, _} = require('scrape-stl')
 var sanitize = require('sanitize-filename')
 var util = require('./util.js')
 
-var daysdir = __dirname + '/cache/days'
+var cachedir = __dirname + '/cache'
+var daysdir = cachedir + '/days'
+// sites still owed a feeds/*.json, parked here while the loop at the bottom runs
+var pendingPath = cachedir + '/pending-feeds.json'
 var gendir = __dirname + '/../public/generated'
 
 var full = process.argv.includes('--full')
@@ -33,7 +36,8 @@ function main(){
   // One file per post, in a directory per day — the archive. The parse handoff streams in a year
   // at a time; only a post that actually changed is written, which is also how the feeds/ step
   // below knows which sites moved this cycle.
-  var changedFeeds = new Set()
+  // sites a previous run was killed before writing are still owed one
+  var changedFeeds = new Set(readJSON(pendingPath) || [])
   var written = 0
   util.mkdir(daysdir)
   util.eachItem(d => {
@@ -49,7 +53,7 @@ function main(){
     var path = dir + '/' + d.slug + '.json'
     var str = JSON.stringify(d)
     if (fs.existsSync(path) && fs.readFileSync(path, 'utf8') == str) return
-    fs.writeFileSync(path, str)
+    util.writeAtomic(path, str)
     changedFeeds.add(d.slug.split('_.._')[0])
     written++
   })
@@ -58,9 +62,11 @@ function main(){
   // Index the archive by site: file names only, never contents. The day a post belongs to is in
   // its path, so picking the window below is a string compare on directory names.
   var dayDirs = fs.readdirSync(daysdir).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort(alphasort)
+  // an empty archive would bake empty json over the files the reader is serving
+  if (!dayDirs.length) throw new Error('no day directories in ' + daysdir)
   var byFeed = new Map()
   dayDirs.forEach(dir => {
-    fs.readdirSync(daysdir + '/' + dir).filter(d => d.endsWith('.json')).sort(alphasort).forEach(file => {
+    fs.readdirSync(daysdir + '/' + dir).filter(d => d.endsWith('.json') && d.includes('_.._')).sort(alphasort).forEach(file => {
       var key = file.split('_.._')[0]
       if (!byFeed.has(key)) byFeed.set(key, [])
       byFeed.get(key).push(dir + '/' + file)
@@ -73,6 +79,7 @@ function main(){
   // fresh and these two not, leaving the reader on stale posts until a later run survived.
   var recentCutoff = isoDaysAgo(31)
   var todayCutoff = isoDaysAgo(2)
+  var futureCutoff = isoDaysAgo(-7)
 
   var posts = []
   byFeed.forEach(paths => paths.forEach(path => {
@@ -88,7 +95,7 @@ function main(){
     // a post dated in the future sits at the top of the list until the date passes, and
     // nsaphra.net has an 'Example Talk' placeholder dated 2030. A week of slack, since a feed
     // posting from a timezone ahead of utc is normal.
-    .filter(d => d.isoDate <= isoDaysAgo(-7))
+    .filter(d => d.isoDate <= futureCutoff)
 
   posts = _.sortBy(posts, d => d.isoDate).reverse()
 
@@ -101,6 +108,7 @@ function main(){
   var feeddir = gendir + '/feeds'
   util.mkdir(feeddir)
   var feedCount = 0
+  util.writeAtomic(pendingPath, JSON.stringify([...changedFeeds]))
   byFeed.forEach((paths, key) => {
     var outpath = feeddir + '/' + key + '.json'
     if (!full && !changedFeeds.has(key) && fs.existsSync(outpath)) return
@@ -108,6 +116,7 @@ function main(){
     feedCount++
     util.writeAtomic(outpath, JSON.stringify(paths.slice(-feedCap).map(readPost)))
   })
+  if (fs.existsSync(pendingPath)) fs.unlinkSync(pendingPath)
   lap('feeds/*.json (' + feedCount + ' written)')
 
   console.log(timings.join(', '))
@@ -115,6 +124,10 @@ function main(){
 
 function readPost(path){
   return JSON.parse(fs.readFileSync(daysdir + '/' + path, 'utf8'))
+}
+
+function readJSON(path){
+  try { return JSON.parse(fs.readFileSync(path, 'utf8')) } catch (e){ return null }
 }
 
 main()

@@ -1,12 +1,12 @@
-var {fs, io, jp, glob} = require('scrape-stl')
+var {fs, jp, glob} = require('scrape-stl')
 
 var rootdir = __dirname + '/../public/generated/items-all/'
-if (!fs.existsSync(rootdir)) fs.mkdirSync(rootdir)
 
 function saveItems(items){
+  mkdir(rootdir)
   jp.nestBy(items, d => d.isoDate ? d.isoDate.split('-')[0] : '1234')
     .forEach(year => {
-      io.writeDataSync(rootdir + year.key + '.json', year)
+      writeAtomic(rootdir + year.key + '.json', JSON.stringify(year))
     })
 }
 
@@ -14,8 +14,9 @@ function saveItems(items){
 // OOM killed archive.js and favicons.js on a 2 GB box, so hand out one year at a time. Same
 // glob order as before, so 'first item per feed' style logic is unchanged.
 function eachItem(fn){
+  mkdir(rootdir)
   glob.sync(rootdir + '*.json').forEach(path => {
-    io.readDataSync(path).forEach(fn)
+    JSON.parse(fs.readFileSync(path, 'utf8')).forEach(fn)
   })
 }
 
