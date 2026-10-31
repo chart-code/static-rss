@@ -85,6 +85,10 @@ function main(){
     // natesilver.net reposts its poll trackers ('How popular is the ...') every day or two under
     // a new url, which would otherwise fill the list. ~18 of them in a window.
     .filter(d => !(d.feedName === 'nate silver' && typeof d.title == 'string' && d.title.includes('How popular is the')))
+    // a post dated in the future sits at the top of the list until the date passes, and
+    // nsaphra.net has an 'Example Talk' placeholder dated 2030. A week of slack, since a feed
+    // posting from a timezone ahead of utc is normal.
+    .filter(d => d.isoDate <= isoDaysAgo(-7))
 
   posts = _.sortBy(posts, d => d.isoDate).reverse()
 
