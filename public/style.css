@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,500;1,300&display=swap');
 
 html{
+  /* firefox on android inflates text inside any block that scrolls sideways, which reads as
+     stretched type on a phone. opting out keeps every post at the size the css asks for */
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+
   background-color: #111;
   scrollbar-color: dark;
   color: #fff;
