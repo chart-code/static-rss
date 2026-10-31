@@ -1,5 +1,6 @@
-var {io, jp} = require('scrape-stl')
+var {io} = require('scrape-stl')
 var fetch = require('node-fetch')
+var util = require('./util.js')
 
 const request = require('request')
 const cheerio = require("cheerio")
@@ -13,18 +14,20 @@ async function main(){
 
   var name2favicon = Object.fromEntries(favicons.map(d => [d.feedName, d.favicon]))
 
-  var util = require('./util.js')
-  var items = util.loadItems()
-
-  var domains = jp.nestBy(items, d => d.feedName)
-    .map(d => ({feedName: d.key, href: d[0].href}))
+  // one href per feed, the first one seen. Streamed a year at a time: loading the whole
+  // ~100 MB corpus for this was the other way to OOM a 2 GB box.
+  var firstHref = new Map()
+  util.eachItem(d => {
+    if (!firstHref.has(d.feedName)) firstHref.set(d.feedName, d.href)
+  })
+  var domains = [...firstHref].map(([feedName, href]) => ({feedName, href}))
 
   var newCount = 0
   var cachedCount = 0
   var errorCount = 0
 
   for (d of domains){
-    d.domain = getHostnameFromRegex(d.href)
+    d.domain = util.hostname(d.href)
 
     var m = name2favicon[d.feedName]
     if (m && m.icons && m.icons.length){
@@ -47,7 +50,7 @@ async function main(){
   }
 
   console.log(`favicons: ${cachedCount} cached, ${newCount} new, ${errorCount} errors`)
-  io.writeDataSync(outpath, domains, {indent: 2})
+  util.writeAtomic(outpath, JSON.stringify(domains, null, 2))
 }
 main()
 
@@ -63,7 +66,7 @@ async function fetchWithTimeout(url, ms){
 }
 
 async function getFavicon(url) {
-  var domain = getHostnameFromRegex(url)
+  var domain = util.hostname(url)
   return new Promise((resolve, reject) => {
     request({url, timeout: 5000}, (error, response, body) => {
       if (error) return reject(error)
@@ -81,7 +84,3 @@ async function getFavicon(url) {
   })
 }
 
-function getHostnameFromRegex(url){
-  var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i)
-  return matches && matches[1]
-}
