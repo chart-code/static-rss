@@ -205,6 +205,22 @@ Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(
         rawHTMLSel.selectAll('a').at({target: 'blank'})
 
         rawHTMLSel.selectAll('.subscription-widget-wrap,.button-wrapper').remove()
+        // substack's zoom/restack buttons under every image
+        rawHTMLSel.selectAll('.image-link-expand,.restack-image').remove()
+
+        // Substack serves a 248px image with srcset variants up to 1456w and sizes="100vw",
+        // which lays it out at the full viewport width — a small picture blown up and blurry.
+        // The width/height attributes that would have said otherwise are neutered above, so
+        // put them back on images and drop the srcset/sizes that override them.
+        rawHTMLSel.selectAll('picture source').remove()
+        rawHTMLSel.selectAll('img').each(function(){
+          this.removeAttribute('srcset')
+          this.removeAttribute('sizes')
+          'width height'.split(' ').forEach(d => {
+            var v = this.getAttribute('x-' + d)
+            if (v && +v) this.setAttribute(d, v)
+          })
+        })
 
         if (hrefPP == 'xkcd.com'){
           rawHTMLSel.append('p').text(rawHTMLSel.select('img').attr('title'))
