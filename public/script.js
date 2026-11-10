@@ -34,7 +34,17 @@ function dataURL(path){
 function getCached(path){
   return !window.caches ?
     Promise.reject(new Error('no caches')) :
-    caches.match(dataURL(path)).then(res => res ? res.json() : Promise.reject(new Error('no copy')))
+    caches.match(dataURL(path)).then(res => res ? (stamp(path, res), res.json()) : Promise.reject(new Error('no copy')))
+}
+
+// when the list on screen was written: Last-Modified on the items file, which the hourly run
+// rewrites. A cached response keeps its headers, so this is honest offline too
+var listAt = null
+var netOk = null     // did the network answer for the list, or is this a saved copy
+function stamp(path, res){
+  if (path != itemURL) return
+  var lm = Date.parse(res.headers.get('last-modified'))
+  if (lm) listAt = lm
 }
 
 // network first; sw.js keeps a copy of generated/*.json, so the list renders with no signal.
@@ -44,8 +54,12 @@ function getJSON(path, bust){
   var url = dataURL(path)
   var net = fetch(url + (bust ? '?' + Math.random() : '')).then(res => {
     if (!res.ok || res.redirected) throw new Error(res.status)
+    // sw.js hands over a saved copy with x-sw-cache when the network is dead (it is still a
+    // 200 here), so a list that didn't really come from the server says "offline"
+    if (path == itemURL) netOk = !res.headers.get('x-sw-cache')
+    stamp(path, res)
     return res.json()
-  })
+  }).catch(err => { if (path == itemURL) netOk = false; throw err })
   var cached = () => getCached(path)
   var slow = new Promise(resolve => setTimeout(() => resolve(cached().catch(() => net)), 5000))
 
@@ -109,11 +123,16 @@ Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(
   // add today's and yesterday's posts
   var itemSel = d3.select('.items').html('')
   drawDays(items)
+  listKey = keyOf(items)
+  drawFooter()
 
   // add posts from the last 90 days. Additive, so a failure shows nothing — but it is picked up
   // if a dead connection comes back
   retrier(() => getJSON(itemURL.replace('today', 'recent'))
-    .then(recent => drawDays(recent, itemSel.selectAll('div.date').data().map(d => d.key))), () => {})
+    .then(recent => {
+      drawDays(recent, itemSel.selectAll('div.date').data().map(d => d.key))
+      readSaved()
+    }), () => {})
 
   function drawDays(items, prevDates=[]){
     var byDate = d3.nestBy(items, d => d.isoDate.split('T')[0])
@@ -250,6 +269,141 @@ Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(
   window.addEventListener('online', () => location.reload(), {once: true})
 })
 
+/* the footer ****************************************************************************/
+
+// One muted line under the list, the same one the reader, goal and the diary have. It says how
+// much is on screen, how old the list is and how much of it reads with no signal, and it says
+// "offline" or "no answer" rather than looking fresh when it isn't.
+//
+// Tapping the line asks for the list again, past the hourly rhythm and past navigator.onLine,
+// which lies both ways on a phone. A list that has moved on reloads the page: nothing here is
+// unsaved, and redrawing in place would miss a new post on a day already on screen.
+//
+// Tapping the version throws this copy of the app away and loads it from the server. It takes
+// only this app's worker and caches: /reader/, /nyc-feed/ and every sketch share this origin,
+// and taking theirs would break them offline. The caches carry the app's own path (sw.js), and
+// the registration asked for is the one whose scope covers this page.
+var APP_PATH = new URL(window.datapath || './', location.href).pathname
+var PREFIX = 'static-rss ' + APP_PATH + ' '
+var DATA_CACHE = PREFIX + 'data'
+
+var countSel = null
+var verSel = null
+var checking = false
+var checkFailed = false
+var savedSet = null      // long posts in the data cache, once it has been read
+var listKey = null       // the posts drawn, so a check can tell a changed list from the same one
+
+// sorted, so the order the list was drawn in doesn't read as a changed list
+var keyOf = list => JSON.stringify(list.map(d => d.href).sort())
+
+function relTime(ms){
+  var m = Math.round((Date.now() - ms)/6e4)
+  if (!(m > 1)) return 'just now'
+  if (m < 60) return m + 'm ago'
+  if (m < 60*24) return Math.round(m/60) + 'h ago'
+  return Math.round(m/60/24) + 'd ago'
+}
+
+function drawFooter(){
+  var sel = d3.select('.rss-status')
+  if (!sel.size()) sel = d3.select('body').append('div.rss-status')
+  sel.html('')
+
+  countSel = sel.append('span').at({title: 'tap to check for new posts'}).on('click', recheck)
+
+  // a browser can get stuck on an old service worker — chrome picks up a deploy while firefox
+  // keeps serving what it saved. This says which copy is running and clears it on demand
+  verSel = sel.append('a').at({href: '#', title: 'tap to load the app again from the server'}).text('app …')
+  verSel.on('click', () => {
+    d3.event.preventDefault()
+    forceUpdate()
+  })
+  swVersion().then(v => verSel.text(v || 'no worker'))
+
+  drawCount()
+  readSaved()
+}
+
+function drawCount(){
+  if (!countSel) return
+  var drawn = d3.selectAll('.item').data()
+  var str = drawn.length + ' posts'
+  str += ' · ' + (listAt ? 'list ' + relTime(listAt) : 'list age unknown')
+  if (checking) str += ' · checking…'
+  else if (checkFailed) str += ' · no answer'
+  else if (netOk === false) str += ' · offline'
+  else if (savedSet){
+    var longs = drawn.filter(d => d.longPost)
+    if (longs.length) str += ' · ' + longs.filter(d => savedSet.has(dataURL('longposts/' + d.longPost))).length + '/' + longs.length + ' saved'
+  }
+  countSel.text(str)
+}
+
+// which long posts sw.js already has. caches.open would make the cache if it were missing, so
+// look for it by name first
+function readSaved(){
+  if (!window.caches) return
+  caches.keys()
+    .then(keys => keys.includes(DATA_CACHE) ? caches.open(DATA_CACHE).then(c => c.keys()) : [])
+    .then(reqs => {
+      savedSet = new Set(reqs.map(r => r.url).filter(u => u.includes('/generated/longposts/')))
+      drawCount()
+    })
+    .catch(() => {})
+}
+
+function recheck(){
+  if (checking) return
+  checking = true
+  checkFailed = false
+  drawCount()
+  fetch(dataURL(itemURL) + '?' + Math.random())
+    .then(res => {
+      if (!res.ok || res.redirected) throw new Error(res.status)
+      if (res.headers.get('x-sw-cache')) throw new Error('no network')
+      netOk = true
+      stamp(itemURL, res)
+      return res.json()
+    })
+    .then(list => {
+      if (keyOf(list) != listKey) return location.reload()
+      checking = false
+      drawCount()
+    })
+    .catch(() => {
+      checking = false
+      checkFailed = true
+      drawCount()
+    })
+}
+
+// the worker answers with its shell cache name, which carries the version
+function swVersion(){
+  return new Promise(resolve => {
+    var sw = navigator.serviceWorker && navigator.serviceWorker.controller
+    if (!sw) return resolve('no worker')
+    var chan = new MessageChannel()
+    chan.port1.onmessage = e => resolve(e.data)
+    setTimeout(() => resolve('worker ?'), 1500)
+    try { sw.postMessage('version', [chan.port2]) } catch (e){ resolve('worker ?') }
+  })
+}
+
+function forceUpdate(){
+  verSel.text('updating…')
+  var done = () => location.reload()
+  if (!navigator.serviceWorker) return done()
+  navigator.serviceWorker.getRegistration()
+    .then(reg => reg && reg.unregister())
+    // the shell only: the data cache holds the long posts saved for offline, and throwing
+    // those away would mean fetching them all again
+    .then(() => window.caches && caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k.startsWith(PREFIX + 'shell-')).map(k => caches.delete(k)))))
+    .catch(() => {})
+    .then(done)
+}
+
 // the page used to keep every post in indexeddb (~30MB); drop the old stores once
 if (window.indexedDB && !localStorage.getItem('idb-cleaned')){
   ['/slinks/static-rss/', '/slinks/nyc-feed/', '/static-rss/', '/nyc-feed/', '/']
@@ -264,4 +418,8 @@ if ('serviceWorker' in navigator && (location.protocol == 'https:' || location.h
   navigator.serviceWorker
     .register((window.datapath || '') + 'sw.js', window.datapath ? {scope: './'} : undefined)
     .catch(() => {})
+  // a worker that takes over after this load (a first visit, or one thrown away above) answers
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (verSel) swVersion().then(v => verSel.text(v || 'no worker'))
+  })
 }

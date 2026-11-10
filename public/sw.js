@@ -14,7 +14,7 @@ var appPath = new URL(APP).pathname
 var scopePath = new URL(SCOPE).pathname
 
 var PREFIX = 'static-rss ' + appPath + ' '
-var SHELL_CACHE = PREFIX + 'shell-v2'
+var SHELL_CACHE = PREFIX + 'shell-v3'
 var DATA_CACHE = PREFIX + 'data'
 
 var SHELL = ['script.js', 'style.css', 'd3_.js'].map(d => new URL(d, APP).href)
@@ -42,6 +42,12 @@ self.addEventListener('activate', e => {
     .then(() => self.clients.claim()))
 })
 
+// the page's footer asks which copy is running (see drawFooter in script.js). The answer is
+// this worker's own shell cache, so a browser sitting on an old one says so
+self.addEventListener('message', e => {
+  if (e.data == 'version' && e.ports && e.ports[0]) e.ports[0].postMessage(SHELL_CACHE.replace(PREFIX + 'shell-', 'app '))
+})
+
 self.addEventListener('fetch', e => {
   var url = new URL(e.request.url)
   // cross-origin favicons and post images pass straight through: opaque responses are huge in quota
@@ -64,7 +70,19 @@ function networkFirst(req){
     fetch(req).then(res => {
       if (res.ok && !res.redirected && isJSON(res)) c.put(key, res.clone())
       return res
-    }).catch(() => c.match(key).then(hit => hit || Response.error())))
+    }).catch(() => c.match(key).then(hit => hit ? marked(hit) : Response.error())))
+}
+
+// A saved copy standing in for a dead network is still a 200 to the page, so it would look
+// freshly fetched. Hand it over with a header saying where it came from, which is what the
+// footer's "offline" is read from (drawCount in script.js). Last-Modified is kept, so the
+// line can still say how old the list is.
+function marked(hit){
+  return hit.blob().then(body => {
+    var headers = new Headers(hit.headers)
+    headers.set('x-sw-cache', '1')
+    return new Response(body, {status: 200, statusText: hit.statusText, headers})
+  })
 }
 
 // same cache as networkFirst, opposite order: a hit answers immediately and the refresh lands in
