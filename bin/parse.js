@@ -127,7 +127,10 @@ async function main(){
   // feeds that mix real writing with stubs: house of strauss posts a couple of lines for each
   // podcast/video episode. Runs after addFullText, so a feed that only summarises in rss keeps
   // its fetched article text. Measured on the text, not the html.
-  var minChars = {'House Of Strauss': 1000}
+  // The Diff's paid posts come through as their subtitle alone ("Plus! Models; Benchmarks;
+  // $1.4tr") and the article behind them is paywalled, so fulltext can't rescue them; its free
+  // posts run thousands of characters. House Of Strauss posts two lines per podcast episode.
+  var minChars = {'House Of Strauss': 1000, 'The Diff': 500}
   items = items.filter(d => {
     var min = minChars[d.feedName]
     if (!min) return true
