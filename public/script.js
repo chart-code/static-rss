@@ -142,15 +142,27 @@ function sayWaiting(str, retry){
 var waitTimer = setTimeout(() => sayWaiting('waiting for the list…'), WAIT_MS)
 var giveUpTimer = setTimeout(() => sayWaiting("couldn't load posts — no answer from the server", true), GIVE_UP_MS)
 
+// The network answered after the saved copy was drawn. If he hasn't started reading — nothing
+// open, still at the top, moments after opening — take the fresh list straight away, because
+// that is what reloading was for. Once he is reading, say so instead and let him choose: a
+// post on a day already on screen would be missed by a partial redraw, so this reloads.
+var lateList = null
+
+function considerLate(){
+  if (!lateList || !listKey || keyOf(lateList) == listKey) return
+  var reading = d3.select('.item.active').size() || scrollY > 100 || performance.now() > 20e3
+  // one automatic reload per visit, so a list that somehow never settles can't loop
+  var last = +(sessionStorage.getItem('rss-reloaded') || 0)
+  if (!reading && Date.now() - last > 30e3){
+    try { sessionStorage.setItem('rss-reloaded', String(Date.now())) } catch (e){}
+    return location.reload()
+  }
+  newerList = lateList
+  drawCount()
+}
+
 Promise.all([
-  getJSON(itemURL, true, json => {
-    // the network answered after the saved copy had already been drawn: say so rather than
-    // redrawing under him — drawDays only adds dates it hasn't drawn, so a new post on a day
-    // already on screen would be missed
-    if (!listKey || keyOf(json) == listKey) return
-    newerList = json
-    drawCount()
-  }),
+  getJSON(itemURL, true, json => { lateList = json; considerLate() }),
   getJSON('favicons').catch(() => []),
 ]).then(res => {
 
@@ -178,6 +190,8 @@ Promise.all([
   drawDays(items)
   listKey = keyOf(items)
   drawFooter()
+  // the fresh list may have landed while this was drawing, before listKey existed
+  considerLate()
 
   // add posts from the last 90 days. Additive, so a failure shows nothing — but it is picked up
   // if a dead connection comes back
