@@ -14,6 +14,7 @@
     "pubnyc-localdata": "cd .. && rsync -a --omit-dir-times --no-perms --exclude node_modules --exclude .git nyc-feed/ demo@roadtolarissa.com:nyc-feed/",
     "pub": "yarn pubstatic && yarn pubnyc",
     "watch": "ls bin/*.js | entr yarn pub",
-    "favicons": "node bin/download.js && node bin/parse.js && node bin/archive.js && node bin/favicons.js"
+    "favicons": "node bin/download.js && node bin/parse.js && node bin/archive.js && node bin/favicons.js",
+    "test": "node test/network.test.js"
   }
 }

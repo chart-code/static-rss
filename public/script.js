@@ -66,15 +66,31 @@ function stamp(path, res){
 // after 5s and look in the cache directly
 var CACHE_WINS_MS = 400
 
-function getJSON(path, bust, onLate){
-  var url = dataURL(path)
-  var net = fetch(url + (bust ? '?' + Math.random() : '')).then(res => {
+// Underground a connection can accept a request and never answer. Anything that shows
+// "loading…" or "checking…" while it waits gets a deadline, or that word stays up for good.
+var FETCH_MS = 15e3
+function fetchBy(url, ms){
+  var ctrl = window.AbortController ? new AbortController() : null
+  var timer
+  var late = new Promise((resolve, reject) => timer = setTimeout(() => {
+    if (ctrl) ctrl.abort()
+    reject(new Error('timeout'))
+  }, ms))
+  return Promise.race([fetch(url, ctrl ? {signal: ctrl.signal} : {}), late])
+    .then(res => { clearTimeout(timer); return res }, err => { clearTimeout(timer); throw err })
+}
+
+function getJSON(path, bust, onLate, ms){
+  var url = dataURL(path) + (bust ? '?' + Math.random() : '')
+  var settled = false
+  var net = (ms ? fetchBy(url, ms) : fetch(url)).then(res => {
     if (!res.ok || res.redirected) throw new Error(res.status)
     if (!swControlled()) putData(path, res.clone())
     // sw.js hands over a saved copy with x-sw-cache when the network is dead (it is still a
     // 200 here), so a list that didn't really come from the server says "offline"
     if (path == itemURL) netOk = !res.headers.get('x-sw-cache')
-    stamp(path, res)
+    // a late answer isn't what's on screen, so it doesn't get to say how old the list is
+    if (!settled) stamp(path, res)
     return res.json()
   }).catch(err => { if (path == itemURL) netOk = false; throw err })
   var cached = () => getCached(path)
@@ -84,7 +100,7 @@ function getJSON(path, bust, onLate){
   var slow = new Promise(resolve => setTimeout(() => resolve(cached().catch(() => net)), CACHE_WINS_MS))
 
   if (onLate) net.then(json => onLate(json), () => {})
-  return Promise.race([net, slow]).catch(cached)
+  return Promise.race([net, slow]).catch(cached).then(json => { settled = true; return json })
 }
 
 // A failed load retries itself instead of sitting on an error: as soon as the browser fires
@@ -260,7 +276,7 @@ Promise.all([
             d.retry = retrier(
               () => getCached('longposts/' + d.longPost).then(render, () => {
                 rawHTMLSel.html('<p style="opacity:.4">loading…</p>')
-                return getJSON('longposts/' + d.longPost).then(render)
+                return getJSON('longposts/' + d.longPost, false, null, FETCH_MS).then(render)
               }),
               () => rawHTMLSel.html('<p style="opacity:.4">couldn\'t load post</p>'))
           }
@@ -331,7 +347,10 @@ Promise.all([
   }
 }).catch(err => {
   console.log(err)
-  d3.select('.items').html('<p style="opacity:.4;padding:10px">couldn\'t load posts</p>')
+  // said at once, with the retry: the timers would put "waiting for the list…" under it
+  clearTimeout(waitTimer)
+  clearTimeout(giveUpTimer)
+  sayWaiting("couldn't load posts", true)
   // nothing rendered and no state to lose, so the cheapest recovery is to start the page over
   window.addEventListener('online', () => location.reload(), {once: true})
 })
@@ -427,7 +446,7 @@ function recheck(){
   checking = true
   checkFailed = false
   drawCount()
-  fetch(dataURL(itemURL) + '?' + Math.random())
+  fetchBy(dataURL(itemURL) + '?' + Math.random(), FETCH_MS)
     .then(res => {
       if (!res.ok || res.redirected) throw new Error(res.status)
       if (res.headers.get('x-sw-cache')) throw new Error('no network')

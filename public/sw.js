@@ -14,7 +14,7 @@ var appPath = new URL(APP).pathname
 var scopePath = new URL(SCOPE).pathname
 
 var PREFIX = 'static-rss ' + appPath + ' '
-var SHELL_CACHE = PREFIX + 'shell-v4'
+var SHELL_CACHE = PREFIX + 'shell-v5'
 var DATA_CACHE = PREFIX + 'data'
 
 var SHELL = ['script.js', 'style.css', 'd3_.js'].map(d => new URL(d, APP).href)
@@ -100,13 +100,24 @@ function cacheFirstData(req){
 
 // The shell races the network against the cache: whatever the network returns inside
 // SHELL_TIMEOUT wins, so a deploy shows up on the next load instead of the one after it;
-// past that, or offline, the cached copy answers and the fresh one is stored for later.
-var SHELL_TIMEOUT = 1500
+// past that, or offline, the cached copy answers and the fresh one is stored for later. 1s, not
+// the 1.5s this started at: on a hung connection the page's own 400ms wait for the list comes on
+// top, and 1.5s + 0.4s is a blank screen for two seconds. A shell file that takes a second to
+// arrive is on a connection where last load's copy is the better answer anyway.
+var SHELL_TIMEOUT = 1000
+
+// A race lost to the clock means the network isn't answering, and the rest of this load's shell
+// — the page first, then its scripts and styles — would each wait out SHELL_TIMEOUT in turn
+// (3.5s to a list on a hung connection). So for STALL_MS after one is lost, the saved copy
+// answers at once.
+var STALL_MS = 10e3
+var stalledAt = -Infinity
 
 // On a connection the phone itself calls slow — or none at all — racing the network is a
 // guaranteed wait for an answer that is not coming, so the saved copy goes out immediately and
 // the request only refreshes the cache for next time.
 function raceMs(){
+  if (Date.now() - stalledAt < STALL_MS) return 0
   var nav = self.navigator
   if (nav && nav.onLine === false) return 0
   var c = nav && nav.connection
@@ -125,10 +136,16 @@ function cacheFirst(req){
     })
     if (!hit) return net.catch(() => Response.error())
 
-    // the cached copy only steps in if the network is slow or dead
+    // the cached copy steps in if the network is slow or dead, or answers with an error page: a
+    // 502 from nginx mid-deploy must not replace a working app with a blank one
     net.catch(() => {})
     var ms = raceMs()
     if (!ms) return hit
-    return Promise.race([net.catch(() => hit), new Promise(resolve => setTimeout(() => resolve(hit), ms))])
+    var answered = false
+    var good = net.then(res => { answered = true; return res.ok || res.status == 302 ? res : hit }, () => hit)
+    return Promise.race([good, new Promise(resolve => setTimeout(() => {
+      if (!answered) stalledAt = Date.now()
+      resolve(hit)
+    }, ms))])
   }))
 }
