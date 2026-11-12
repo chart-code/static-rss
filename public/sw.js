@@ -14,7 +14,7 @@ var appPath = new URL(APP).pathname
 var scopePath = new URL(SCOPE).pathname
 
 var PREFIX = 'static-rss ' + appPath + ' '
-var SHELL_CACHE = PREFIX + 'shell-v3'
+var SHELL_CACHE = PREFIX + 'shell-v4'
 var DATA_CACHE = PREFIX + 'data'
 
 var SHELL = ['script.js', 'style.css', 'd3_.js'].map(d => new URL(d, APP).href)
@@ -103,6 +103,17 @@ function cacheFirstData(req){
 // past that, or offline, the cached copy answers and the fresh one is stored for later.
 var SHELL_TIMEOUT = 1500
 
+// On a connection the phone itself calls slow — or none at all — racing the network is a
+// guaranteed wait for an answer that is not coming, so the saved copy goes out immediately and
+// the request only refreshes the cache for next time.
+function raceMs(){
+  var nav = self.navigator
+  if (nav && nav.onLine === false) return 0
+  var c = nav && nav.connection
+  if (c && (c.saveData || /^(slow-)?2g$/.test(c.effectiveType || ''))) return 0
+  return SHELL_TIMEOUT
+}
+
 function cacheFirst(req){
   var key = noSearch(req)
   return caches.open(SHELL_CACHE).then(c => c.match(key).then(hit => {
@@ -116,6 +127,8 @@ function cacheFirst(req){
 
     // the cached copy only steps in if the network is slow or dead
     net.catch(() => {})
-    return Promise.race([net.catch(() => hit), new Promise(resolve => setTimeout(() => resolve(hit), SHELL_TIMEOUT))])
+    var ms = raceMs()
+    if (!ms) return hit
+    return Promise.race([net.catch(() => hit), new Promise(resolve => setTimeout(() => resolve(hit), ms))])
   }))
 }

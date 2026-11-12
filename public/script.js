@@ -31,6 +31,20 @@ function dataURL(path){
 
 // straight from the cache sw.js filled, no network. Keys match sw.js: absolute url, no query
 // string. caches is missing outside a secure context
+// same name sw.js uses (see APP_PATH/PREFIX below, which run later in the file)
+var DATA_CACHE_NAME = 'static-rss ' + new URL(window.datapath || './', location.href).pathname + ' data'
+
+// A first visit has no worker in control, so nothing it fetches gets saved and the next load
+// has nothing to fall back on. Store the list as it arrives.
+function putData(path, res){
+  if (!window.caches || !res || !res.ok) return
+  caches.open(DATA_CACHE_NAME).then(c => c.put(dataURL(path), res)).catch(() => {})
+}
+
+function swControlled(){
+  return !!(navigator.serviceWorker && navigator.serviceWorker.controller)
+}
+
 function getCached(path){
   return !window.caches ?
     Promise.reject(new Error('no caches')) :
@@ -50,10 +64,13 @@ function stamp(path, res){
 // network first; sw.js keeps a copy of generated/*.json, so the list renders with no signal.
 // The worker isn't controlling the page on a first visit, so also give up on a dead-slow network
 // after 5s and look in the cache directly
-function getJSON(path, bust){
+var CACHE_WINS_MS = 400
+
+function getJSON(path, bust, onLate){
   var url = dataURL(path)
   var net = fetch(url + (bust ? '?' + Math.random() : '')).then(res => {
     if (!res.ok || res.redirected) throw new Error(res.status)
+    if (!swControlled()) putData(path, res.clone())
     // sw.js hands over a saved copy with x-sw-cache when the network is dead (it is still a
     // 200 here), so a list that didn't really come from the server says "offline"
     if (path == itemURL) netOk = !res.headers.get('x-sw-cache')
@@ -61,8 +78,12 @@ function getJSON(path, bust){
     return res.json()
   }).catch(err => { if (path == itemURL) netOk = false; throw err })
   var cached = () => getCached(path)
-  var slow = new Promise(resolve => setTimeout(() => resolve(cached().catch(() => net)), 5000))
+  // Underground the phone holds a connection that accepts the request and never answers, so the
+  // saved copy goes out after CACHE_WINS_MS rather than a 5s stare at nothing. The request is
+  // still running: onLate gets the real answer whenever it lands.
+  var slow = new Promise(resolve => setTimeout(() => resolve(cached().catch(() => net)), CACHE_WINS_MS))
 
+  if (onLate) net.then(json => onLate(json), () => {})
   return Promise.race([net, slow]).catch(cached)
 }
 
@@ -102,7 +123,36 @@ function retrier(load, onFail){
   return {cancel: stop}
 }
 
-Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(res => {
+var newerList = null
+
+// Nothing should ever be a blank page on a dead connection: say what is happening at WAIT_MS,
+// and offer a retry at GIVE_UP_MS. Drawing the list clears both.
+var WAIT_MS = 1200
+var GIVE_UP_MS = 12e3
+var waitSel = null
+
+function sayWaiting(str, retry){
+  if (d3.select('.items').select('.item').size()) return
+  waitSel = waitSel || d3.select('.items').append('p.waiting').st({opacity: .4, padding: 10})
+  waitSel.html('').append('span').text(str)
+  if (retry) waitSel.append('a').text('retry').at({href: '#'}).st({marginLeft: '1em'})
+    .on('click', () => { d3.event.preventDefault(); location.reload() })
+}
+
+var waitTimer = setTimeout(() => sayWaiting('waiting for the list…'), WAIT_MS)
+var giveUpTimer = setTimeout(() => sayWaiting("couldn't load posts — no answer from the server", true), GIVE_UP_MS)
+
+Promise.all([
+  getJSON(itemURL, true, json => {
+    // the network answered after the saved copy had already been drawn: say so rather than
+    // redrawing under him — drawDays only adds dates it hasn't drawn, so a new post on a day
+    // already on screen would be missed
+    if (!listKey || keyOf(json) == listKey) return
+    newerList = json
+    drawCount()
+  }),
+  getJSON('favicons').catch(() => []),
+]).then(res => {
 
   window.items = _.sortBy(res[0], d => d.isoDate).reverse()
   window.favicons = res[1]
@@ -119,6 +169,9 @@ Promise.all([getJSON(itemURL, true), getJSON('favicons').catch(() => [])]).then(
     d.img = d.favicon.icons.filter(d => d.src.includes('png')).slice(-1)[0] || d.favicon.icons[0] || {}
   })
   var name2icons = Object.fromEntries(favicons.map(d => [d.feedName, d.img]))
+
+  clearTimeout(waitTimer)
+  clearTimeout(giveUpTimer)
 
   // add today's and yesterday's posts
   var itemSel = d3.select('.items').html('')
@@ -330,7 +383,8 @@ function drawCount(){
   var drawn = d3.selectAll('.item').data()
   var str = drawn.length + ' posts'
   str += ' · ' + (listAt ? 'list ' + relTime(listAt) : 'list age unknown')
-  if (checking) str += ' · checking…'
+  if (newerList) str += ' · new posts, tap to load'
+  else if (checking) str += ' · checking…'
   else if (checkFailed) str += ' · no answer'
   else if (netOk === false) str += ' · offline'
   else if (savedSet){
@@ -354,6 +408,7 @@ function readSaved(){
 }
 
 function recheck(){
+  if (newerList) return location.reload()
   if (checking) return
   checking = true
   checkFailed = false
