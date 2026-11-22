@@ -82,6 +82,11 @@ async function main(){
         delete d['content:contentSnippet']
         if (d['content:encoded']) delete d.content
 
+        // relative links and images point at the publisher, not at us
+        var base = util.baseUrlOf(d.link || d.href, feed.link)
+        ;['content:encoded', 'content', 'summary'].forEach(k => {
+          if (d[k]) d[k] = util.absolutizeHtml(d[k], base)
+        })
 
 
         items.push(d)
