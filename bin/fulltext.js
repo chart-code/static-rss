@@ -4,6 +4,7 @@ var {fs} = require('scrape-stl')
 var sanitize = require('sanitize-filename')
 var {JSDOM, VirtualConsole} = require('jsdom')
 var {Readability} = require('@mozilla/readability')
+var {absolutizeHtml} = require('./util.js')
 
 var UA = 'static-rss/1.0 (+https://roadtolarissa.com/static-rss)'
 
@@ -145,7 +146,9 @@ async function addFullText(items, maxFetches=100){
       d.paywall = true
     } else if (article.text && article.html.length < 300000 &&
         (alwaysFetchRegex.test(d.href) || article.text.length > textOf(feedHtml(d)).length)){
-      d['content:encoded'] = article.html // oversize posts are offloaded to longposts/ later in parse.js
+      // the jsdom pass in fetchArticle only fixes a[href]/img[src], and pages cached before it
+      // skip it: svg <use href>, <source src> and the rest are made absolute here
+      d['content:encoded'] = absolutizeHtml(article.html, d.href) // oversize posts are offloaded to longposts/ later in parse.js
     }
   }
 
