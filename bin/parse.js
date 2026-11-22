@@ -1,6 +1,7 @@
 var {fs, glob} = require('scrape-stl')
 var util = require('./util.js')
 var fulltext = require('./fulltext.js')
+var {rewriteEmbeds} = require('./embeds.js')
 
 var sanitize = require('sanitize-filename')
 
@@ -82,10 +83,11 @@ async function main(){
         delete d['content:contentSnippet']
         if (d['content:encoded']) delete d.content
 
-        // relative links and images point at the publisher, not at us
+        // relative links and images point at the publisher, not at us; substack's script-filled
+        // embeds (tweets, videos, linked posts) become plain html (bin/embeds.js)
         var base = util.baseUrlOf(d.link || d.href, feed.link)
         ;['content:encoded', 'content', 'summary'].forEach(k => {
-          if (d[k]) d[k] = util.absolutizeHtml(d[k], base)
+          if (d[k]) d[k] = util.absolutizeHtml(rewriteEmbeds(d[k], base), base)
         })
 
 

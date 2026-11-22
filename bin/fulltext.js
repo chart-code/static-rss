@@ -5,6 +5,7 @@ var sanitize = require('sanitize-filename')
 var {JSDOM, VirtualConsole} = require('jsdom')
 var {Readability} = require('@mozilla/readability')
 var {absolutizeHtml} = require('./util.js')
+var {rewriteEmbeds} = require('./embeds.js')
 
 var UA = 'static-rss/1.0 (+https://roadtolarissa.com/static-rss)'
 
@@ -147,8 +148,9 @@ async function addFullText(items, maxFetches=100){
     } else if (article.text && article.html.length < 300000 &&
         (alwaysFetchRegex.test(d.href) || article.text.length > textOf(feedHtml(d)).length)){
       // the jsdom pass in fetchArticle only fixes a[href]/img[src], and pages cached before it
-      // skip it: svg <use href>, <source src> and the rest are made absolute here
-      d['content:encoded'] = absolutizeHtml(article.html, d.href) // oversize posts are offloaded to longposts/ later in parse.js
+      // skip it: svg <use href>, <source src> and the rest are made absolute here. A fetched
+      // substack page carries the same empty embed divs as its feed
+      d['content:encoded'] = absolutizeHtml(rewriteEmbeds(article.html, d.href), d.href) // oversize posts are offloaded to longposts/ later in parse.js
     }
   }
 
