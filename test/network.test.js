@@ -181,18 +181,25 @@ async function main(){
     var ctx = await context()
     await prime(ctx)
     S.set('data', 'slow', 2000)
-    var scrolled = false
+    var scrolled = false, before = null
     var v = await visit(ctx, POST, 5000, async (page, s) => {
-      if (s.items && !scrolled){ scrolled = true; await page.evaluate(() => scrollTo(0, 800)) }
+      if (s.items && !scrolled){
+        scrolled = true
+        await page.evaluate(() => scrollTo(0, 800))
+        before = await page.evaluate(() => {
+          var n = Array.from(document.querySelectorAll('.item')).find(n => n.getBoundingClientRect().bottom > 0)
+          return {href: n.__data__.href, top: Math.round(n.getBoundingClientRect().top)}
+        })
+      }
     })
-    var hint = /new posts, tap to load/.test(v.footer)
-    // the hint leads to the fresh list
-    S.reset()
-    await v.page.click('.rss-status span').catch(() => {})
-    await sleep(2500)
-    var after = await look(v.page)
-    row('repeat visit, stale cache, slow 2000, reading (scrolled)', {firstItem: v.firstItem, reloads: v.reloads, footer: v.footer, freshAfterTap: after && after.fresh},
-      {noReload: v.reloads == 0, hint, ageOfWhatIsShown: /list 3h ago/.test(v.footer), freshAfterTap: !!(after && after.fresh)})
+    // the fresh list goes in around him: the row he was looking at stays where it was
+    var after = before && await v.page.evaluate(h => {
+      var n = Array.from(document.querySelectorAll('.item')).find(n => n.__data__.href == h)
+      return n && Math.round(n.getBoundingClientRect().top)
+    }, before.href)
+    row('repeat visit, stale cache, slow 2000, reading (scrolled)', {firstItem: v.firstItem, reloads: v.reloads, footer: v.footer, before, after},
+      {noReload: v.reloads == 0, endsFresh: v.fresh, saysFresh: /fresh/.test(v.footer), ageOfWhatIsShown: /list \d+m ago/.test(v.footer),
+        scrollKept: !!before && after != null && Math.abs(after - before.top) <= 2})
     await ctx.close()
   })
 
@@ -200,12 +207,16 @@ async function main(){
     var ctx = await context()
     await prime(ctx)
     S.set('data', 'slow', 2000)
-    var opened = false
+    var opened = null
     var v = await visit(ctx, POST, 5000, async (page, s) => {
-      if (s.items && !opened){ opened = true; await page.click('.item .post-title') }
+      if (s.items && !opened){
+        opened = await page.evaluate(() => document.querySelector('.item').__data__.href)
+        await page.click('.item .post-title')
+      }
     })
+    var stillOpen = await v.page.evaluate(h => !!Array.from(document.querySelectorAll('.item.active')).find(n => n.__data__.href == h), opened)
     row('repeat visit, stale cache, slow 2000, post open', {reloads: v.reloads, footer: v.footer},
-      {noReload: v.reloads == 0, hint: /new posts, tap to load/.test(v.footer)})
+      {noReload: v.reloads == 0, endsFresh: v.fresh, stillOpen})
     await ctx.close()
   })
 
@@ -384,6 +395,115 @@ async function main(){
     var v = await visit(ctx, STANDALONE, 7000)
     row('standalone, stale cache, slow 2000, idle', {firstItem: v.firstItem, firstFresh: v.firstFresh, reloads: v.reloads},
       {paintsBy1500: v.firstItem < 1500, endsFresh: v.fresh, atMostOneReload: v.reloads <= 1})
+    await ctx.close()
+  })
+
+  /* a connection that comes back while the page stays open (see "keeping the list fresh") */
+
+  var hitsOf = () => S.state.hits['/slinks/static-rss/generated/items-today.json'] || 0
+  var hasMarker = page => page.evaluate(m => Array.from(document.querySelectorAll('.item')).some(n => n.__data__ && n.__data__.href == m), fx.marker).catch(() => false)
+  async function waitFresh(page, ms){
+    var t0 = Date.now()
+    while (Date.now() - t0 < ms){
+      if (await hasMarker(page)) return Date.now() - t0
+      await sleep(100)
+    }
+    return null
+  }
+  var navCounter = page => {
+    var c = {n: 0}
+    page.on('framenavigated', f => { if (f == page.mainFrame()) c.n++ })
+    return c
+  }
+  // the first row whose bottom is on screen, and where it sits
+  var anchorOf = (page, href) => page.evaluate(h => {
+    var items = Array.from(document.querySelectorAll('.item'))
+    var n = h ? items.find(n => n.__data__.href == h) : items.find(n => n.getBoundingClientRect().bottom > 0)
+    return n && {href: n.__data__.href, top: Math.round(n.getBoundingClientRect().top), scrollY}
+  }, href)
+  var setHidden = (page, hidden) => page.evaluate(h => {
+    Object.defineProperty(document, 'hidden', {configurable: true, get: () => h})
+    Object.defineProperty(document, 'visibilityState', {configurable: true, get: () => h ? 'hidden' : 'visible'})
+    document.dispatchEvent(new Event('visibilitychange'))
+  }, hidden)
+
+  test('recover: hang, then signal returns with the page open', async () => {
+    var ctx = await context()
+    await prime(ctx)
+    S.set('data', 'hang')
+    var v = await visit(ctx, POST, 3000)
+    var page = v.page
+    var navs = navCounter(page)
+    var cachedFooter = v.footer
+    // reading: a post open, scrolled down the list
+    var opened = fx.lists.stale.find((d, i) => i > 25 && d['content:encoded']).href
+    await openPost(page, opened)
+    await page.evaluate(() => scrollTo(0, 1500))
+    await sleep(200)
+    var before = await anchorOf(page)
+    // the signal comes back, but the request already sent stays hung, as on a phone
+    S.set('data', 'normal')
+    var freshMs = await waitFresh(page, 30e3)
+    await sleep(500)
+    var after = before && await anchorOf(page, before.href)
+    var s = await look(page)
+    var stillOpen = await page.evaluate(h => !!Array.from(document.querySelectorAll('.item.active')).find(n => n.__data__.href == h), opened)
+    row('recover: hang, then signal returns — fresh posts appear without a reload', {freshMs, reloads: navs.n, cachedFooter, footer: s.footer, before, after, items: s.items},
+      {staleFirst: !v.fresh && v.items > 0, saysCached: /cached/.test(cachedFooter), endsFresh: freshMs != null, noReload: navs.n == 0,
+        saysFresh: /fresh/.test(s.footer) && !/cached/.test(s.footer), moreItems: s.items > v.items,
+        scrollKept: !!(after && Math.abs(after.top - before.top) <= 2), readKept: await isRead(page, opened), postStillOpen: stillOpen})
+    await ctx.close()
+  })
+
+  test('recover: flapping connection', async () => {
+    var ctx = await context()
+    await prime(ctx)
+    var cycle = [['hang', 4000], ['down', 2000], ['normal', 2000]]
+    var stop = false
+    ;(async () => { for (var i = 0; !stop; i++){ var [m, ms] = cycle[i % 3]; S.set('data', m); await sleep(ms) } })()
+    var v = await visit(ctx, POST, 1500)
+    var navs = navCounter(v.page)
+    var freshMs = await waitFresh(v.page, 45e3)
+    stop = true
+    S.set('data', 'normal')
+    await sleep(3000)
+    var s = await look(v.page)
+    var hits = hitsOf()
+    row('recover: flapping connection — ends fresh, no reload, no hammering', {freshMs, reloads: navs.n, hits, footer: s.footer},
+      {endsFresh: freshMs != null, noReload: navs.n == 0, fewRequests: hits < 25, saysFresh: /fresh/.test(s.footer) && !/checking/.test(s.footer), staysFresh: s.fresh})
+    await ctx.close()
+  })
+
+  test('recover: online event retries at once', async () => {
+    var ctx = await context()
+    await prime(ctx)
+    S.set('data', 'down')
+    var v = await visit(ctx, POST, 9000)
+    var offFooter = v.footer
+    S.set('data', 'normal')
+    await v.page.evaluate(() => window.dispatchEvent(new Event('online')))
+    var freshMs = await waitFresh(v.page, 5000)
+    row('recover: down, then online — fresh at once', {offFooter, freshMs},
+      {saysOffline: /cached/.test(offFooter) && /offline/.test(offFooter), freshOnOnline: freshMs != null && freshMs < 2000})
+    await ctx.close()
+  })
+
+  test('recover: no retries while hidden, one on becoming visible', async () => {
+    var ctx = await context()
+    await prime(ctx)
+    S.set('data', 'hang')
+    var v = await visit(ctx, POST, 1500)
+    await setHidden(v.page, true)
+    S.set('data', 'down')
+    var h0 = hitsOf()
+    await sleep(16e3)
+    var hiddenHits = hitsOf() - h0
+    var hiddenFresh = await hasMarker(v.page)
+    S.set('data', 'normal')
+    await setHidden(v.page, false)
+    var freshMs = await waitFresh(v.page, 5000)
+    row('recover: hidden tab waits, visible tab refreshes', {hiddenHits, freshMs},
+      {quietWhileHidden: hiddenHits == 0 && !hiddenFresh, freshOnVisible: freshMs != null && freshMs < 2000})
     await ctx.close()
   })
 

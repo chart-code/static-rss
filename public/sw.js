@@ -14,7 +14,7 @@ var appPath = new URL(APP).pathname
 var scopePath = new URL(SCOPE).pathname
 
 var PREFIX = 'static-rss ' + appPath + ' '
-var SHELL_CACHE = PREFIX + 'shell-v6'
+var SHELL_CACHE = PREFIX + 'shell-v7'
 var DATA_CACHE = PREFIX + 'data'
 
 var SHELL = ['script.js', 'style.css', 'd3_.js'].map(d => new URL(d, APP).href)
@@ -66,11 +66,26 @@ self.addEventListener('fetch', e => {
 var isJSON = res => (res.headers.get('content-type') || '').includes('json')
 var noSearch = req => { var u = new URL(req.url); u.search = ''; return u.href }
 
+// A connection on a train can take the request and never answer. Without a deadline the worker
+// waits with it for as long as the browser lets it — minutes — and the page asking gets neither
+// the list nor the saved copy. Past DATA_MS with no answer the request is dropped and the saved
+// copy goes out, marked, so the page knows to keep asking (see "keeping the list fresh" in
+// script.js). Under the page's own 15s, so the saved copy is what the page sees. Long posts get
+// longer: the page's deadline is the one that counts for them, and it shows its own message.
+var DATA_MS = 12e3
+var LONGPOST_MS = 20e3
+function fetchBy(req, ms){
+  if (!self.AbortController) return fetch(req)
+  var ctrl = new AbortController()
+  var timer = setTimeout(() => ctrl.abort(), ms)
+  return fetch(req, {signal: ctrl.signal}).then(res => { clearTimeout(timer); return res }, err => { clearTimeout(timer); throw err })
+}
+
 function networkFirst(req){
   // drop the ?random cache-buster so items-today.json always maps to one cache entry
   var key = noSearch(req)
   return caches.open(DATA_CACHE).then(c =>
-    fetch(req).then(res => {
+    fetchBy(req, DATA_MS).then(res => {
       if (res.ok && !res.redirected && isJSON(res)) c.put(key, res.clone())
       return res
     }).catch(() => c.match(key).then(hit => hit ? marked(hit) : Response.error())))
@@ -93,7 +108,7 @@ function marked(hit){
 function cacheFirstData(req){
   var key = noSearch(req)
   return caches.open(DATA_CACHE).then(c => c.match(key).then(hit => {
-    var net = fetch(req).then(res => {
+    var net = fetchBy(req, LONGPOST_MS).then(res => {
       if (res.ok && !res.redirected && isJSON(res)) c.put(key, res.clone())
       return res
     }).catch(() => hit || Response.error())

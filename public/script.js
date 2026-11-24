@@ -54,7 +54,6 @@ function getCached(path){
 // when the list on screen was written: Last-Modified on the items file, which the hourly run
 // rewrites. A cached response keeps its headers, so this is honest offline too
 var listAt = null
-var netOk = null     // did the network answer for the list, or is this a saved copy
 function stamp(path, res){
   if (path != itemURL) return
   var lm = Date.parse(res.headers.get('last-modified'))
@@ -69,6 +68,10 @@ var CACHE_WINS_MS = 400
 // Underground a connection can accept a request and never answer. Anything that shows
 // "loading…" or "checking…" while it waits gets a deadline, or that word stays up for good.
 var FETCH_MS = 15e3
+// The deadline above is for the answer to start. The list is ~800 KB, which on a train can take
+// a while to arrive and can also stop arriving halfway, so reading the body gets its own, longer
+// one — without it res.json() can wait forever just the same.
+var BODY_MS = 60e3
 function fetchBy(url, ms, opts){
   var ctrl = window.AbortController ? new AbortController() : null
   var timer
@@ -77,30 +80,43 @@ function fetchBy(url, ms, opts){
     reject(new Error('timeout'))
   }, ms))
   return Promise.race([fetch(url, Object.assign({}, opts, ctrl ? {signal: ctrl.signal} : {})), late])
-    .then(res => { clearTimeout(timer); return res }, err => { clearTimeout(timer); throw err })
+    .then(res => { clearTimeout(timer); res.abort = () => ctrl && ctrl.abort(); return res }, err => { clearTimeout(timer); throw err })
 }
 
-function getJSON(path, bust, onLate, ms){
-  var url = dataURL(path) + (bust ? '?' + Math.random() : '')
-  var settled = false
-  var net = (ms ? fetchBy(url, ms) : fetch(url)).then(res => {
-    if (!res.ok || res.redirected) throw new Error(res.status)
-    if (!swControlled()) putData(path, res.clone())
-    // sw.js hands over a saved copy with x-sw-cache when the network is dead (it is still a
-    // 200 here), so a list that didn't really come from the server says "offline"
-    if (path == itemURL) netOk = !res.headers.get('x-sw-cache')
-    // a late answer isn't what's on screen, so it doesn't get to say how old the list is
-    if (!settled) stamp(path, res)
-    return res.json()
-  }).catch(err => { if (path == itemURL) netOk = false; throw err })
-  var cached = () => getCached(path)
-  // Underground the phone holds a connection that accepts the request and never answers, so the
-  // saved copy goes out after CACHE_WINS_MS rather than a 5s stare at nothing. The request is
-  // still running: onLate gets the real answer whenever it lands.
-  var slow = new Promise(resolve => setTimeout(() => resolve(cached().catch(() => net)), CACHE_WINS_MS))
+function jsonBy(res, ms = BODY_MS){
+  var timer
+  var late = new Promise((resolve, reject) => timer = setTimeout(() => {
+    if (res.abort) res.abort()
+    reject(new Error('timeout'))
+  }, ms))
+  return Promise.race([res.json(), late])
+    .then(json => { clearTimeout(timer); return json }, err => { clearTimeout(timer); throw err })
+}
 
-  if (onLate) net.then(json => onLate(json), () => {})
-  return Promise.race([net, slow]).catch(cached).then(json => { settled = true; return json })
+// The network's answer as {json, res, real}: real is false when sw.js handed over its saved copy
+// because the network was dead (x-sw-cache — still a 200 here). Rejects on an error or a deadline.
+function fetchData(path, bust, ms = FETCH_MS){
+  var url = dataURL(path) + (bust ? '?' + Math.random() : '')
+  return fetchBy(url, ms).then(res => {
+    if (!res.ok || res.redirected) throw new Error(res.status)
+    var real = !res.headers.get('x-sw-cache')
+    if (real && !swControlled()) putData(path, res.clone())
+    return jsonBy(res).then(json => ({json, res, real}))
+  })
+}
+
+// Network first, with the saved copy standing in. Underground the phone holds a connection that
+// accepts the request and never answers, so the saved copy goes out after CACHE_WINS_MS rather
+// than a stare at nothing. onNet gets the network's answer, saved copy or not, whenever it lands.
+function getJSON(path, bust, onNet, ms){
+  var net = fetchData(path, bust, ms)
+  if (onNet) net.then(onNet, () => onNet(null))
+  var cached = () => getCached(path)
+  var slow = new Promise(resolve => setTimeout(() => resolve(cached().catch(() => net.then(r => r.json))), CACHE_WINS_MS))
+  // a late answer isn't what's on screen, so it doesn't get to say how old the list is
+  var settled = false
+  var first = net.then(r => { if (!settled) stamp(path, r.res); return r.json })
+  return Promise.race([first, slow]).catch(cached).then(json => { settled = true; return json })
 }
 
 // A failed load retries itself instead of sitting on an error: as soon as the browser fires
@@ -118,6 +134,7 @@ function retrier(load, onFail){
       onFail()
       var ms = delays.shift()
       if (ms) timer = setTimeout(attempt, ms)
+      else timer = null
     })
   }
 
@@ -136,10 +153,10 @@ function retrier(load, onFail){
   window.addEventListener('online', start)
   start()
 
-  return {cancel: stop}
+  // given up until the next 'online': nothing in flight, nothing waiting
+  var idle = () => done || (!inFlight && !timer)
+  return {cancel: stop, idle}
 }
-
-var newerList = null
 
 // Nothing should ever be a blank page on a dead connection: say what is happening at WAIT_MS,
 // and offer a retry at GIVE_UP_MS. Drawing the list clears both.
@@ -158,27 +175,146 @@ function sayWaiting(str, retry){
 var waitTimer = setTimeout(() => sayWaiting('waiting for the list…'), WAIT_MS)
 var giveUpTimer = setTimeout(() => sayWaiting("couldn't load posts — no answer from the server", true), GIVE_UP_MS)
 
-// The network answered after the saved copy was drawn. If he hasn't started reading — nothing
-// open, still at the top, moments after opening — take the fresh list straight away, because
-// that is what reloading was for. Once he is reading, say so instead and let him choose: a
-// post on a day already on screen would be missed by a partial redraw, so this reloads.
-var lateList = null
+/* keeping the list fresh ****************************************************************/
 
-function considerLate(){
-  if (!lateList || !listKey || keyOf(lateList) == listKey) return
-  var reading = d3.select('.item.active').size() || scrollY > 100 || performance.now() > 20e3
-  // one automatic reload per visit, so a list that somehow never settles can't loop
-  var last = +(sessionStorage.getItem('rss-reloaded') || 0)
-  if (!reading && Date.now() - last > 30e3){
-    try { sessionStorage.setItem('rss-reloaded', String(Date.now())) } catch (e){}
-    return location.reload()
-  }
-  newerList = lateList
+// On a train the list usually comes out of the cache first: the request for the real one hangs
+// in a dead patch, or fails, and the saved copy is drawn. Until the server has answered for the
+// list on screen, the page keeps asking: on a backoff while the tab is visible, at once on
+// 'online' and on becoming visible, and never while hidden. One request at a time, and every one
+// has a deadline (FETCH_MS, BODY_MS, and sw.js's own), so a hung one can't hold 'busy' for good.
+//
+// A fresh list is merged into the one on screen rather than reloading the page: new posts go in
+// at their place by date, rows already drawn are left alone — an open post stays open, read marks
+// stay — and the row at the top of the screen stays where it is, so the list doesn't jump.
+var RETRY_MS = [1e3, 2e3, 4e3, 8e3, 15e3, 30e3]   // then every 30s while visible
+var STALE_MS = 10*60e3     // a fresh list this old is asked for again on coming back to the tab
+var refresh = {busy: false, timer: null, tries: 0, at: 0, manual: false}
+var listFresh = false      // the server answered for the list on screen
+var netOk = null           // the last ask for the list: true, false (failed or saved copy), null
+var drawn = false          // the list is on screen
+var failedToDraw = false   // nothing could be drawn at all
+var pendingFresh = null    // a fresh list that landed before the first draw
+
+function onFresh(r){
+  netOk = true
+  refresh.at = Date.now()
+  refresh.tries = 0
+  if (failedToDraw) return location.reload()   // nothing on screen to lose
+  if (!drawn) return pendingFresh = r
+  mergeList(r)
+}
+
+function onNetFailed(){
+  netOk = false
+  scheduleRefresh()
   drawCount()
 }
 
+function refreshList(manual){
+  if (manual){
+    refresh.manual = true
+    checking = true
+    checkFailed = false
+    drawCount()
+  }
+  if (refresh.busy) return
+  clearTimeout(refresh.timer)
+  refresh.busy = true
+  fetchData(itemURL, true).then(settled, () => settled(null))
+}
+
+// the answer to one ask, the first load's included: r is null on a failure or a deadline
+function settled(r){
+  refresh.busy = false
+  var manual = refresh.manual
+  checking = refresh.manual = false
+  if (r && r.real){
+    if (manual) checkFailed = false
+    onFresh(r)
+    drawCount()
+  } else {
+    if (manual) checkFailed = true
+    onNetFailed()
+  }
+}
+
+function scheduleRefresh(){
+  clearTimeout(refresh.timer)
+  if (listFresh || document.hidden || refresh.busy) return
+  var ms = RETRY_MS[Math.min(refresh.tries++, RETRY_MS.length - 1)]
+  refresh.timer = setTimeout(() => refreshList(), ms)
+}
+
+// back in signal, or back on the tab: ask now, with the backoff started over. A fresh list is
+// asked for again only once it is STALE_MS old, and only once: it is still the server's answer
+function refreshNow(){
+  if (document.hidden) return clearTimeout(refresh.timer)
+  if (listFresh && Date.now() - refresh.at < STALE_MS) return
+  refresh.tries = 0
+  refreshList()
+}
+window.addEventListener('online', refreshNow)
+document.addEventListener('visibilitychange', refreshNow)
+
+function mergeList(r){
+  var list = r.json
+  var shown = new Map(d3.selectAll('.item').data().map(d => [d.href, d]))
+  // a post already on screen keeps its row; its fields follow the server (a long post's file
+  // name, say), and what the page hung on it (open, loaded html) stays
+  list.forEach(d => { if (shown.has(d.href)) Object.assign(shown.get(d.href), d) })
+  var add = list.filter(d => !shown.has(d.href))
+  if (add.length) keepScroll(() => insertPosts(add))
+  listFresh = true
+  stamp(itemURL, r.res)
+  drawCount()
+  if (recent.retry) loadRecent()
+}
+
+// the first row with any of it on screen stays put while rows go in above it. At the very top
+// nothing is held, so the new posts are what shows
+function keepScroll(fn){
+  var anchor = scrollY > 0 && d3.selectAll('.item').nodes().find(n => n.getBoundingClientRect().bottom > 0)
+  var top = anchor && anchor.getBoundingClientRect().top
+  fn()
+  // a browser with scroll anchoring of its own has already done this, and the difference is 0
+  if (anchor){
+    var moved = anchor.getBoundingClientRect().top - top
+    if (Math.abs(moved) >= 1) scrollBy(0, moved)
+  }
+}
+
+// days newest first, posts in a day newest first, the same order drawDays makes
+function insertPosts(add){
+  var box = d3.select('.items').node()
+  d3.nestBy(add, d => d.isoDate.split('T')[0])
+    .filter(d => new Date(d.key) < +(new Date()) + 24*60*60*1000)
+    .forEach(day => {
+      var dateNode = Array.from(box.querySelectorAll('div.date')).find(n => n.__data__.key == day.key)
+      if (!dateNode){
+        var before = Array.from(box.querySelectorAll('div.date')).find(n => n.__data__.key < day.key)
+        dateNode = box.insertBefore(document.createElement('div'), before || null)
+        dateNode.className = 'date'
+        d3.select(dateNode).datum([]).append('h3').text(day.key)
+        dateNode.__data__.key = day.key
+      }
+      _.sortBy(day, d => d.isoDate).reverse().forEach(d => {
+        var before = Array.from(dateNode.querySelectorAll('div.item')).find(n => n.__data__.isoDate < d.isoDate)
+        var node = dateNode.insertBefore(document.createElement('div'), before || null)
+        node.className = 'item'
+        dateNode.__data__.push(d)
+        drawPosts(d3.select(node).datum(d))
+      })
+    })
+}
+
+/* the list ******************************************************************************/
+
+var name2icons = {}
+
+refresh.busy = true
 Promise.all([
-  getJSON(itemURL, true, json => { lateList = json; considerLate() }),
+  // the first ask is the first try of the backoff above: one request at a time
+  getJSON(itemURL, true, settled),
   getJSON('favicons').catch(() => []),
 ]).then(res => {
 
@@ -196,168 +332,185 @@ Promise.all([
 
     d.img = d.favicon.icons.filter(d => d.src.includes('png')).slice(-1)[0] || d.favicon.icons[0] || {}
   })
-  var name2icons = Object.fromEntries(favicons.map(d => [d.feedName, d.img]))
+  name2icons = Object.fromEntries(favicons.map(d => [d.feedName, d.img]))
 
   clearTimeout(waitTimer)
   clearTimeout(giveUpTimer)
 
   // add today's and yesterday's posts
-  var itemSel = d3.select('.items').html('')
+  d3.select('.items').html('')
   drawDays(items)
-  listKey = keyOf(items)
+  drawn = true
+  // the server's list landed while this was drawing, or was what got drawn
+  if (pendingFresh){ mergeList(pendingFresh); pendingFresh = null }
   drawFooter()
   // after the list is on screen, never before it: the marks from other devices
   syncPull()
-  // the fresh list may have landed while this was drawing, before listKey existed
-  considerLate()
+  if (!listFresh) scheduleRefresh()
 
-  // add posts from the last 90 days. Additive, so a failure shows nothing — but it is picked up
-  // if a dead connection comes back
-  retrier(() => getJSON(itemURL.replace('today', 'recent'))
-    .then(recent => {
-      drawDays(recent, itemSel.selectAll('div.date').data().map(d => d.key))
-      readSaved()
-    }), () => {})
-
-  function drawDays(items, prevDates=[]){
-    var byDate = d3.nestBy(items, d => d.isoDate.split('T')[0])
-      .filter(d => !prevDates.includes(d.key))
-      .filter(d => new Date(d.key) < +(new Date()) + 24*60*60*1000)
-
-    var dateSel = itemSel.appendMany('div.date', _.sortBy(byDate, d => d.key).reverse())
-
-    dateSel.append('h3').text(d => d.key)
-
-    var postSel = dateSel.appendMany('div.item', d => d)
-      .classed('read', d => window.localStorage.getItem(d.href))
-
-    var titleSel = postSel.append('div.post-title')
-      .on('click', function(d){
-        d.active = !d.active
-
-        var sel = d3.select(this.parentNode)
-          .classed('read', 1)
-          .classed('active', d.active)
-          .select('.content')
-
-        // a pending retry belongs to the post that was open; collapsing or reopening drops it
-        if (d.retry) d.retry = d.retry.cancel()
-
-        if (!d.active){
-          var node = this.parentNode
-          if (node.getBoundingClientRect().top < 0) node.scrollIntoView(true)
-          return sel.html('')
-        }
-
-        var hrefPP = d.href.split('//')[1].replace('www.', '').replace('.html', '').split('/')[0]
-        var headSel = sel.append('p').st({marginTop: 5, opacity: .4})
-        headSel.append('a').text(hrefPP).at({href: d.href, target: '_blank'})
-        headSel.append('a').text('>').at({href: '?feed=' + hrefPP}).st({marginLeft: '1em'})
-        // only set on feeds with more than one author whose posts don't name them (bin/parse.js)
-        if (d.byline) headSel.append('span').text(d.byline).st({float: 'right'})
-
-        var width = sel.select('p').node().offsetWidth
-
-        var contentStr = d['content:encoded'] || d.content || d.summary || ''
-
-        // Long posts are saved to their own file. A post opened once before is already here — on
-        // the datum within this page, otherwise in the cache, since sw.js keeps longposts/
-        // cache-first and their files never change. Either way it renders with no network wait and
-        // no 'loading…': the placeholder is only for a post that has never been opened.
-        // The datum copy is keyed on longPost, so a post whose file changed drops the stale copy.
-        if (!contentStr && d.longPost){
-          var rawHTMLSel = sel.append('div.raw-html')
-          if (d.longKey == d.longPost){
-            renderContent(d.longHtml)
-          } else {
-            var render = res => {
-              d.longKey = d.longPost
-              d.longHtml = res[0].html
-              renderContent(d.longHtml)
-            }
-            d.retry = retrier(
-              () => getCached('longposts/' + d.longPost).then(render, () => {
-                rawHTMLSel.html('<p style="opacity:.4">loading…</p>')
-                return getJSON('longposts/' + d.longPost, false, null, FETCH_MS).then(render)
-              }),
-              () => rawHTMLSel.html('<p style="opacity:.4">couldn\'t load post</p>'))
-          }
-        } else {
-          var rawHTMLSel = sel.append('div.raw-html')
-          renderContent(contentStr)
-        }
-
-        function renderContent(contentStr){
-        contentStr = contentStr
-          .replaceAll('width: ', 'x-width: ')
-          .replaceAll(' width=', ' x-width=')
-          .replaceAll('height: ', 'x-height: ')
-
-        if (hrefPP == 'thecity.nyc'){
-          contentStr = contentStr
-            .replaceAll(` src="`, ` x-src="`)
-            .replaceAll(` srcset="`, ` x-srcset="`)
-            .replaceAll(` data-src="`, ` src="`)
-        }
-
-        rawHTMLSel.html(contentStr)
-
-        // responsive youtube embed
-        rawHTMLSel.selectAll('iframe').at({width, height: width*9/16})
-
-        // open all links in a new tab
-        rawHTMLSel.selectAll('a').at({target: 'blank'})
-
-        rawHTMLSel.selectAll('.subscription-widget-wrap,.button-wrapper').remove()
-        // substack's zoom/restack buttons under every image
-        rawHTMLSel.selectAll('.image-link-expand,.restack-image').remove()
-
-        // Substack serves a 248px image with srcset variants up to 1456w and sizes="100vw",
-        // which lays it out at the full viewport width — a small picture blown up and blurry.
-        // The width/height attributes that would have said otherwise are neutered above, so
-        // put them back on images and drop the srcset/sizes that override them.
-        rawHTMLSel.selectAll('picture source').remove()
-        rawHTMLSel.selectAll('img').each(function(){
-          this.removeAttribute('srcset')
-          this.removeAttribute('sizes')
-          'width height'.split(' ').forEach(d => {
-            var v = this.getAttribute('x-' + d)
-            if (v && +v) this.setAttribute(d, v)
-          })
-        })
-
-        if (hrefPP == 'xkcd.com'){
-          rawHTMLSel.append('p').text(rawHTMLSel.select('img').attr('title'))
-        }
-        if (hrefPP == 'thecity.nyc'){
-          rawHTMLSel.selectAll('.Enhancement-item').remove()
-        }
-        }
-
-        var openedAt = new Date().toISOString()
-        try { window.localStorage.setItem(d.href, openedAt) } catch (e){}
-        syncQueue(d.href, openedAt)
-      })
-
-    // titleSel.each(function(d){ d3.select(this).on('click').call(this, d) })
-
-    titleSel.append('img.icon')
-      .at({src: d => name2icons[d.feedName]?.src, width: 20})
-      .on('error', function(d){ d3.select(this).st({opacity: 0})})
-    titleSel.append('span').html(d => d.title)
-    // only set on feeds with more than one author whose posts don't name them (see bin/parse.js)
-
-    postSel.append('div.content')
-  }
+  loadRecent()
 }).catch(err => {
   console.log(err)
   // said at once, with the retry: the timers would put "waiting for the list…" under it
   clearTimeout(waitTimer)
   clearTimeout(giveUpTimer)
   sayWaiting("couldn't load posts", true)
-  // nothing rendered and no state to lose, so the cheapest recovery is to start the page over
+  // nothing rendered and no state to lose, so the cheapest recovery is to start the page over:
+  // on 'online', or when the backoff above gets an answer
+  failedToDraw = true
+  if (pendingFresh) return location.reload()
   window.addEventListener('online', () => location.reload(), {once: true})
 })
+
+// add posts from the last 90 days. Additive, so a failure shows nothing — but it is picked up
+// if a dead connection comes back: on 'online', and again when a fresh list lands, since the
+// retrier gives up after about a minute and a dead patch on a train can last longer
+var recent = {done: false, retry: null}
+function loadRecent(){
+  if (recent.done || (recent.retry && !recent.retry.idle())) return
+  if (recent.retry) recent.retry.cancel()
+  recent.retry = retrier(() => getJSON(itemURL.replace('today', 'recent'))
+    .then(json => {
+      if (recent.done) return
+      recent.done = true
+      drawDays(json, d3.select('.items').selectAll('div.date').data().map(d => d.key))
+      readSaved()
+    }), () => {})
+}
+
+function drawDays(items, prevDates=[]){
+  var byDate = d3.nestBy(items, d => d.isoDate.split('T')[0])
+    .filter(d => !prevDates.includes(d.key))
+    .filter(d => new Date(d.key) < +(new Date()) + 24*60*60*1000)
+
+  var dateSel = d3.select('.items').appendMany('div.date', _.sortBy(byDate, d => d.key).reverse())
+
+  dateSel.append('h3').text(d => d.key)
+
+  drawPosts(dateSel.appendMany('div.item', d => d))
+}
+
+function drawPosts(postSel){
+  postSel.classed('read', d => window.localStorage.getItem(d.href))
+
+  var titleSel = postSel.append('div.post-title')
+    .on('click', function(d){
+      d.active = !d.active
+
+      var sel = d3.select(this.parentNode)
+        .classed('read', 1)
+        .classed('active', d.active)
+        .select('.content')
+
+      // a pending retry belongs to the post that was open; collapsing or reopening drops it
+      if (d.retry) d.retry = d.retry.cancel()
+
+      if (!d.active){
+        var node = this.parentNode
+        if (node.getBoundingClientRect().top < 0) node.scrollIntoView(true)
+        return sel.html('')
+      }
+
+      var hrefPP = d.href.split('//')[1].replace('www.', '').replace('.html', '').split('/')[0]
+      var headSel = sel.append('p').st({marginTop: 5, opacity: .4})
+      headSel.append('a').text(hrefPP).at({href: d.href, target: '_blank'})
+      headSel.append('a').text('>').at({href: '?feed=' + hrefPP}).st({marginLeft: '1em'})
+      // only set on feeds with more than one author whose posts don't name them (bin/parse.js)
+      if (d.byline) headSel.append('span').text(d.byline).st({float: 'right'})
+
+      var width = sel.select('p').node().offsetWidth
+
+      var contentStr = d['content:encoded'] || d.content || d.summary || ''
+
+      // Long posts are saved to their own file. A post opened once before is already here — on
+      // the datum within this page, otherwise in the cache, since sw.js keeps longposts/
+      // cache-first and their files never change. Either way it renders with no network wait and
+      // no 'loading…': the placeholder is only for a post that has never been opened.
+      // The datum copy is keyed on longPost, so a post whose file changed drops the stale copy.
+      if (!contentStr && d.longPost){
+        var rawHTMLSel = sel.append('div.raw-html')
+        if (d.longKey == d.longPost){
+          renderContent(d.longHtml)
+        } else {
+          var render = res => {
+            d.longKey = d.longPost
+            d.longHtml = res[0].html
+            renderContent(d.longHtml)
+          }
+          d.retry = retrier(
+            () => getCached('longposts/' + d.longPost).then(render, () => {
+              rawHTMLSel.html('<p style="opacity:.4">loading…</p>')
+              return getJSON('longposts/' + d.longPost, false, null, FETCH_MS).then(render)
+            }),
+            () => rawHTMLSel.html('<p style="opacity:.4">couldn\'t load post</p>'))
+        }
+      } else {
+        var rawHTMLSel = sel.append('div.raw-html')
+        renderContent(contentStr)
+      }
+
+      function renderContent(contentStr){
+      contentStr = contentStr
+        .replaceAll('width: ', 'x-width: ')
+        .replaceAll(' width=', ' x-width=')
+        .replaceAll('height: ', 'x-height: ')
+
+      if (hrefPP == 'thecity.nyc'){
+        contentStr = contentStr
+          .replaceAll(` src="`, ` x-src="`)
+          .replaceAll(` srcset="`, ` x-srcset="`)
+          .replaceAll(` data-src="`, ` src="`)
+      }
+
+      rawHTMLSel.html(contentStr)
+
+      // responsive youtube embed
+      rawHTMLSel.selectAll('iframe').at({width, height: width*9/16})
+
+      // open all links in a new tab
+      rawHTMLSel.selectAll('a').at({target: 'blank'})
+
+      rawHTMLSel.selectAll('.subscription-widget-wrap,.button-wrapper').remove()
+      // substack's zoom/restack buttons under every image
+      rawHTMLSel.selectAll('.image-link-expand,.restack-image').remove()
+
+      // Substack serves a 248px image with srcset variants up to 1456w and sizes="100vw",
+      // which lays it out at the full viewport width — a small picture blown up and blurry.
+      // The width/height attributes that would have said otherwise are neutered above, so
+      // put them back on images and drop the srcset/sizes that override them.
+      rawHTMLSel.selectAll('picture source').remove()
+      rawHTMLSel.selectAll('img').each(function(){
+        this.removeAttribute('srcset')
+        this.removeAttribute('sizes')
+        'width height'.split(' ').forEach(d => {
+          var v = this.getAttribute('x-' + d)
+          if (v && +v) this.setAttribute(d, v)
+        })
+      })
+
+      if (hrefPP == 'xkcd.com'){
+        rawHTMLSel.append('p').text(rawHTMLSel.select('img').attr('title'))
+      }
+      if (hrefPP == 'thecity.nyc'){
+        rawHTMLSel.selectAll('.Enhancement-item').remove()
+      }
+      }
+
+      var openedAt = new Date().toISOString()
+      try { window.localStorage.setItem(d.href, openedAt) } catch (e){}
+      syncQueue(d.href, openedAt)
+    })
+
+  // titleSel.each(function(d){ d3.select(this).on('click').call(this, d) })
+
+  titleSel.append('img.icon')
+    .at({src: d => name2icons[d.feedName]?.src, width: 20})
+    .on('error', function(d){ d3.select(this).st({opacity: 0})})
+  titleSel.append('span').html(d => d.title)
+  // only set on feeds with more than one author whose posts don't name them (see bin/parse.js)
+
+  postSel.append('div.content')
+}
 
 /* read marks across devices *************************************************************/
 
@@ -489,12 +642,13 @@ window.addEventListener('online', () => syncFlush())
 /* the footer ****************************************************************************/
 
 // One muted line under the list, the same one the reader, goal and the diary have. It says how
-// much is on screen, how old the list is and how much of it reads with no signal, and it says
-// "offline" or "no answer" rather than looking fresh when it isn't.
+// much is on screen, whether it is the server's list ("fresh") or the saved copy ("cached"), how
+// old the list is and how much of it reads with no signal, and it says "offline" or "no answer"
+// rather than looking fresh when it isn't.
 //
 // Tapping the line asks for the list again, past the hourly rhythm and past navigator.onLine,
-// which lies both ways on a phone. A list that has moved on reloads the page: nothing here is
-// unsaved, and redrawing in place would miss a new post on a day already on screen.
+// which lies both ways on a phone. New posts are merged in where they belong, as with any fresh
+// list (mergeList), so nothing open or scrolled to is lost.
 //
 // Tapping the version throws this copy of the app away and loads it from the server. It takes
 // only this app's worker and caches: /reader/, /nyc-feed/ and every sketch share this origin,
@@ -509,10 +663,6 @@ var verSel = null
 var checking = false
 var checkFailed = false
 var savedSet = null      // long posts in the data cache, once it has been read
-var listKey = null       // the posts drawn, so a check can tell a changed list from the same one
-
-// sorted, so the order the list was drawn in doesn't read as a changed list
-var keyOf = list => JSON.stringify(list.map(d => d.href).sort())
 
 function relTime(ms){
   var m = Math.round((Date.now() - ms)/6e4)
@@ -544,15 +694,17 @@ function drawFooter(){
 
 function drawCount(){
   if (!countSel) return
-  var drawn = d3.selectAll('.item').data()
-  var str = drawn.length + ' posts'
+  var rows = d3.selectAll('.item').data()
+  var str = rows.length + ' posts'
+  // fresh: the server answered for this list. cached: it is the saved copy, and the page is
+  // still asking (see "keeping the list fresh")
+  str += ' · ' + (listFresh ? 'fresh' : 'cached')
   str += ' · ' + (listAt ? 'list ' + relTime(listAt) : 'list age unknown')
-  if (newerList) str += ' · new posts, tap to load'
-  else if (checking) str += ' · checking…'
+  if (checking) str += ' · checking…'
   else if (checkFailed) str += ' · no answer'
-  else if (netOk === false) str += ' · offline'
+  else if (netOk === false && !listFresh) str += ' · offline'
   else if (savedSet){
-    var longs = drawn.filter(d => d.longPost)
+    var longs = rows.filter(d => d.longPost)
     if (longs.length) str += ' · ' + longs.filter(d => savedSet.has(dataURL('longposts/' + d.longPost))).length + '/' + longs.length + ' saved'
   }
   // nothing at all when sync is off: signed-out visitors see the line they always saw
@@ -577,31 +729,10 @@ function readSaved(){
 }
 
 function recheck(){
-  if (newerList) return location.reload()
   if (checking) return
-  checking = true
-  checkFailed = false
-  drawCount()
   // and the marks from other devices, if sync is on for this tab
   syncPull()
-  fetchBy(dataURL(itemURL) + '?' + Math.random(), FETCH_MS)
-    .then(res => {
-      if (!res.ok || res.redirected) throw new Error(res.status)
-      if (res.headers.get('x-sw-cache')) throw new Error('no network')
-      netOk = true
-      stamp(itemURL, res)
-      return res.json()
-    })
-    .then(list => {
-      if (keyOf(list) != listKey) return location.reload()
-      checking = false
-      drawCount()
-    })
-    .catch(() => {
-      checking = false
-      checkFailed = true
-      drawCount()
-    })
+  refreshList(true)
 }
 
 // the worker answers with its shell cache name, which carries the version

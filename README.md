@@ -36,14 +36,23 @@ before opens again with no network wait; network-first for the hourly feed JSON.
 after the app folder so `/slinks/static-rss/`, `/slinks/nyc-feed/` and other apps on the origin
 don't collide.
 
-Under the list is one muted line: how many posts are on screen, how old the list is and how many
-of its long posts read with no signal ("312 posts · list 41m ago · 18/22 saved"), then which copy
-of the app is running ("app v3"). It says "offline" when the list came out of the cache because
-the network was dead (`sw.js` hands a saved copy over with `x-sw-cache` so the page can tell), and
-"no answer" when a check fails.
+On a flaky connection (a train) the saved list is drawn first and the page keeps asking for the
+real one until the server answers: on a backoff (1s, 2s, 4s … every 30s) while the tab is
+visible, at once on `online` and on becoming visible, never while hidden, one request at a time.
+Every fetch that holds a flag has a deadline: 15s for the answer to start and 60s for the body in
+the page, 12s in `sw.js` for the feed JSON, after which the worker hands over the saved copy. A
+fresh list is merged into the one on screen, not reloaded: new posts go in by date, open posts
+and read marks stay, and the row at the top of the screen stays put.
 
-Tapping the line asks for the list again, past the hourly rhythm and past `navigator.onLine`; a
-list that has moved on reloads the page. Tapping the version asks the service worker which shell
+Under the list is one muted line: how many posts are on screen, whether they are the server's list
+or the saved copy, how old the list is and how many of its long posts read with no signal ("312
+posts · fresh · list 41m ago · 18/22 saved"), then which copy of the app is running ("app v3").
+It says "cached · … · offline" while the saved copy is showing and the last ask failed (`sw.js`
+hands a saved copy over with `x-sw-cache` so the page can tell), and "no answer" when a tapped
+check fails.
+
+Tapping the line asks for the list again, past the hourly rhythm and past `navigator.onLine`; new
+posts are merged in. Tapping the version asks the service worker which shell
 cache it is serving (`postMessage('version', [port])`) and, tapped, throws that copy away — this
 page's worker unregistered, this app's `shell-` caches deleted, the data cache with the saved long
 posts kept — and loads the app from the server. It only ever touches this app's own worker and
