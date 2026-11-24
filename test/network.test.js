@@ -387,6 +387,114 @@ async function main(){
     await ctx.close()
   })
 
+  /* read-mark sync (see "read marks across devices" in script.js) ***********************/
+
+  var hrefAt = i => fx.lists.fresh[i].href
+  var isRead = (page, href) => page.evaluate(h => {
+    var n = Array.from(document.querySelectorAll('.item')).find(n => n.__data__.href == h)
+    return !!(n && n.classList.contains('read'))
+  }, href)
+  var openPost = (page, href) => page.evaluate(h => {
+    var n = Array.from(document.querySelectorAll('.item')).find(n => n.__data__.href == h)
+    n.querySelector('.post-title').dispatchEvent(new MouseEvent('click', {bubbles: true}))
+  }, href)
+  var queueOf = page => page.evaluate(() => JSON.parse(localStorage.getItem('rss-sync-queue') || '{}'))
+
+  test('sync: signed out', async () => {
+    var ctx = await context()
+    await prime(ctx, POST, 'fresh')
+    var page = await ctx.newPage()
+    var errors = []
+    // net::ERR_FAILED is context() aborting everything off localhost (the blog's google fonts)
+    page.on('console', m => { if (m.type() == 'error' && !/net::ERR_FAILED/.test(m.text())) errors.push(m.text()) })
+    page.on('pageerror', e => errors.push(e.message))
+    await page.goto(POST, {waitUntil: 'load'})
+    await sleep(2500)
+    await openPost(page, hrefAt(2))
+    await sleep(2500)
+    var afterOpen = S.state.sync.log.slice()
+    // a reload in the same tab doesn't ask again
+    await page.reload({waitUntil: 'load'})
+    await sleep(2500)
+    var s = await look(page)
+    var prompt = await page.evaluate(() => /sign|log.?in|sync/i.test(document.querySelector('.rss-status').textContent) || !!document.querySelector('a[href*="/auth/"], button'))
+    var queue = await queueOf(page)
+    var readLocally = await isRead(page, hrefAt(2))
+    row('sync: signed out — one 401, then nothing, no prompt', {requests: S.state.sync.log, afterOpen, errors, footer: s.footer},
+      {oneGet: afterOpen.length == 1 && afterOpen[0] == 'GET', noneAfterReload: S.state.sync.log.length == 1, noPrompt: !prompt,
+        noQueue: !Object.keys(queue).length, readLocally, onlyThe401: errors.length <= 1 && errors.every(e => /401/.test(e))})
+    await ctx.close()
+  })
+
+  test('sync: signed in, marks merge both ways', async () => {
+    var ctx = await context()
+    await prime(ctx, POST, 'fresh')
+    // a mark only this device has, and one only the server has
+    var page = await ctx.newPage()
+    await page.goto(STANDALONE, {waitUntil: 'load'})
+    var early = new Date(Date.now() - 2*864e5).toISOString()
+    await page.evaluate(([h, t]) => localStorage.setItem(h, t), [hrefAt(5), early])
+    await page.close()
+    S.reset()
+    S.state.sync.mode = 'signedin'
+    S.state.sync.marks = {[hrefAt(3)]: early}
+    var v = await visit(ctx, POST, 3000)
+    var pulled = await isRead(v.page, hrefAt(3))
+    var pushed = S.state.sync.marks[hrefAt(5)] == early
+    var footer = v.footer
+    await openPost(v.page, hrefAt(7))
+    await sleep(3000)
+    var opened = !!S.state.sync.marks[hrefAt(7)]
+    var queue = await queueOf(v.page)
+    row('sync: signed in — server marks show, local marks and new opens go up', {requests: S.state.sync.log, footer, marks: Object.keys(S.state.sync.marks).length},
+      {pulled, pushed, opened, queueEmpty: !Object.keys(queue).length, saysSynced: /synced/.test(footer), firstPaint: v.firstItem != null && v.firstItem < 1500})
+    await ctx.close()
+  })
+
+  test('sync: offline opens queue and flush later', async () => {
+    var ctx = await context()
+    await prime(ctx, POST, 'fresh')
+    S.state.sync.mode = 'signedin'
+    var v = await visit(ctx, POST, 2500)
+    var page = v.page
+    await ctx.setOffline(true)
+    await openPost(page, hrefAt(9))
+    await sleep(2500)
+    var queued = !!(await queueOf(page))[hrefAt(9)]
+    var notYet = !S.state.sync.marks[hrefAt(9)]
+    var offFooter = await page.textContent('.rss-status span')
+    await ctx.setOffline(false)
+    await sleep(2500)
+    var onOnline = !!S.state.sync.marks[hrefAt(9)]
+    var onFooter = await page.textContent('.rss-status span')
+    // queued with no signal, tab closed, sent by the next load
+    await ctx.setOffline(true)
+    await openPost(page, hrefAt(11))
+    await sleep(500)
+    await page.close()
+    await ctx.setOffline(false)
+    var w = await visit(ctx, POST, 3000)
+    var nextLoad = !!S.state.sync.marks[hrefAt(11)]
+    var queueAfter = await queueOf(w.page)
+    row('sync: offline open queues, flushes on online and on the next load', {offFooter, onFooter, requests: S.state.sync.log},
+      {queued, notYet, onOnline, nextLoad, queueEmpty: !Object.keys(queueAfter).length, saysToSync: /1 to sync/.test(offFooter), saysSynced: /synced/.test(onFooter)})
+    await ctx.close()
+  })
+
+  test('sync: hung endpoint', async () => {
+    var ctx = await context()
+    await prime(ctx, POST, 'fresh')
+    S.state.sync.mode = 'hang'
+    var v = await visit(ctx, POST, 2500)
+    await openPost(v.page, hrefAt(4))
+    await sleep(500)
+    var marked = await isRead(v.page, hrefAt(4))
+    var stored = await v.page.evaluate(h => !!localStorage.getItem(h), hrefAt(4))
+    row('sync: hung endpoint — page paints and marks locally', {firstItem: v.firstItem, footer: v.footer, requests: S.state.sync.log},
+      {paintsBy1500: v.firstItem != null && v.firstItem < 1500, marked, stored, oneRequest: S.state.sync.log.length == 1, noSynced: !/synced/.test(v.footer)})
+    await ctx.close()
+  })
+
   for (var [name, fn] of rows) if (!only || name.includes(only)) await fn().catch(e => { failed++; console.log('FAIL ' + name + ' threw ' + e.message) })
 
   await browser.close()

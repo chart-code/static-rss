@@ -69,14 +69,14 @@ var CACHE_WINS_MS = 400
 // Underground a connection can accept a request and never answer. Anything that shows
 // "loading…" or "checking…" while it waits gets a deadline, or that word stays up for good.
 var FETCH_MS = 15e3
-function fetchBy(url, ms){
+function fetchBy(url, ms, opts){
   var ctrl = window.AbortController ? new AbortController() : null
   var timer
   var late = new Promise((resolve, reject) => timer = setTimeout(() => {
     if (ctrl) ctrl.abort()
     reject(new Error('timeout'))
   }, ms))
-  return Promise.race([fetch(url, ctrl ? {signal: ctrl.signal} : {}), late])
+  return Promise.race([fetch(url, Object.assign({}, opts, ctrl ? {signal: ctrl.signal} : {})), late])
     .then(res => { clearTimeout(timer); return res }, err => { clearTimeout(timer); throw err })
 }
 
@@ -206,6 +206,8 @@ Promise.all([
   drawDays(items)
   listKey = keyOf(items)
   drawFooter()
+  // after the list is on screen, never before it: the marks from other devices
+  syncPull()
   // the fresh list may have landed while this was drawing, before listKey existed
   considerLate()
 
@@ -332,7 +334,9 @@ Promise.all([
         }
         }
 
-        window.localStorage.setItem(d.href, new Date().toISOString())
+        var openedAt = new Date().toISOString()
+        try { window.localStorage.setItem(d.href, openedAt) } catch (e){}
+        syncQueue(d.href, openedAt)
       })
 
     // titleSel.each(function(d){ d3.select(this).on('click').call(this, d) })
@@ -354,6 +358,133 @@ Promise.all([
   // nothing rendered and no state to lose, so the cheapest recovery is to start the page over
   window.addEventListener('online', () => location.reload(), {once: true})
 })
+
+/* read marks across devices *************************************************************/
+
+// A post opened on one device shows as read on the others, for Adam only. The page never asks
+// anyone to sign in: the endpoint sits behind the rtl-auth gate on this origin, and the gate's
+// cookie (Domain=.roadtolarissa.com) is already there if he signed in to the reader or goal.
+// Without it the endpoint answers one 401, which turns sync off for the rest of this tab, and
+// the page is exactly what it was before: read marks in localStorage, nothing said about it.
+//
+// localStorage is still the record the page paints from. After the list is drawn, one GET (with
+// a deadline, like every fetch that holds a word on screen) merges the server's marks in, the
+// earliest date winning, and re-marks the rows; marks only this device has go up with it. A post
+// opened after that is queued in localStorage and sent in a small batch a moment later, so an
+// open with no signal goes up on 'online' or on the next load. One request in flight at a time.
+var SYNC_URL = '/static-rss-state/read'
+var SYNC_MS = 10e3
+var SYNC_DAYS = 120       // the server drops marks older than this, so don't send them
+var SYNC_BATCH = 300
+var SYNC_QUEUE = 'rss-sync-queue'
+var SYNC_OFF = 'rss-sync-off'
+var sync = {on: false, busy: false, failed: false, timer: null}
+
+var isMark = (k, v) => /^https?:\/\//.test(k) && !!v && !isNaN(Date.parse(v))
+
+function syncIsOff(){
+  if (!/^https?:$/.test(location.protocol)) return true
+  try { return !!sessionStorage.getItem(SYNC_OFF) } catch (e){ return false }
+}
+
+function readQueue(){
+  try { var q = JSON.parse(localStorage.getItem(SYNC_QUEUE) || '{}'); return q && typeof q == 'object' ? q : {} }
+  catch (e){ return {} }
+}
+function writeQueue(q){
+  try { Object.keys(q).length ? localStorage.setItem(SYNC_QUEUE, JSON.stringify(q)) : localStorage.removeItem(SYNC_QUEUE) } catch (e){}
+}
+
+// signed out (or not Adam, or no endpoint here): stop for this tab and forget the queue
+function syncStop(){
+  sync.on = false
+  try { sessionStorage.setItem(SYNC_OFF, '1') } catch (e){}
+  writeQueue({})
+  drawCount()
+}
+
+// redirect: 'manual' so a gate that ever sends the sign-in page back is read as signed out
+// rather than followed
+function syncFetch(method, body){
+  var opts = {method, credentials: 'same-origin', redirect: 'manual', cache: 'no-store'}
+  if (body){
+    opts.headers = {'Content-Type': 'application/json'}
+    opts.body = JSON.stringify(body)
+  }
+  return fetchBy(SYNC_URL, SYNC_MS, opts).then(res => {
+    if (res.status == 401 || res.status == 403 || res.status == 404 || res.type == 'opaqueredirect'){
+      syncStop()
+      throw new Error('sync off')
+    }
+    if (!res.ok) throw new Error(res.status)
+    return res.json()
+  })
+}
+
+function syncPull(){
+  if (syncIsOff() || sync.busy) return
+  sync.busy = true
+  syncFetch('GET').then(json => {
+    sync.busy = false
+    sync.on = true
+    sync.failed = false
+    var remote = json && json.read && typeof json.read == 'object' ? json.read : {}
+
+    Object.keys(remote).forEach(href => {
+      if (!isMark(href, remote[href])) return
+      var local = localStorage.getItem(href)
+      if (!local || isNaN(Date.parse(local)) || Date.parse(remote[href]) < Date.parse(local)){
+        try { localStorage.setItem(href, remote[href]) } catch (e){}
+      }
+    })
+    d3.selectAll('.item').classed('read', function(d){ return this.classList.contains('read') || !!localStorage.getItem(d.href) })
+
+    // whatever this device read that the server hasn't got: its first sync, or opens that
+    // happened while signed out
+    var cutoff = Date.now() - SYNC_DAYS*864e5
+    var q = readQueue()
+    for (var i = 0; i < localStorage.length; i++){
+      var k = localStorage.key(i), v = localStorage.getItem(k)
+      if (!isMark(k, v) || q[k] || Date.parse(v) < cutoff) continue
+      if (!remote[k] || Date.parse(v) < Date.parse(remote[k])) q[k] = v
+    }
+    writeQueue(q)
+    drawCount()
+    syncFlush()
+  }, () => { sync.busy = false; sync.failed = true })
+}
+
+function syncFlush(){
+  if (syncIsOff() || sync.busy) return
+  // not known to be on yet (offline at load, or the GET timed out): a pull sends the queue
+  if (!sync.on) return syncPull()
+  var q = readQueue()
+  var batch = {}
+  Object.keys(q).slice(0, SYNC_BATCH).forEach(k => batch[k] = q[k])
+  if (!Object.keys(batch).length) return drawCount()
+  sync.busy = true
+  syncFetch('POST', {read: batch}).then(() => {
+    sync.busy = false
+    sync.failed = false
+    var q = readQueue()
+    Object.keys(batch).forEach(k => { if (q[k] == batch[k]) delete q[k] })
+    writeQueue(q)
+    drawCount()
+    if (Object.keys(q).length) syncFlush()
+  }, () => { sync.busy = false; sync.failed = true; drawCount() })
+}
+
+function syncQueue(href, iso){
+  if (syncIsOff()) return
+  var q = readQueue()
+  if (!q[href]) q[href] = iso
+  writeQueue(q)
+  drawCount()
+  clearTimeout(sync.timer)
+  sync.timer = setTimeout(syncFlush, 1500)
+}
+
+window.addEventListener('online', () => syncFlush())
 
 /* the footer ****************************************************************************/
 
@@ -424,6 +555,11 @@ function drawCount(){
     var longs = drawn.filter(d => d.longPost)
     if (longs.length) str += ' · ' + longs.filter(d => savedSet.has(dataURL('longposts/' + d.longPost))).length + '/' + longs.length + ' saved'
   }
+  // nothing at all when sync is off: signed-out visitors see the line they always saw
+  if (sync.on){
+    var waiting = Object.keys(readQueue()).length
+    str += waiting ? ' · ' + waiting + ' to sync' : ' · synced'
+  }
   countSel.text(str)
 }
 
@@ -446,6 +582,8 @@ function recheck(){
   checking = true
   checkFailed = false
   drawCount()
+  // and the marks from other devices, if sync is on for this tab
+  syncPull()
   fetchBy(dataURL(itemURL) + '?' + Math.random(), FETCH_MS)
     .then(res => {
       if (!res.ok || res.redirected) throw new Error(res.status)

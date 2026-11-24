@@ -52,6 +52,30 @@ caches, since `/reader/`, `/nyc-feed/` and every sketch share the origin. Bump `
 
 Deliberately not installable: no manifest, no icons, no install prompt.
 
+## Read marks across devices
+
+A post opened is marked read in `localStorage` (keyed on its href), and the page paints from
+that. When Adam is signed in, the marks also sync between his devices. Nobody is ever asked to
+sign in, on purpose: there's no button, link or prompt. Sync only turns on when the rtl-auth cookie is
+already there. It's set on `Domain=.roadtolarissa.com`, so signing in to the reader or goal
+covers this page.
+
+- `GET /static-rss-state/read` returns `{read: {href: iso}}`; `POST` merges `{read: {...}}`. Union, earliest date
+  wins, marks older than 120 days are dropped. `server/readstate.js` on 127.0.0.1:3008, file
+  `~/static-rss-state/read.json` (600, atomic writes), only `1wheel@gmail.com` (`EMAILS=`).
+- nginx: `deploy/nginx-readstate.conf` is pasted into the default (apex) server in
+  `/etc/nginx/sites-available/default`, next to the rtl-auth include. With no session it answers
+  `401 {"error":"signed out"}`, not the sign-in redirect.
+- Client (`read marks across devices` in `script.js`): after the list is drawn, one GET with a 10s
+  deadline merges the server's marks in and re-marks rows, and pushes marks only this device
+  has. New opens queue in `localStorage` (`rss-sync-queue`) and go up in small batches, on
+  `online` and on the next load if there was no signal. A 401 sets `rss-sync-off` in
+  `sessionStorage` and the tab stops asking. When sync is on, the footer says "synced", or
+  "3 to sync" while some are waiting. When it's off, the footer says nothing about it. `sw.js` never touches
+  `/static-rss-state/`.
+- Kept up by `bin/readstate-forever.sh` (log `bin/readstate.log`) plus an `@reboot` crontab
+  line. Restart with `cd ~/static-rss && setsid nohup bash bin/readstate-forever.sh >> bin/readstate.log 2>&1 < /dev/null &`.
+
 ## Prior work
 
 - http://kouio.com/

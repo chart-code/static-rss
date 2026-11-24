@@ -12,6 +12,11 @@
 //   down     drop the connection
 //   500      an error page
 //
+// /static-rss-state/read stands in for nginx + server/readstate.js, with its own mode in
+// state.sync.mode: 'signedout' (the 401 JSON nginx answers with no cookie; the default, as for
+// every visitor), 'signedin' (marks kept in state.sync.marks, earliest date wins), 'hang', 'down'.
+// state.sync.log has every request it got.
+//
 // state.build > 0 serves a new deploy: sw.js gets a new shell cache name and script.js sets
 // window.__build, so a test can tell which code is running.
 var http = require('http')
@@ -29,6 +34,7 @@ function start({port, lists, recent, favicons}){
     build: 0,
     hits: {},
     hung: [],
+    sync: {mode: 'signedout', marks: {}, log: []},
   }
   var listAt = {stale: Date.now() - 3*3600e3, fresh: Date.now() - 5*60e3}
   var json = v => Buffer.from(JSON.stringify(v))
@@ -72,9 +78,27 @@ function start({port, lists, recent, favicons}){
     return [text, TYPES[path.extname(file)] || 'application/octet-stream']
   }
 
+  function syncAnswer(req, res){
+    var sync = state.sync
+    sync.log.push(req.method)
+    if (sync.mode == 'down') return req.socket.destroy()
+    if (sync.mode == 'hang') return state.hung.push(res)
+    var send = (code, body) => { res.writeHead(code, {'Content-Type': 'application/json', 'Cache-Control': 'no-store'}); res.end(JSON.stringify(body)) }
+    if (sync.mode != 'signedin') return send(401, {error: 'signed out'})
+    if (req.method == 'GET') return send(200, {read: sync.marks})
+    var chunks = []
+    req.on('data', c => chunks.push(c))
+    req.on('end', () => {
+      var read = (JSON.parse(Buffer.concat(chunks).toString()) || {}).read || {}
+      Object.keys(read).forEach(k => { if (!sync.marks[k] || read[k] < sync.marks[k]) sync.marks[k] = read[k] })
+      send(200, {ok: true, n: Object.keys(sync.marks).length})
+    })
+  }
+
   var server = http.createServer((req, res) => {
     var url = req.url.split('?')[0]
     state.hits[url] = (state.hits[url] || 0) + 1
+    if (url == '/static-rss-state/read') return syncAnswer(req, res)
     var kind = url.includes('/generated/') ? 'data' : 'shell'
     var {mode, ms} = state[kind]
     if (mode == 'down') return req.socket.destroy()
@@ -102,6 +126,7 @@ function start({port, lists, recent, favicons}){
       state.list = 'fresh'
       state.build = 0
       state.hits = {}
+      state.sync = {mode: 'signedout', marks: {}, log: []}
       state.hung.forEach(r => { try { r.socket.destroy() } catch (e){} })
       state.hung = []
     },

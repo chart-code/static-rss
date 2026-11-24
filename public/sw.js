@@ -14,7 +14,7 @@ var appPath = new URL(APP).pathname
 var scopePath = new URL(SCOPE).pathname
 
 var PREFIX = 'static-rss ' + appPath + ' '
-var SHELL_CACHE = PREFIX + 'shell-v5'
+var SHELL_CACHE = PREFIX + 'shell-v6'
 var DATA_CACHE = PREFIX + 'data'
 
 var SHELL = ['script.js', 'style.css', 'd3_.js'].map(d => new URL(d, APP).href)
@@ -52,6 +52,9 @@ self.addEventListener('fetch', e => {
   var url = new URL(e.request.url)
   // cross-origin favicons and post images pass straight through: opaque responses are huge in quota
   if (e.request.method != 'GET' || url.origin != location.origin) return
+  // read-mark sync (script.js): always the network, never a saved answer — a cached copy would
+  // say signed in after signing out, or hand back marks from before
+  if (url.pathname.startsWith('/static-rss-state/')) return
   // a long post's file never changes once written — its name is built from the post's href — so
   // serve the saved copy at once and refresh it in the background. The rest of generated/
   // (items-today, items-recent, favicons) is rewritten hourly and stays network-first
