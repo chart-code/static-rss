@@ -71,7 +71,11 @@ covers this page.
 
 - `GET /static-rss-state/read` returns `{read: {href: iso}}`; `POST` merges `{read: {...}}`. Union, earliest date
   wins, marks older than 120 days are dropped. `server/readstate.js` on 127.0.0.1:3008, file
-  `~/static-rss-state/read.json` (600, atomic writes), only `1wheel@gmail.com` (`EMAILS=`).
+  `~/static-rss-state/read.json` (600, atomic writes), only `<owner email>`. The allowlist is not
+  in git: `EMAILS=a,b` in the environment, else `{"emails": ["<owner email>"]}` in
+  `~/static-rss-state/config.json` (600), read at startup. With neither, it logs
+  `NO EMAILS ALLOWED` and every request is a 401. `yarn test` runs it against
+  `owner@example.test` in a temp dir.
 - nginx: `deploy/nginx-readstate.conf` is pasted into the default (apex) server in
   `/etc/nginx/sites-available/default`, next to the rtl-auth include. With no session it answers
   `401 {"error":"signed out"}`, not the sign-in redirect.

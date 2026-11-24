@@ -23,7 +23,11 @@ var PORT = +process.env.PORT || 3008
 var HOST = '127.0.0.1'
 var STATE_DIR = process.env.STATE_DIR || path.join(os.homedir(), 'static-rss-state')
 var FILE = path.join(STATE_DIR, 'read.json')
-var EMAILS = (process.env.EMAILS || '1wheel@gmail.com').split(',').map(d => d.trim().toLowerCase()).filter(d => d)
+var CONFIG = path.join(STATE_DIR, 'config.json')
+// Who may sync: EMAILS=a,b, else {"emails": [...]} in STATE_DIR/config.json (600, not in git).
+// Neither means nobody: every request answers 401.
+var EMAILS = (process.env.EMAILS || (fs.existsSync(CONFIG) ? JSON.parse(fs.readFileSync(CONFIG, 'utf8')).emails.join(',') : '')).split(',').map(d => d.trim().toLowerCase()).filter(d => d)
+if (!EMAILS.length) console.error('NO EMAILS ALLOWED: set EMAILS or write {"emails": [...]} to ' + CONFIG + '. Every request will 401.')
 var KEEP_DAYS = 120
 var MAX_MARKS = 50000
 var MAX_BODY = 512*1024
@@ -138,4 +142,4 @@ http.createServer((req, res) => {
       send(res, 500, {error: 'could not save'})
     }
   })
-}).listen(PORT, HOST, () => console.log('readstate on', HOST + ':' + PORT, 'file', FILE))
+}).listen(PORT, HOST, () => console.log('readstate on', HOST + ':' + PORT, 'file', FILE, EMAILS.length + ' allowed'))

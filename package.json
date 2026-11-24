@@ -15,6 +15,6 @@
     "pub": "yarn pubstatic && yarn pubnyc",
     "watch": "ls bin/*.js | entr yarn pub",
     "favicons": "node bin/download.js && node bin/parse.js && node bin/archive.js && node bin/favicons.js",
-    "test": "node test/absolutize.test.js && node test/embeds.test.js && node test/pages.test.js && node test/network.test.js"
+    "test": "node test/absolutize.test.js && node test/embeds.test.js && node test/pages.test.js && node test/network.test.js && node test/readstate.test.js"
   }
 }
