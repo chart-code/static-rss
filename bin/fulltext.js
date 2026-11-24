@@ -45,6 +45,8 @@ var siteRules = [
 
 function needsFullText(d){
   if (d.longPost) return false
+  // a watched page's 'changed' post (download.js): the page itself would replace the note
+  if (/#changed-\d{4}-\d\d-\d\d$/.test(d.href || '')) return false
   if (alwaysFetchRegex.test(d.href || '')) return true
   var html = feedHtml(d)
   return textOf(html).length < 400 && !/<img/i.test(html)

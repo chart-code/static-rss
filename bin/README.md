@@ -24,6 +24,10 @@ STATIC_RSS_XML_PATH="skip" \
 ## Data
 
 - `cache/xml/<feed>.xml` — the last download of each feed; etags in `cache/headers.json`
+- `cache/pages.json` — sheet rows that aren't feeds. A sitemap (`<urlset>`) row gets a post per url
+  not seen before (the first fetch only records what's there); a plain html page gets a "changed"
+  post when its visible text hash changes, one a day at most. download.js writes those posts to
+  `cache/xml` as rss, so parse.js reads them like any feed
 - `cache/fulltext/<url>.json` — article text fetched for summary-only feeds, cached forever
 - `cache/days/<YYYY-MM-DD>/<site>_.._<url>.json` — one json per post, the archive of record (~72k
   files, 830 MB). The day is in the path, so a run picks the last 31 days with a readdir and a
