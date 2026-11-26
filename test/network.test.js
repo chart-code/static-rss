@@ -34,7 +34,7 @@ function fixtures(){
   } else {
     var now = Date.now()
     today = Array.from({length: 120}, (_, i) => ({
-      title: 'post ' + i, href: 'https://example.com/post-' + i, feedName: 'feed ' + (i % 7),
+      title: 'post ' + i, href: 'https://example.com/post-' + i, feedName: 'feed ' + (i % 7), prolific: i % 7 == 0 || undefined,
       isoDate: new Date(now - i*20*60e3).toISOString(),
       'content:encoded': i % 9 ? '<p>body of post ' + i + '</p>' : '',
       longPost: i % 9 ? undefined : 'example.com-post-' + i,
@@ -132,6 +132,10 @@ async function main(){
     return false
   }), null, {timeout: 10e3, polling: 200})
 
+  // within each day, no post from a feed posting more than once a day above a rarer feed's
+  var rareFirstOn = page => page.evaluate(() => Array.from(document.querySelectorAll('div.date')).every(day =>
+    Array.from(day.querySelectorAll('div.item')).every((n, i, all) => !i || !all[i - 1].__data__.prolific || n.__data__.prolific)))
+
   var only = process.env.ONLY
   var rows = []
   var test = (name, fn) => rows.push([name, fn])
@@ -141,8 +145,9 @@ async function main(){
     var ctx = await context()
     var v = await visit(ctx, POST, 2500)
     var cached = await waitCached(v.page).then(() => true, () => false)
+    var rareFirst = await rareFirstOn(v.page)
     row('first visit, normal', {firstItem: v.firstItem, items: v.items, cachedForNextTime: cached},
-      {renders: v.fresh, fast: v.firstItem < 1500, cached})
+      {renders: v.fresh, fast: v.firstItem < 1500, cached, rareFirst})
     await ctx.close()
   })
 
@@ -451,7 +456,8 @@ async function main(){
     row('recover: hang, then signal returns — fresh posts appear without a reload', {freshMs, reloads: navs.n, cachedFooter, footer: s.footer, before, after, items: s.items},
       {staleFirst: !v.fresh && v.items > 0, saysCached: /cached/.test(cachedFooter), endsFresh: freshMs != null, noReload: navs.n == 0,
         saysFresh: /fresh/.test(s.footer) && !/cached/.test(s.footer), moreItems: s.items > v.items,
-        scrollKept: !!(after && Math.abs(after.top - before.top) <= 2), readKept: await isRead(page, opened), postStillOpen: stillOpen})
+        scrollKept: !!(after && Math.abs(after.top - before.top) <= 2), readKept: await isRead(page, opened), postStillOpen: stillOpen,
+        rareFirstAfterMerge: await rareFirstOn(page)})
     await ctx.close()
   })
 

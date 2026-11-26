@@ -283,6 +283,10 @@ function keepScroll(fn){
   }
 }
 
+// within a day, posts from feeds that post more than once a day (bin/archive.js) go after the rest
+var dayOrder = d => (d.prolific ? '0' : '1') + d.isoDate
+var rareFirst = day => day.filter(d => !d.prolific).concat(day.filter(d => d.prolific))
+
 // days newest first, posts in a day newest first, the same order drawDays makes
 function insertPosts(add){
   var box = d3.select('.items').node()
@@ -297,8 +301,8 @@ function insertPosts(add){
         d3.select(dateNode).datum([]).append('h3').text(day.key)
         dateNode.__data__.key = day.key
       }
-      _.sortBy(day, d => d.isoDate).reverse().forEach(d => {
-        var before = Array.from(dateNode.querySelectorAll('div.item')).find(n => n.__data__.isoDate < d.isoDate)
+      _.sortBy(day, dayOrder).reverse().forEach(d => {
+        var before = Array.from(dateNode.querySelectorAll('div.item')).find(n => dayOrder(n.__data__) < dayOrder(d))
         var node = dateNode.insertBefore(document.createElement('div'), before || null)
         node.className = 'item'
         dateNode.__data__.push(d)
@@ -387,11 +391,12 @@ function drawDays(items, prevDates=[]){
 
   dateSel.append('h3').text(d => d.key)
 
-  drawPosts(dateSel.appendMany('div.item', d => d))
+  drawPosts(dateSel.appendMany('div.item', rareFirst))
 }
 
 function drawPosts(postSel){
   postSel.classed('read', d => window.localStorage.getItem(d.href))
+    .classed('prolific', d => d.prolific)
 
   var titleSel = postSel.append('div.post-title')
     .on('click', function(d){

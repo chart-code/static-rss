@@ -97,6 +97,12 @@ function main(){
     // posting from a timezone ahead of utc is normal.
     .filter(d => d.isoDate <= futureCutoff)
 
+  // feeds posting more than once a day over the last 30 days; the reader puts their posts after
+  // the rarer feeds' within each day
+  var rateCutoff = isoDaysAgo(30)
+  var counts = _.countBy(posts.filter(d => d.isoDate >= rateCutoff), d => d.feedName)
+  posts.forEach(d => { if (counts[d.feedName] > 30) d.prolific = true })
+
   posts = _.sortBy(posts, d => d.isoDate).reverse()
 
   util.writeAtomic(gendir + '/items-recent.json', JSON.stringify(posts))

@@ -60,6 +60,10 @@ h3{
   border-right: 0px solid #000 !important;
 
 }
+/* between a day's rarer feeds and the ones posting more than once a day */
+.item:not(.prolific) + .item.prolific{
+  border-top: 3px double #999;
+}
 .item:last-child{
   border-bottom: 1px solid #555;
 }
