@@ -34,7 +34,7 @@ function fixtures(){
   } else {
     var now = Date.now()
     today = Array.from({length: 120}, (_, i) => ({
-      title: 'post ' + i, href: 'https://example.com/post-' + i, feedName: 'feed ' + (i % 7), prolific: i % 7 == 0 || undefined,
+      title: 'post ' + i, href: 'https://example.com/post-' + i, feedName: i % 7 ? 'feed ' + (i % 7) : ['openai', 'simonwillison', 'a feed prolific later', 'FlowingData'][Math.floor(i/7) % 4], prolific: i % 7 == 0 || undefined,
       isoDate: new Date(now - i*20*60e3).toISOString(),
       'content:encoded': i % 9 ? '<p>body of post ' + i + '</p>' : '',
       longPost: i % 9 ? undefined : 'example.com-post-' + i,
@@ -132,9 +132,19 @@ async function main(){
     return false
   }), null, {timeout: 10e3, polling: 200})
 
-  // within each day, no post from a feed posting more than once a day above a rarer feed's
-  var rareFirstOn = page => page.evaluate(() => Array.from(document.querySelectorAll('div.date')).every(day =>
-    Array.from(day.querySelectorAll('div.item')).every((n, i, all) => !i || !all[i - 1].__data__.prolific || n.__data__.prolific)))
+  // within each day, no post from a feed posting more than once a day above a rarer feed's, and
+  // the prolific ones feed by feed in Adam's order (unlisted feeds last), newest first in a feed
+  var PROLIFIC_ORDER = ['simonwillison', 'Statistical Modeling, Causal Inference, and Social Science', 'FlowingData',
+    'openai', 'westsiderag', 'The City', 'Streetsblog NYC', 'ProPublica Articles and Investigations']
+  var rareFirstOn = page => page.evaluate(order => {
+    var rank = d => order.includes(d.feedName) ? order.indexOf(d.feedName) : order.length
+    return Array.from(document.querySelectorAll('div.date')).every(day =>
+      Array.from(day.querySelectorAll('div.item')).every((n, i, all) => {
+        var a = i && all[i - 1].__data__, b = n.__data__
+        if (!a || !a.prolific) return true
+        return b.prolific && (rank(a) < rank(b) || (rank(a) == rank(b) && a.isoDate >= b.isoDate))
+      }))
+  }, PROLIFIC_ORDER)
 
   var only = process.env.ONLY
   var rows = []
@@ -618,6 +628,99 @@ async function main(){
     var stored = await v.page.evaluate(h => !!localStorage.getItem(h), hrefAt(4))
     row('sync: hung endpoint — page paints and marks locally', {firstItem: v.firstItem, footer: v.footer, requests: S.state.sync.log},
       {paintsBy1500: v.firstItem != null && v.firstItem < 1500, marked, stored, oneRequest: S.state.sync.log.length == 1, noSynced: !/synced/.test(v.footer)})
+    await ctx.close()
+  })
+
+  /* reading log (see "reading log" in script.js) ***************************************/
+
+  var logQueueOf = page => page.evaluate(() => JSON.parse(localStorage.getItem('rss-log-queue') || '[]'))
+  var logPosts = () => S.state.sync.log.filter(d => d.startsWith('LOG')).length
+  var uniqueIds = () => new Set(S.state.sync.events.map(e => e.id)).size
+  // open a post whose body is three screens tall, read 2/3 of the way down it for ~2s, collapse it
+  async function readPost(page, href){
+    await openPost(page, href)
+    var h = await page.evaluate(h => {
+      var n = Array.from(document.querySelectorAll('.item')).find(n => n.__data__.href == h)
+      var c = n.querySelector('.content')
+      c.style.minHeight = 3*innerHeight + 'px'
+      scrollTo(0, scrollY + c.getBoundingClientRect().top)
+      return innerHeight
+    }, href)
+    await sleep(400)
+    // the bottom of the screen at 2/3 of the body
+    await page.evaluate(h => scrollBy(0, h), h)
+    await sleep(1800)
+    await openPost(page, href)
+  }
+
+  test('log: signed out', async () => {
+    var ctx = await context()
+    await prime(ctx, POST, 'fresh')
+    var page = await ctx.newPage()
+    await page.goto(POST, {waitUntil: 'load'})
+    await sleep(2500)
+    await readPost(page, hrefAt(2))
+    await openPost(page, hrefAt(6))
+    await sleep(2000)
+    var queue = await logQueueOf(page)
+    await page.close()
+    await sleep(500)
+    row('log: signed out — nothing logged, no log requests', {requests: S.state.sync.log, queued: queue.length},
+      {noLogRequests: logPosts() == 0, onlyTheGet: S.state.sync.log.length == 1, nothingQueued: !queue.length, noEvents: !S.state.sync.events.length})
+    await ctx.close()
+  })
+
+  test('log: signed in, open scroll close', async () => {
+    var ctx = await context()
+    await prime(ctx, POST, 'fresh')
+    S.state.sync.mode = 'signedin'
+    var v = await visit(ctx, POST, 2500)
+    await readPost(v.page, hrefAt(5))
+    await sleep(2500)
+    var e = S.state.sync.events[0] || {}
+    var queue = await logQueueOf(v.page)
+    row('log: signed in — open, scroll, close sends one event', {event: e, requests: S.state.sync.log},
+      {oneEvent: S.state.sync.events.length == 1, href: e.href == hrefAt(5), feed: e.feed == fx.lists.fresh[5].feedName,
+        title: typeof e.title == 'string' && e.title.length > 0 && e.title.length <= 120, at: !isNaN(Date.parse(e.at)), id: !!e.id,
+        maxScroll: e.maxScroll > 0.55 && e.maxScroll < 0.8, seconds: e.seconds >= 2 && e.seconds <= 4, device: e.device == 'desktop',
+        queueEmpty: !queue.length, firstPaint: v.firstItem != null && v.firstItem < 1500})
+    await ctx.close()
+  })
+
+  test('log: offline queues, then flushes', async () => {
+    var ctx = await context()
+    await prime(ctx, POST, 'fresh')
+    S.state.sync.mode = 'signedin'
+    var v = await visit(ctx, POST, 2500)
+    await ctx.setOffline(true)
+    await readPost(v.page, hrefAt(8))
+    await sleep(2500)
+    var queued = (await logQueueOf(v.page)).length
+    var notYet = S.state.sync.events.length
+    var offFooter = await v.page.textContent('.rss-status span')
+    await ctx.setOffline(false)
+    await sleep(2500)
+    var queueAfter = (await logQueueOf(v.page)).length
+    row('log: offline — queued, sent on online', {queued, notYet, offFooter, events: S.state.sync.events.length, requests: S.state.sync.log},
+      {queued: queued == 1, notYet: notYet == 0, sent: S.state.sync.events.length == 1 && S.state.sync.events[0].href == hrefAt(8), queueEmpty: !queueAfter,
+        countsIt: /to sync/.test(offFooter)})
+    await ctx.close()
+  })
+
+  test('log: retry after a lost answer', async () => {
+    var ctx = await context()
+    await prime(ctx, POST, 'fresh')
+    S.state.sync.mode = 'signedin'
+    S.state.sync.dropLog = 1
+    var v = await visit(ctx, POST, 2500)
+    await readPost(v.page, hrefAt(10))
+    await sleep(2500)
+    var stillQueued = (await logQueueOf(v.page)).length
+    await v.page.evaluate(() => dispatchEvent(new Event('online')))
+    await sleep(2500)
+    var queueAfter = (await logQueueOf(v.page)).length
+    row('log: retry — the same event again, never a second one', {received: S.state.sync.events.length, unique: uniqueIds(), stillQueued, requests: S.state.sync.log},
+      {resent: S.state.sync.events.length == 2, sameId: uniqueIds() == 1, keptUntilAnswered: stillQueued == 1, queueEmpty: !queueAfter})
     await ctx.close()
   })
 

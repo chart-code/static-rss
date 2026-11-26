@@ -283,9 +283,15 @@ function keepScroll(fn){
   }
 }
 
-// within a day, posts from feeds that post more than once a day (bin/archive.js) go after the rest
-var dayOrder = d => (d.prolific ? '0' : '1') + d.isoDate
-var rareFirst = day => day.filter(d => !d.prolific).concat(day.filter(d => d.prolific))
+// within a day, posts from feeds that post more than once a day (bin/archive.js) go after the
+// rest, feed by feed in this order (feedName as in the data), newest first within a feed. A feed
+// that turns prolific later goes after these, newest first
+var PROLIFIC_ORDER = ['simonwillison', 'Statistical Modeling, Causal Inference, and Social Science', 'FlowingData',
+  'openai', 'westsiderag', 'The City', 'Streetsblog NYC', 'ProPublica Articles and Investigations']
+var feedRank = d => (i => i < 0 ? PROLIFIC_ORDER.length : i)(PROLIFIC_ORDER.indexOf(d.feedName))
+// sorted descending: rarer feeds first, then the lowest rank first
+var dayOrder = d => d.prolific ? '0' + String.fromCharCode(65 + PROLIFIC_ORDER.length - feedRank(d)) + d.isoDate : '1' + d.isoDate
+var rareFirst = day => day.filter(d => !d.prolific).concat(_.sortBy(day.filter(d => d.prolific), feedRank))
 
 // days newest first, posts in a day newest first, the same order drawDays makes
 function insertPosts(add){
@@ -396,7 +402,6 @@ function drawDays(items, prevDates=[]){
 
 function drawPosts(postSel){
   postSel.classed('read', d => window.localStorage.getItem(d.href))
-    .classed('prolific', d => d.prolific)
 
   var titleSel = postSel.append('div.post-title')
     .on('click', function(d){
@@ -411,6 +416,7 @@ function drawPosts(postSel){
       if (d.retry) d.retry = d.retry.cancel()
 
       if (!d.active){
+        if (logCur && logCur.d == d) logEnd()
         var node = this.parentNode
         if (node.getBoundingClientRect().top < 0) node.scrollIntoView(true)
         return sel.html('')
@@ -504,6 +510,7 @@ function drawPosts(postSel){
       var openedAt = new Date().toISOString()
       try { window.localStorage.setItem(d.href, openedAt) } catch (e){}
       syncQueue(d.href, openedAt)
+      logStart(d, this)
     })
 
   // titleSel.each(function(d){ d3.select(this).on('click').call(this, d) })
@@ -549,8 +556,8 @@ function readQueue(){
   try { var q = JSON.parse(localStorage.getItem(SYNC_QUEUE) || '{}'); return q && typeof q == 'object' ? q : {} }
   catch (e){ return {} }
 }
-function writeQueue(q){
-  try { Object.keys(q).length ? localStorage.setItem(SYNC_QUEUE, JSON.stringify(q)) : localStorage.removeItem(SYNC_QUEUE) } catch (e){}
+function writeQueue(q, key = SYNC_QUEUE){
+  try { Object.keys(q).length ? localStorage.setItem(key, JSON.stringify(q)) : localStorage.removeItem(key) } catch (e){}
 }
 
 // signed out (or not Adam, or no endpoint here): stop for this tab and forget the queue
@@ -558,18 +565,22 @@ function syncStop(){
   sync.on = false
   try { sessionStorage.setItem(SYNC_OFF, '1') } catch (e){}
   writeQueue({})
+  writeQueue([], LOG_QUEUE)
+  logCur = null
   drawCount()
 }
 
 // redirect: 'manual' so a gate that ever sends the sign-in page back is read as signed out
 // rather than followed
-function syncFetch(method, body){
+function syncFetch(method, body, url = SYNC_URL){
   var opts = {method, credentials: 'same-origin', redirect: 'manual', cache: 'no-store'}
   if (body){
     opts.headers = {'Content-Type': 'application/json'}
     opts.body = JSON.stringify(body)
   }
-  return fetchBy(SYNC_URL, SYNC_MS, opts).then(res => {
+  // keepalive: a batch sent as the tab goes away still gets there
+  if (url == LOG_URL) opts.keepalive = true
+  return fetchBy(url, SYNC_MS, opts).then(res => {
     if (res.status == 401 || res.status == 403 || res.status == 404 || res.type == 'opaqueredirect'){
       syncStop()
       throw new Error('sync off')
@@ -619,7 +630,7 @@ function syncFlush(){
   var q = readQueue()
   var batch = {}
   Object.keys(q).slice(0, SYNC_BATCH).forEach(k => batch[k] = q[k])
-  if (!Object.keys(batch).length) return drawCount()
+  if (!Object.keys(batch).length) return logFlush()
   sync.busy = true
   syncFetch('POST', {read: batch}).then(() => {
     sync.busy = false
@@ -628,7 +639,21 @@ function syncFlush(){
     Object.keys(batch).forEach(k => { if (q[k] == batch[k]) delete q[k] })
     writeQueue(q)
     drawCount()
-    if (Object.keys(q).length) syncFlush()
+    syncFlush()
+  }, () => { sync.busy = false; sync.failed = true; drawCount() })
+}
+
+// the reading log goes up after the read marks, in the same one-at-a-time line
+function logFlush(){
+  var batch = readLog().slice(0, LOG_BATCH)
+  if (!batch.length) return drawCount()
+  sync.busy = true
+  syncFetch('POST', {log: batch}, LOG_URL).then(() => {
+    sync.busy = false
+    sync.failed = false
+    var sent = new Set(batch.map(e => e.id))
+    writeQueue(readLog().filter(e => !sent.has(e.id)), LOG_QUEUE)
+    syncFlush()
   }, () => { sync.busy = false; sync.failed = true; drawCount() })
 }
 
@@ -643,6 +668,80 @@ function syncQueue(href, iso){
 }
 
 window.addEventListener('online', () => syncFlush())
+
+/* reading log ***************************************************************************/
+
+// One event per post open, for a chart later: when, which post, how far down its body the
+// screen got (0-1), seconds open with the tab visible, and which device. Only while sync can be
+// on, so signed out nothing is measured, kept or sent. An event ends on collapse, on opening
+// another post and on the tab going hidden; coming back to a post still open starts a new one.
+// Events wait in localStorage (rss-log-queue) and go up with the read marks; the id made here
+// lets the server drop a batch sent twice.
+var LOG_URL = '/static-rss-state/log'
+var LOG_QUEUE = 'rss-log-queue'
+var LOG_BATCH = 50        // keepalive bodies are capped at 64 KB
+var LOG_MAX = 5000
+var logCur = null
+var logResume = null      // the post open when the tab went hidden
+// the Boox is an old Android WebView (Chrome/111), the Pixel a current Chrome
+var logDevice = /Android/.test(navigator.userAgent) && +(navigator.userAgent.match(/Chrome\/(\d+)/) || [0, 999])[1] < 120 ? 'eink' :
+  /Mobi|Android|iPhone|iPad/.test(navigator.userAgent) ? 'phone' : 'desktop'
+
+function readLog(){
+  try { var q = JSON.parse(localStorage.getItem(LOG_QUEUE) || '[]'); return Array.isArray(q) ? q : [] }
+  catch (e){ return [] }
+}
+
+function logStart(d, titleNode){
+  if (logCur) logEnd()
+  if (syncIsOff() || document.hidden) return
+  logCur = {d, titleNode, node: titleNode.parentNode.querySelector('.content'), from: Date.now(), maxScroll: 0, timer: null, ev: {
+    id: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10),
+    at: new Date().toISOString(),
+    href: d.href,
+    feed: d.feedName || '',
+    title: titleNode.textContent.trim().slice(0, 120),
+  }}
+  // measured on scroll and at the end, not now: a long post's body may still be loading
+  window.addEventListener('scroll', logScroll, {passive: true})
+}
+
+// how far down the post body the bottom of the screen has been
+function logMeasure(){
+  if (!logCur) return
+  logCur.timer = null
+  var r = logCur.node.getBoundingClientRect()
+  if (r.height > 0) logCur.maxScroll = Math.max(logCur.maxScroll, Math.min(1, Math.max(0, (innerHeight - r.top)/r.height)))
+}
+function logScroll(){
+  if (logCur && !logCur.timer) logCur.timer = setTimeout(logMeasure, 250)
+}
+
+function logEnd(){
+  var cur = logCur
+  if (!cur) return
+  logMeasure()
+  clearTimeout(cur.timer)
+  logCur = null
+  window.removeEventListener('scroll', logScroll)
+  if (syncIsOff()) return
+  var ev = Object.assign(cur.ev, {maxScroll: Math.round(cur.maxScroll*100)/100, seconds: Math.round((Date.now() - cur.from)/1000), device: logDevice})
+  writeQueue(readLog().concat([ev]).slice(-LOG_MAX), LOG_QUEUE)
+  drawCount()
+  clearTimeout(sync.timer)
+  if (document.hidden) syncFlush()
+  else sync.timer = setTimeout(syncFlush, 1500)
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden){
+    logResume = logCur
+    return logEnd()
+  }
+  if (logResume && logResume.d.active && !logCur) logStart(logResume.d, logResume.titleNode)
+  logResume = null
+})
+window.addEventListener('pagehide', logEnd)
 
 /* the footer ****************************************************************************/
 
@@ -714,7 +813,7 @@ function drawCount(){
   }
   // nothing at all when sync is off: signed-out visitors see the line they always saw
   if (sync.on){
-    var waiting = Object.keys(readQueue()).length
+    var waiting = Object.keys(readQueue()).length + readLog().length
     str += waiting ? ' · ' + waiting + ' to sync' : ' · synced'
   }
   countSel.text(str)

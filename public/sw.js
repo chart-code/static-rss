@@ -14,7 +14,7 @@ var appPath = new URL(APP).pathname
 var scopePath = new URL(SCOPE).pathname
 
 var PREFIX = 'static-rss ' + appPath + ' '
-var SHELL_CACHE = PREFIX + 'shell-v8'
+var SHELL_CACHE = PREFIX + 'shell-v9'
 var DATA_CACHE = PREFIX + 'data'
 
 var SHELL = ['script.js', 'style.css', 'd3_.js'].map(d => new URL(d, APP).href)

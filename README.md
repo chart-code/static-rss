@@ -89,6 +89,26 @@ covers this page.
 - Kept up by `bin/readstate-forever.sh` (log `bin/readstate.log`) plus an `@reboot` crontab
   line. Restart with `cd ~/static-rss && setsid nohup bash bin/readstate-forever.sh >> bin/readstate.log 2>&1 < /dev/null &`.
 
+## Reading log
+
+Signed in, each post open is also logged, for a chart later. Same on/off as the read marks:
+signed out, nothing is measured, kept or sent. An event ends on collapse, on opening another post
+and on the tab going hidden (`visibilitychange`/`pagehide`); a post still open when the tab comes
+back starts a new event. Scroll is a passive listener, measured at most every 250ms.
+
+- One JSON line per event in `~/static-rss-state/log.jsonl` (600):
+  `{"id":"mwx3ewv2-eiv63lep","at":"2026-11-26T05:09:23.294Z","href":"https://…","feed":"simonwillison","title":"…","maxScroll":0.66,"seconds":42,"device":"phone"}`.
+  `maxScroll` is how far down the post body the bottom of the screen got (0-1), `seconds` the time
+  open with the tab visible, `device` `phone`, `eink` (Android Chrome < 120, the Boox) or `desktop`,
+  `title` at most 120 characters.
+- `POST /static-rss-state/log` `{log: [event]}` appends the valid ones it hasn't seen (the page
+  makes the id, so a resend after a lost answer adds nothing) and answers `{ok, n}` with the
+  number added. `GET` returns `{log: [event]}`, oldest first. Same gate, allowlist and
+  same-origin JSON check as `/read`.
+- Client: events wait in `localStorage` (`rss-log-queue`, newest 5000) and go up 50 at a time with
+  `keepalive`, after the read marks and through the same queue, deadline and 401 switch. The
+  footer's "n to sync" counts them too.
+
 ## Prior work
 
 - http://kouio.com/
