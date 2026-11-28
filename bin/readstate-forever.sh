@@ -1,4 +1,12 @@
 #!/bin/bash
+
+# Since 2026-11-28 systemd runs this app as its own user (unit rtl-readstate, see ~/ops/README.md).
+# Run by hand or by a deploy script as demo, it restarts that unit instead of starting a
+# second copy that would fight it for the port.
+if [ "$(id -un)" = demo ] && [ -f /etc/systemd/system/rtl-readstate.service ]; then
+  exec sudo -n systemctl restart rtl-readstate
+fi
+
 #
 # Keep server/readstate.js (read marks synced across devices) up on 127.0.0.1:3008.
 #
