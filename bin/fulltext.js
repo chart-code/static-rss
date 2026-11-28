@@ -1,6 +1,6 @@
 // Feeds like robinsloan.com only include a one line summary; fetch the post and pull out the article text.
 // Also drops paywalled posts (e.g. stratechery daily updates) that only have a teaser in the feed. 
-var {fs} = require('scrape-stl')
+var fs = require('fs')
 var sanitize = require('sanitize-filename')
 var {JSDOM, VirtualConsole} = require('jsdom')
 var {Readability} = require('@mozilla/readability')

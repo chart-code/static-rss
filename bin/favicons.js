@@ -1,15 +1,13 @@
-var {io} = require('scrape-stl')
+var fs = require('fs')
 var fetch = require('node-fetch')
+var {JSDOM, VirtualConsole} = require('jsdom')
 var util = require('./util.js')
-
-const request = require('request')
-const cheerio = require("cheerio")
 
 async function main(){
   var outpath = __dirname + '/../public/generated/favicons.json'
   var favicons = []
   try {
-    favicons = io.readDataSync(outpath)
+    favicons = JSON.parse(fs.readFileSync(outpath, 'utf8'))
   } catch(e){}
 
   var name2favicon = Object.fromEntries(favicons.map(d => [d.feedName, d.favicon]))
@@ -67,20 +65,18 @@ async function fetchWithTimeout(url, ms){
 
 async function getFavicon(url) {
   var domain = util.hostname(url)
-  return new Promise((resolve, reject) => {
-    request({url, timeout: 5000}, (error, response, body) => {
-      if (error) return reject(error)
+  var body = await (await fetch(url, {timeout: 5000})).text()
 
-      var $ = cheerio.load(body)
-      var favicon = {domain, icons: []}
-      $("link[rel='icon'], link[rel='shortcut icon']").each((i, el) => {
-        var src = $(el).attr("href")
-        if (src[0] == '/') src = 'https://' + domain + src
-        var sizes = $(el).attr("sizes")
-        favicon.icons.push({src, sizes})
-      })
-      resolve(favicon)
-    })
+  var dom = new JSDOM(body, {virtualConsole: new VirtualConsole()})
+  var favicon = {domain, icons: []}
+  dom.window.document.querySelectorAll("link[rel='icon'], link[rel='shortcut icon']").forEach(el => {
+    var src = el.getAttribute('href')
+    if (!src) return
+    if (src[0] == '/') src = 'https://' + domain + src
+    var sizes = el.getAttribute('sizes') ?? undefined
+    favicon.icons.push({src, sizes})
   })
+  dom.window.close()
+  return favicon
 }
 

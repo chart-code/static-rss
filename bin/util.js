@@ -1,13 +1,16 @@
-var {fs, jp, glob} = require('scrape-stl')
+var fs = require('fs')
 
 var rootdir = __dirname + '/../public/generated/items-all/'
 
 function saveItems(items){
   mkdir(rootdir)
-  jp.nestBy(items, d => d.isoDate ? d.isoDate.split('-')[0] : '1234')
-    .forEach(year => {
-      writeAtomic(rootdir + year.key + '.json', JSON.stringify(year))
-    })
+  var byYear = new Map()
+  items.forEach(d => {
+    var key = d.isoDate ? d.isoDate.split('-')[0] : '1234'
+    if (!byYear.has(key)) byYear.set(key, [])
+    byYear.get(key).push(d)
+  })
+  byYear.forEach((year, key) => writeAtomic(rootdir + key + '.json', JSON.stringify(year)))
 }
 
 // the corpus is ~100 MB of json across the per-year files; holding all of it at once is what
@@ -15,7 +18,7 @@ function saveItems(items){
 // glob order as before, so 'first item per feed' style logic is unchanged.
 function eachItem(fn){
   mkdir(rootdir)
-  glob.sync(rootdir + '*.json').forEach(path => {
+  filesIn(rootdir, '.json').forEach(path => {
     JSON.parse(fs.readFileSync(path, 'utf8')).forEach(fn)
   })
 }
@@ -26,6 +29,13 @@ function writeAtomic(path, str){
   var tmp = path + '.tmp'
   fs.writeFileSync(tmp, str)
   fs.renameSync(tmp, path)
+}
+
+// what glob.sync(dir + '*' + ext) gave: no dotfiles, full paths sorted with localeCompare
+function filesIn(dir, ext){
+  if (!fs.existsSync(dir)) return []
+  return fs.readdirSync(dir).filter(d => d.endsWith(ext) && d[0] != '.')
+    .map(d => dir + d).sort((a, b) => a.localeCompare(b, 'en'))
 }
 
 function mkdir(path){
@@ -71,4 +81,4 @@ function baseUrlOf(itemUrl, siteUrl){
   return ''
 }
 
-module.exports = { eachItem, saveItems, writeAtomic, mkdir, hostname, domainOf, absolutizeHtml, baseUrlOf }
+module.exports = { eachItem, saveItems, writeAtomic, filesIn, mkdir, hostname, domainOf, absolutizeHtml, baseUrlOf }

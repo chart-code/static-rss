@@ -1,4 +1,4 @@
-var {fs, glob} = require('scrape-stl')
+var fs = require('fs')
 var util = require('./util.js')
 var fulltext = require('./fulltext.js')
 var {rewriteEmbeds} = require('./embeds.js')
@@ -63,7 +63,7 @@ var podcastFilters = {
 async function main(){
   var items = []
 
-  for (path of glob.sync(__dirname + '/cache/xml/*.xml')){
+  for (path of util.filesIn(__dirname + '/cache/xml/', '.xml')){
     var feedName = path.split('/').slice(-1)[0].replace('.xml', '')
 
     try {

@@ -8,7 +8,8 @@
 // Nothing here holds more than one year of the parse handoff, the 31 day window or one site's
 // 100 posts at a time: a run costs a readdir of the day directories and a couple of thousand
 // small reads, not the whole 70k file archive.
-var {fs, _} = require('scrape-stl')
+var fs = require('fs')
+var _ = require('underscore')
 var sanitize = require('sanitize-filename')
 var util = require('./util.js')
 

@@ -1,4 +1,5 @@
-var {fs, d3, jp, request, io} = require('scrape-stl')
+var fs = require('fs')
+var {csvParse} = require('d3-dsv')
 var sanitize = require('sanitize-filename')
 var fetch = require('node-fetch')
 
@@ -23,7 +24,7 @@ async function main(){
   // Load feeds from feeds.csv
   var csvPath = process.env.STATIC_RSS_CSV_PATH || __dirname + '/../feeds.csv'
   try{
-    feeds = feeds.concat(io.readDataSync(csvPath))
+    feeds = feeds.concat(csvParse(fs.readFileSync(csvPath, 'utf8')))
   } catch(e){
     console.log('Error loading: ', {csvPath})
   }
@@ -34,7 +35,7 @@ async function main(){
   var csvUrl = process.env.STATIC_RSS_CSV_URL || ''
   try {
     var csvStr = await (await fetch(csvUrl)).text()
-    feeds = feeds.concat(d3.csvParse(csvStr))
+    feeds = feeds.concat(csvParse(csvStr))
 
     feeds.forEach(d => {
       d.xmlUrl = d.xmlUrl || d.feed
@@ -45,8 +46,9 @@ async function main(){
   }
 
   // check for duplicate titles
-  jp.nestBy(feeds, d => d.title)
-    .forEach(d => d.length > 1 && console.log(d))
+  var byTitle = new Map()
+  feeds.forEach(d => byTitle.set(d.title, (byTitle.get(d.title) || []).concat(d)))
+  byTitle.forEach(d => d.length > 1 && console.log(d))
 
   var outdir = __dirname + `/cache/xml`
   if (!fs.existsSync(outdir)) fs.mkdirSync(outdir, {recursive: true})
@@ -70,11 +72,11 @@ async function main(){
     }
 
     pending++
-    request({url: feed.xmlUrl, timeout: 15*1000, headers, gzip: true}, async (err, res, body) => {
-      if (res?.statusCode == 304){
+    get(feed.xmlUrl, headers).then(async ({err, res, body}) => {
+      if (res?.status == 304){
         console.log('UNCHANGED: ', feed.xmlUrl)
-      } else if (err || res.statusCode != 200 || !body){
-        console.log(`ERROR ${err?.code || res?.statusCode}: `, feed.xmlUrl)
+      } else if (err || res.status != 200 || !body){
+        console.log(`ERROR ${err?.code || res?.status}: `, feed.xmlUrl)
       } else {
         console.log(feed.xmlUrl)
         // a sitemap or a plain page stands in for a feed: what's new on it is written out as rss
@@ -89,7 +91,7 @@ async function main(){
           } catch (e){ console.log('ERROR ' + kind + ': ', feed.xmlUrl, '' + e) }
         }
         fs.writeFileSync(outpath, body)
-        savedHeaders[feed.xmlUrl] = {etag: res.headers.etag, lastModified: res.headers['last-modified']}
+        savedHeaders[feed.xmlUrl] = {etag: res.headers.get('etag') || undefined, lastModified: res.headers.get('last-modified') || undefined}
       }
 
       pending--
@@ -99,6 +101,26 @@ async function main(){
       }
     })
   })
+}
+
+// a feed and its body as text, or the error; node-fetch decompresses gzip itself. Gives up
+// after 15s with no headers or 15s without a byte of body, as the request package did: a big
+// feed that keeps arriving is not cut off at 15s.
+async function get(url, headers){
+  var controller = new AbortController()
+  var timer
+  var wait = () => { clearTimeout(timer); timer = setTimeout(() => controller.abort(), 15*1000) }
+  try {
+    wait()
+    var res = await fetch(url, {headers, signal: controller.signal})
+    var text = res.text()
+    res.body.on('data', wait)
+    return {res, body: await text}
+  } catch (err){
+    return {err: err.name == 'AbortError' ? {code: 'ETIMEDOUT'} : err}
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
 // Sites with no feed. pages.json, keyed by the sheet's xmlUrl, holds what each has shown us:
